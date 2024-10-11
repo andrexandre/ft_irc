@@ -1,0 +1,36 @@
+
+//Por fazer
+- Ver video a explicar como estrutar o projeto
+- Ver aquilo dos setup server name or not e tambem o que e precisso por default.
+- Ver sobre a verificaco do ficheiro
+- Otimizar codigo
+
+
+//A fazer
+
+
+
+
+
+//Feito
+- Logica para que o parser consiga lidar com multiplos servers blocks
+- Funcao do parsing para a diretiva listen
+- Funcao do parsing para a diretiva root
+- Funcao do parsing para a diretiva server_name
+- Funcao do parsing para a diretiva Index
+- Funcao do parsing para a diretiva autoindex
+- Funcao do parsing para a diretiva error_page
+- Funcao do parsing para a diretiva _host
+- Funcao do parsing para a diretiva allowedMethods
+- Funcao do parsing para a diretiva return
+- Funcao do parsing para a diretiva client_max_body_size
+- Verificar se mesmo que a diretiva exista ver se tem algo a frente
+- Logica para o location block
+- Location block parsing
+- Ver se existe server Blocks duplicados(mesma porta, server_name e host)
+- Funcoes para ver se as diretivas estao prenchidas
+- Ver se existe coisas antes de encontar um Server_block
+- Funcao do parsing para a diretiva CGI
+- Fazer os getrs para os metodos do server 
+- Fazer os getrs para os metodos do location block
+- Fazer funcao que faz parsing do listen junto com o host

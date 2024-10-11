@@ -1,0 +1,30 @@
+Setup the server_names or not:
+    -O server_name pode existir ou nao se nao existir,
+    caso nao existir temos que definir um nome default.
+
+
+Setup default error pages:
+    -Paginas de erros para o root do server tambem para locations
+
+
+Limit client body size:
+    -Pode ser definido no root do server e tambem em 
+    um location expecifica como por exemplo o "upload"
+	-Se o tamanho do request for maior do que o definido ele retorna o error 413 (Request Entity Too Large)
+
+
+Setup routes with one or multiple of the following rules/configuration
+(routes wont be using regexp):
+
+    -Define a list of accepted HTTP methods for the route:
+        -Definir metrodos que o server_block/location pode utilizar (POST, GET, DELETE)
+    
+    -Define a HTTP redirection:
+        -Redirecionar o cliente para uma nova pagina atraves de um novo URL, usamos o return para fazer.
+
+    -Turn on or off directory listing:
+        -Permitir/recusar a listagem dos arquivos do diretorio, o "autoindex" 
+        e que nos permite saber se podemos ou nao fazer a listagem    
+
+
+
