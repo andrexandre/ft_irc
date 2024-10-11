@@ -39,7 +39,6 @@ VARS :=
 run: re
 	@clear
 	@echo "\n$(BLUE)$(NAME)$(END) $(GREEN)started$(END) 🟢\n"
-	@valgrind --leak-check=full ./$(NAME) $(VARS)
 
 detached: re
 	@echo "\n$(BLUE)$(NAME)$(END) $(GREEN)started detached$(END) 🟣\n"
@@ -55,8 +54,4 @@ val: re
 	@echo "\n$(BLUE)$(NAME)$(END) $(GREEN)started with valgrind$(END) ⚫\n"
 	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes ./$(NAME) $(VARS)
 
-p: re
-	@touch index.html
-	@clear && valgrind --leak-check=full --track-origins=yes --track-fds=yes ./$(NAME) --verbose ./config_files/parse.conf
-
-.PHONY: all clean fclean re run p
+.PHONY: all clean fclean re run detached stop reload val
