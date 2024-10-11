@@ -1,7 +1,8 @@
 #include "Irc.hpp"
 
 
-int main(int ac, char **av)
+int main(void)
+// int main(int ac, char **av)
 {
 	static Irc irc;
 	irc.run_server();

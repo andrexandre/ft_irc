@@ -53,6 +53,7 @@ void Irc::readRequest(int targetFd)
 
 void Irc::deleteClient(std::map<int, Client*>::iterator& it)
 {
+	(void)it;
 	// std::map<int, Client*>::iterator tmp = it;
 	// ++it;
 	// epfds->deleteFd(tmp->first);

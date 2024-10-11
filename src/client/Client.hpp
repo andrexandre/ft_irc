@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Irc.hpp"
+#include "../../Irc.hpp"
 
 
 class Client
