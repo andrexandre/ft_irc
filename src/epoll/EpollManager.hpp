@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../webserv.hpp"
+#include "../../Irc.hpp"
 
 class EpollManager
 {
@@ -20,33 +20,3 @@ class EpollManager
 	public:
 		int getEpSock(void) const;
 };
-
-
-// struct Sock
-// {
-// 	enum TYPE
-// 	{
-// 		SERVER,
-// 		CONN,
-// 	};
-
-
-// };
-
-
-
-
-// class fileManager
-// {
-// 	public:
-// 		fileManager(void);
-// 		~fileManager(void);
-	
-// 	private:
-// 		std::vector<int> connFds;
-// 		std::vector<int> serverFds;
-
-
-
-
-// };
