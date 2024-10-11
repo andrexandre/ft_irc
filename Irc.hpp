@@ -76,4 +76,3 @@ class Irc
 		void setPort(string arg);
 		void setPassword(string arg);
 };
-

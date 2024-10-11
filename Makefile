@@ -13,7 +13,7 @@ CXXFLAGS	:= -Wall -Wextra -Werror -g -std=c++98
 OBJSDIR		:= objs
 SRCS		:= $(shell find -name '*.cpp')
 OBJS		:= $(addprefix $(OBJSDIR)/, $(SRCS:.cpp=.o))
-NAME		:= webserv
+NAME		:= ircserv
 
 all: $(NAME)
 
@@ -37,8 +37,8 @@ re: fclean all
 VARS := 
 
 run: re
-	@clear
 	@echo "\n$(BLUE)$(NAME)$(END) $(GREEN)started$(END) 🟢\n"
+	@./$(NAME) $(VARS)
 
 detached: re
 	@echo "\n$(BLUE)$(NAME)$(END) $(GREEN)started detached$(END) 🟣\n"
@@ -53,5 +53,9 @@ reload: re stop detached
 val: re
 	@echo "\n$(BLUE)$(NAME)$(END) $(GREEN)started with valgrind$(END) ⚫\n"
 	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes ./$(NAME) $(VARS)
+
+alex: re
+	@clear
+	@./$(NAME) $(VARS)
 
 .PHONY: all clean fclean re run detached stop reload val

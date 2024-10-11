@@ -35,7 +35,6 @@ void Irc::initNetWork(void)
 	epfds->addFd(_serverSock);
 }
 
-
 void Irc::acceptClient(int serverFd)
 {
 	//salvar o addres depois	
@@ -72,7 +71,6 @@ void Irc::readRequest(int targetFd)
 	cout << buffer << endl;
 }
 
-
 void Irc::deleteClient(std::map<int, Client*>::iterator& it)
 {
 	(void)it;
@@ -82,7 +80,6 @@ void Irc::deleteClient(std::map<int, Client*>::iterator& it)
 	// delete tmp->second;
 	// _clients.erase(tmp);
 }
-
 
 int Irc::run_server(char **av)
 {
@@ -127,7 +124,5 @@ int Irc::run_server(char **av)
 	{
 		cerr << e.what() << " 💀" << '\n';
 	}
-	
 	return 0;
 }
-
