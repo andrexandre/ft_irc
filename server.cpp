@@ -8,16 +8,31 @@ void handler(int signal)
 
 void Irc::initNetWork(void)
 {
-	epfds = new EpollManager();
-
-	// int port;
-	// size_t idx;
-	// int addrlen;
-	// int enable = 1;
-	// string hostTmp;
-	// int serverSock; 
-
 	
+	struct sockaddr_in address;
+	int addrlen = sizeof(address);
+	bzero(&address, addrlen);
+	
+	address.sin_family = AF_INET;
+	address.sin_addr.s_addr = htons(INADDR_ANY);
+	address.sin_port = htons(_port);
+
+	_serverSock = socket(AF_INET, SOCK_STREAM, 0);
+	if (_serverSock == -1)
+		throw std::runtime_error("Error: Failed to create socket");
+	
+	int enable = 1;
+	if (setsockopt(_serverSock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
+		throw std::runtime_error("Error: Failed to set setsockopt to SO_REUSEADDR");
+	
+	if (bind(_serverSock, (struct sockaddr *)&address, addrlen) < 0)
+		throw std::runtime_error("Error: Failed to bind socket to a port");
+
+	if (listen(_serverSock, BACKLOG) < 0)
+		throw std::runtime_error("Error: Failed to listen to socket");
+
+	epfds = new EpollManager();
+	epfds->addFd(_serverSock);
 }
 
 
@@ -32,6 +47,7 @@ void Irc::acceptClient(int serverFd)
 	if ((new_sock = accept(serverFd, (struct sockaddr *)&address, &addrlen)) < 0)
 		throw std::runtime_error("Error: Failed to accept connection");
 	
+
 	epfds->addFd(new_sock);
 	_clients.insert(std::make_pair(new_sock, (new Client(new_sock))));//create new client
 	cout << "NEW CLIENT ADDED TO THE SERVER" << "(fd: " << new_sock << ")" << endl;					
@@ -48,8 +64,14 @@ void Irc::sendResponse(int targetFd)
 
 void Irc::readRequest(int targetFd)
 {
-	(void) targetFd;
+	char buffer[30000];
+	bzero(buffer, sizeof(buffer));
+	if (read(targetFd, &buffer, 30000) < 0)
+		throw std::runtime_error("Error: in readind the fd");
+	
+	cout << buffer << endl;
 }
+
 
 void Irc::deleteClient(std::map<int, Client*>::iterator& it)
 {
@@ -62,20 +84,22 @@ void Irc::deleteClient(std::map<int, Client*>::iterator& it)
 }
 
 
-int Irc::run_server(void)
+int Irc::run_server(char **av)
 {
 	signal(SIGINT, handler);
 	struct epoll_event evs[MAX_EVENTS]; //pesquisar coisas
 	try
 	{
+		setPort(av[1]);
+		setPassword(av[2]);
 		initNetWork();
-		
+
 		int event_count = 0;
 		int j = 0;
 		while (true)
 		{
 			cout << "\nPolling for input " << j << "..." << endl;			
-			event_count = epoll_wait(epfds->getEpSock(), evs, MAX_EVENTS, 30000);//30seconds
+			event_count = epoll_wait(epfds->getEpSock(), evs, MAX_EVENTS, -1);//30seconds
 			if (event_count == -1)
 				throw std::runtime_error("Error: in epoll_wait");
 
@@ -88,7 +112,8 @@ int Irc::run_server(void)
 				else if (evs[i].events & EPOLLIN)//new request from client
 					readRequest(evs[i].data.fd);
 				else if (evs[i].events & EPOLLOUT)//send response to client
-					sendResponse(evs[i].data.fd);
+					return 0;
+					// sendResponse(evs[i].data.fd);
 				else if (evs[i].events & EPOLLRDHUP || evs[i].events & EPOLLERR || evs[i].events & EPOLLHUP)
 					throw std::runtime_error("Server stoped with EPOLLERR || EPOLLRDHUP || EPOLLHUP");
 				else

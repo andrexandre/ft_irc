@@ -52,6 +52,10 @@ class Irc
 		int _serverSock;
 		std::map<int, Client*> _clients; 
 		EpollManager* epfds;
+	
+	private:
+		int _port;
+		string _passWord;
 
 	private:
 		void initNetWork(void);
@@ -67,7 +71,9 @@ class Irc
 	public:
 		Irc(void);
 		~Irc(void);
+		int run_server(char **av);
 	public:
-		int run_server(void);
+		void setPort(string arg);
+		void setPassword(string arg);
 };
 

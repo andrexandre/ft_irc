@@ -1,10 +1,16 @@
 #include "Irc.hpp"
 
 
-int main(void)
-// int main(int ac, char **av)
+// int main(void)
+int main(int ac, char **av)
 {
 	static Irc irc;
-	irc.run_server();
+
+	if (ac != 3)
+	{
+		cerr << "Error: wrong number of arguments!" << endl;
+		return (1);
+	}
+	irc.run_server(av);
 	return (0);
 }
