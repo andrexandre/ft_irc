@@ -1,7 +1,6 @@
 #include "Parsing.hpp"
-// int linepos;
 
-Server_block::Server_block(int id) : serverId(id)
+Server_block::Server_block()
 {
 	ptrSet[0] = &Server_block::setHostName;
 	ptrSet[1] = &Server_block::setServerName;
@@ -55,6 +54,18 @@ void Server_block::validateMandatoryConfig(void)
 		_rootPath = DEFAULT_ROOT;
 }
 
+bool Server_block::operator==(Server_block& other)
+{
+	if (this != &other)
+	{
+		// if they ahve the same host we will only 
+		// create a soket to the first block
+		if (this->getHostName() == other.getHostName())
+			return (true);
+	}
+	return (false);
+}
+
 Server_block::~Server_block(void)
 {
 	for (size_t i = 0; i < _locs.size(); i++)
@@ -88,8 +99,9 @@ int isFileOk(string path)
 	return (0);
 }
 
-void Server_block::setHostName(std::stringstream& ss) {
-	
+
+void Server_block::setHostName(std::stringstream& ss) 
+{	
 	string arg;
 	string tmp;
 	string host;
@@ -212,7 +224,8 @@ void Server_block::setRedirections(std::stringstream& ss) {
 
 }
 
-void Server_block::setAutoindex(std::stringstream& ss) {
+void Server_block::setAutoindex(std::stringstream& ss) 
+{
 	
 	string arg;
 
@@ -230,7 +243,8 @@ void Server_block::setAutoindex(std::stringstream& ss) {
 		throw("Too much arguments");
 }
 
-void Server_block::setErrorPages(std::stringstream& ss) {
+void Server_block::setErrorPages(std::stringstream& ss) 
+{
 	
 	char *end; 
 	long code;
@@ -270,8 +284,9 @@ void Server_block::setErrorPages(std::stringstream& ss) {
 		throw("Need more arguments!");
 }
 
-void Server_block::setAllowedMethods(std::stringstream& ss) {
-	serverId += 0;
+void Server_block::setAllowedMethods(std::stringstream& ss) 
+{
+	
 	string methods[] = {"GET", "POST", "DELETE"};
 	string arg;
 
@@ -292,7 +307,8 @@ void Server_block::setAllowedMethods(std::stringstream& ss) {
 		throw("Empty directive!");
 }
 
-void Server_block::setIndexs(std::stringstream& ss) {
+void Server_block::setIndexs(std::stringstream& ss) 
+{
 	
 	if(!_indexs.empty())
 		_indexs.clear();
@@ -312,7 +328,8 @@ void Server_block::setIndexs(std::stringstream& ss) {
 		throw("Empty directive!");
 }
 
-void Server_block::setServerName(std::stringstream& ss) {
+void Server_block::setServerName(std::stringstream& ss) 
+{
 	
 	string name;
 	while (ss >> name)
@@ -324,8 +341,8 @@ void Server_block::setServerName(std::stringstream& ss) {
 		throw("Empty directive!");
 }
 
-bool Server_block::setCGI(std::stringstream& ss, std::ifstream& configFile, string& line) {
-	
+bool Server_block::setCGI(std::stringstream& ss, std::ifstream& configFile, string& line) 
+{
 	string arg;
 
 	if (ss >> arg)
@@ -373,7 +390,8 @@ bool Server_block::setCGI(std::stringstream& ss, std::ifstream& configFile, stri
 	return(true);
 }
 
-bool Server_block::setLocation(std::stringstream& ss, std::ifstream& configFile, string& line) {
+bool Server_block::setLocation(std::stringstream& ss, std::ifstream& configFile, string& line) 
+{
 	Locations *newLoc = NULL;
 	string arg;
 	string optr;
@@ -456,7 +474,7 @@ bool Server_block::setLocation(std::stringstream& ss, std::ifstream& configFile,
 void Server_block::printInfo(void)
 {
 	cout << YELLOW << "-----------------------------------------------" << END << endl;
-	cout << YELLOW << "                 SERVER " << serverId << END << endl;
+	cout << YELLOW << "                 SERVER " << END << endl;
 	cout << YELLOW << "-----------------------------------------------" << END << endl;
 
 	if (!_hostName.empty())
@@ -619,8 +637,6 @@ size_t Server_block::getMaxBodySize(void) const{
 	return (_maxBodySize);
 }
 
-
-
 const string& Server_block::getHostName(void) const{
 	return (_hostName);
 }
@@ -629,11 +645,9 @@ const string& Server_block::getRoot(void) const{
 	return (_rootPath);
 }
 
-
 const std::vector<int>& Server_block::getPort(void) const{
 	return (_port);
 }
-
 
 const std::vector<string>& Server_block::getServerName(void) const{
 	return (_serverName);
@@ -647,7 +661,6 @@ const std::vector<string>& Server_block::getIndexPages(void) const{
 	return (_indexs);
 }
 
-
 const std::map<int, string>& Server_block::getErrorPages(void) const{
 	return (_errorPages);
 }
@@ -656,13 +669,7 @@ const std::map<int, string>& Server_block::getRedirections(void) const{
 	return (_redirections);
 }
 
-
 const std::vector<Locations*>& Server_block::getLocations(void) const{
 	return (_locs);
 }
-
-
-
-
-
 

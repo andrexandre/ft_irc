@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../webserv.hpp"
+#include "../../webserv.hpp"
 
 #define LOCAL_HOST			"127.0.0.1"
 #define DEFAULT_BODY_SIZE	1024
@@ -14,12 +14,13 @@
 #define DEFAULT_INDEX_PAGE "index.html"
 
 class Locations;
+class WebServ;
 
 class Server_block
 {
 	// Server Block exclusive directives
 	private:
-		int serverId;
+		// int serverFd;
 		string _hostName;
 		std::vector<int> _port;
 		std::vector<string> _serverName;
@@ -37,7 +38,8 @@ class Server_block
 		std::map<int, string> _redirections;
 	
 	public:
-		Server_block(int i);
+		Server_block();
+		bool operator==(Server_block& other);
 		~Server_block(void);
 		void (Server_block::*ptrSet[9])(std::stringstream& ss);
 		bool (Server_block::*ptrSetSpecial[2])(std::stringstream& ss, std::ifstream& configFile, string& line);		
@@ -89,8 +91,6 @@ class Server_block
 		const std::map<int, string>& getRedirections(void) const;
 
 		const std::vector<Locations*>& getLocations(void) const;
-
-
 };
 
 class Locations : public Server_block
@@ -110,3 +110,7 @@ class Locations : public Server_block
 		const string getDirName(void) const;
 		const string getOperator(void) const;
 };
+
+
+int checkField(string& name, size_t srt);
+bool parsing(string configFilePath, WebServ& data);

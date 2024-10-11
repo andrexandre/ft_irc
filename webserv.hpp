@@ -15,6 +15,12 @@
 #include <arpa/inet.h>
 #include <cstring>
 #include <csignal>
+#include <cstdlib>
+#include <ctime>
+#include <cstdio>
+#include <sys/epoll.h>  // Para epoll
+#include <fcntl.h>
+
 
 #define END			"\033[0m"
 #define RED			"\033[1;31m"
@@ -25,6 +31,9 @@
 #define CYAN		"\033[1;36m"
 #define WHITE		"\033[1;37m"
 
+#define BACKLOG 100
+#define MAX_EVENTS 1024
+
 using std::string;
 using std::cout;
 using std::cerr;
@@ -34,28 +43,50 @@ using std::endl;
 extern int linepos;
 extern int verbose;
 
-#include "parsing/Parsing.hpp"
-
+class Client;
+class EpollManager;
 class Server_block;
+class httpRequest;
+class httpResponse;
+
+#include "src/parsing/Parsing.hpp"
+#include "src/client/Client.hpp"
+#include "src/epoll/EpollManager.hpp"
+#include "src/httpHandler/httpHandler.hpp"
+
+
 
 class WebServ
 {
 	private:
-		std::vector<Server_block*> _servers;
-		int sock;
-	
+		std::vector<Server_block*> _serversConfig;
+		std::vector<Server_block*> usableServers;
+		std::vector<int> _serverFds;
+		EpollManager* epfds;
+
+		std::map<int, Client*> _clients; 
+		// std::map<string, int> _connaddr; 
+
+	// Servers methods to netWork
+	private:
+		void initNetWork(void);
+		void acceptClient(int serverFd);
+		bool isNewClient(int targetFd);
+		void readRequest(int targetFd);
+		void sendResponse(int targetFd);
+		void chooseBlocks(void);
+		void timeOut(void);
+		void deleteClient(std::map<int, Client*>::iterator& it);
+
 	public:
 		WebServ(void);
 		~WebServ(void);
 
-		int server_core(void);
-
-	// Servers methods
+	// Servers methods to S. blocks
 	public:
-		void printServers(void);
+		void printServers(void);//temporario
 		void mandatoryConfig(void) const;
 		void setServers(Server_block* other);
+		int run_server(void);
 };
 
-int server_core(void);
-int checkField(string& name, size_t srt);

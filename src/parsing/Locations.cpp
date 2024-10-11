@@ -1,7 +1,7 @@
 #include "Parsing.hpp"
 
 
-Locations::Locations(void): Server_block(-1) {
+Locations::Locations(void) {
 	// _autoIndex = true;
 }
 

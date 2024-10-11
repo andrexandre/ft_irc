@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        input {
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            padding: 5px;
+        }
+
+        input::file-selector-button {
+            background-color: #8b5cf6;
+            font-weight: bold;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color .3s ease;
+        }
+        input[type="submit"] {
+            background-color: #8b5cf6;
+            font-weight: bold;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color .3s ease;
+        }
+        input::file-selector-button:hover {
+            background-color: #7c3aed;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header</title>
+</head>
+<body>
+    <p>Webserv42!</p>
+    <form action="http://localhost:8080/up" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" multiple>
+        <input type="submit" value="Upload">
+    </form>
+    </p>
+</body>
+</html>
