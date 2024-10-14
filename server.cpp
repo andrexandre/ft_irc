@@ -87,6 +87,7 @@ int Irc::run_server(char **av)
 	struct epoll_event evs[MAX_EVENTS]; //pesquisar coisas
 	try
 	{
+		
 		setPort(av[1]);
 		setPassword(av[2]);
 		initNetWork();
