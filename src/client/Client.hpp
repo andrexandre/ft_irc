@@ -7,6 +7,8 @@ class Client
 {
 	private:
 		int _connectionSock;
+		string nick;
+		string user;
 	
 	public:
 		Client(int connectionSock);

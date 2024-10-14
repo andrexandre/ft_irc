@@ -2,6 +2,7 @@
 
 EpollManager::EpollManager(void) : epSock(epoll_create(1))
 {
+	
 	if (epSock < 0)
 		throw std::runtime_error("Error: creating epoll instance");
 }
@@ -22,6 +23,7 @@ void EpollManager::addFd(int targetFd)
 	bzero(&ev, sizeof(ev));
 	ev.events = EPOLLIN | EPOLLERR | EPOLLRDHUP | EPOLLHUP;
 	ev.data.fd = targetFd;
+	cout << "added: " << targetFd << " asd";
 	if (epoll_ctl(epSock, EPOLL_CTL_ADD, targetFd, &ev) == -1)
 		throw std::runtime_error("Error: in adding server sock in the epoll instance");
 	

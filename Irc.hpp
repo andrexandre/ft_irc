@@ -63,16 +63,21 @@ class Irc
 		void acceptClient(int serverFd);
 		void deleteClient(std::map<int, Client*>::iterator& it);
 	
+	private:
+		void executeAction(int fd);
+	
 	//See if we really need them?
 	private:
 		void readRequest(int targetFd);
 		void sendResponse(int targetFd);
 
 	public:
+		static bool running;
 		Irc(void);
 		~Irc(void);
 		int run_server(char **av);
 	public:
 		void setPort(string arg);
 		void setPassword(string arg);
+		// static void handler(int signal);
 };
