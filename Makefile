@@ -34,7 +34,7 @@ fclean: clean
 
 re: fclean all
 
-VARS := 
+VARS := 8080 123
 
 run: re
 	@echo "\n$(BLUE)$(NAME)$(END) $(GREEN)started$(END) 🟢\n"
@@ -47,6 +47,10 @@ detached: re
 stop:
 	@echo "\n$(BLUE)$(NAME)$(END) $(GREEN)stopped$(END) 🔴\n"
 	@kill $$(pgrep $(NAME))
+
+kill:
+	@echo "\n$(BLUE)$(NAME)$(END) $(GREEN)killed$(END) ⚫🔴⚫\n"
+	@kill -9 $$(pgrep $(NAME))
 
 reload: re stop detached
 
