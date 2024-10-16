@@ -4,18 +4,30 @@
 
 // void Irc::handler(int signal)
 // {
-// 	(void)signal;
+// 	if(signal == SIGINT)
+// 	{
+
+// 	}	
 	
-// 	Irc::running = false;	
-// 	cout << RED << Irc::running << END << endl;
-// 	// exit(1);
+// 	exit(1);
 // }
+
+bool running = true;
 
 void handler(int signal)
 {
 	(void)signal;
-	throw std::runtime_error("\nServer stopped!");
+	
+	running = false;	
+	cout << RED << running << END << endl;
+	// exit(1);
 }
+
+// void handler(int signal)
+// {
+// 	(void)signal;
+// 	throw std::runtime_error("\nServer stopped!");
+// }
 
 void Irc::initNetWork(void)
 {
@@ -127,7 +139,7 @@ void Irc::executeAction(int fd)
 int Irc::run_server(char **av)
 {
 	struct epoll_event evs[MAX_EVENTS]; //pesquisar coisas
-	cout << "PID: " << getpid() << endl;	
+	cout << "PID: " << getpid() << endl;
 	signal(SIGINT, handler);
 	try
 	{
@@ -140,11 +152,19 @@ int Irc::run_server(char **av)
 		while (running)
 		{
 			cout << "\nPolling for input " << j << "..." << endl;	
-			event_count = epoll_wait(epfds->getEpSock(), evs, MAX_EVENTS, 30000);
-			if (event_count == -1){
-				epoll_ctl(epfds->getEpSock(), EPOLL_CTL_DEL, evs[0].data.fd, NULL);
-				throw std::runtime_error("Error: in epoll_wait");
+			event_count = epoll_wait(epfds->getEpSock(), evs, MAX_EVENTS, 10000);
+			if (event_count == -1)
+			{
+				if (errno == EINTR)
+				{
+					continue;
+				}
 			}
+			
+			if (event_count == -1  && running)
+				throw std::runtime_error("Error: in epoll_wait");
+			else if (!running || event_count == -1)
+				break;
 
 			cout << "EVENTS READY: " << event_count << '\n' << endl;
 			for (int i = 0; i < event_count; i++)
@@ -164,13 +184,16 @@ int Irc::run_server(char **av)
 			}
 			j++;
 		}
+		delete epfds;
+		epfds = NULL;
 		cout << RED "Reached uncommon place" END << endl;
 	}
 	catch(const std::exception& e)
 	{
 		cerr << e.what() << " 💀" << '\n';
-		close(epfds->getEpSock());
-		exit(EXIT_FAILURE);
+		// close(epfds->getEpSock());
+		// exit(EXIT_FAILURE);
 	}
+	cout << "alex" << endl;
 	return 0;
 }

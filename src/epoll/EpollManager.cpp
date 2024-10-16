@@ -23,7 +23,7 @@ void EpollManager::addFd(int targetFd)
 	bzero(&ev, sizeof(ev));
 	ev.events = EPOLLIN | EPOLLERR | EPOLLRDHUP | EPOLLHUP;
 	ev.data.fd = targetFd;
-	cout << "added: " << targetFd << " asd";
+	cout << YELLOW << "ADDED: " << targetFd << END << endl;
 	if (epoll_ctl(epSock, EPOLL_CTL_ADD, targetFd, &ev) == -1)
 		throw std::runtime_error("Error: in adding server sock in the epoll instance");
 	
@@ -48,7 +48,7 @@ void EpollManager::deleteFd(int targetFd)
 	close(targetFd);
 	std::vector<int>::iterator it;
 	it = std::find(listFds.begin(), listFds.end(), targetFd);
-	listFds.erase(it, it + 1);
+	listFds.erase(it, it);
 }
 
 int EpollManager::getEpSock(void) const {

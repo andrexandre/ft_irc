@@ -45,6 +45,7 @@ class EpollManager;
 #include "src/client/Client.hpp"
 #include "src/epoll/EpollManager.hpp"
 
+extern bool running;
 
 class Irc
 {
@@ -72,12 +73,12 @@ class Irc
 		void sendResponse(int targetFd);
 
 	public:
-		static bool running;
+		// bool running;
 		Irc(void);
 		~Irc(void);
 		int run_server(char **av);
 	public:
 		void setPort(string arg);
 		void setPassword(string arg);
-		// static void handler(int signal);
+		// void handler(int signal);
 };

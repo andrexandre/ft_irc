@@ -2,7 +2,6 @@
 
 Irc::Irc(void) {}
 
-bool Irc::running = true;
 
 Irc::~Irc(void) 
 {
