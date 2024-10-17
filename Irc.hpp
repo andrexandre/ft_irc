@@ -43,6 +43,7 @@ class Client;
 class EpollManager;
 
 #include "src/client/Client.hpp"
+#include "src/channel/Channel.hpp"
 #include "src/epoll/EpollManager.hpp"
 
 extern bool running;
@@ -64,8 +65,6 @@ class Irc
 		void acceptClient(int serverFd);
 		void deleteClient(std::map<int, Client*>::iterator& it);
 	
-	private:
-		void executeAction(int fd);
 	
 	//See if we really need them?
 	private:
@@ -80,5 +79,11 @@ class Irc
 	public:
 		void setPort(string arg);
 		void setPassword(string arg);
-		// void handler(int signal);
+
+	private:
+		void privmsgCmd(std::istringstream &ss, Client* actualClient);
+		Client* findClient(int target);
+		Client* findClient(string name);
+		// std::vector<Channel> _serverChannels;
 };
+

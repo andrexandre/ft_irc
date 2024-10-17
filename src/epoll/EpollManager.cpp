@@ -16,12 +16,12 @@ EpollManager::~EpollManager(void)
 	close(epSock);
 }
 
-void EpollManager::addFd(int targetFd)
+void EpollManager::addFd(int targetFd, uint32_t newEvent)
 {
 	struct epoll_event ev;
 	
 	bzero(&ev, sizeof(ev));
-	ev.events = EPOLLIN | EPOLLERR | EPOLLRDHUP | EPOLLHUP;
+	ev.events = newEvent;
 	ev.data.fd = targetFd;
 	cout << YELLOW << "ADDED: " << targetFd << END << endl;
 	if (epoll_ctl(epSock, EPOLL_CTL_ADD, targetFd, &ev) == -1)

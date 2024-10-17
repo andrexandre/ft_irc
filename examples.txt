@@ -1,0 +1,19 @@
+
+
+JOIN
+req: JOIN #alexGroug
+resp: :andre!andre21@9C5B1D.95C97E.C247D8.AE513.IP JOIN #alexGroug * :realname
+
+PRIVMSG
+se estiver em um channel
+req: PRIVMSG #alexGroug :ola
+
+se nao estiver em um channel
+req: PRIVMSG alexGroug :ola
+
+o sinal # indica que e um canal
+
+WHO
+rep: WHO #alexGroug %chtsunfra,152
+resp: >> :luna.AfterNET.Org 353 aleperei = #alexGroug :aleperei!aleperei21@9C5B1D.95C97E.C247D8.AE513.IP @andre!andre21@9C5B1D.95C97E.C247D8.AE513.IP
+>> :luna.AfterNET.Org 366 aleperei #alexGroug :End of /NAMES list.

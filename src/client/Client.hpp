@@ -3,12 +3,30 @@
 #include "../../Irc.hpp"
 
 
+// class Client
+// {
+// 	private:
+// 		int _connectionSock;
+// 		string nick;
+// 		string user;
+	
+// 	public:
+// 		Client(int connectionSock);
+// 		~Client(void);
+	
+// 	public:
+// 		int getSock(void) const;
+
+// };
+
+
 class Client
 {
 	private:
 		int _connectionSock;
 		string nick;
 		string user;
+		string passWord; 
 	
 	public:
 		Client(int connectionSock);
@@ -16,5 +34,12 @@ class Client
 	
 	public:
 		int getSock(void) const;
+		string getNick(void) const { return (nick);}
+		string getUser(void) const { return (user);}
+		string getPassWord(void) const { return (passWord);}
+
+		void setNick(string name) { nick = name;}
+		void setUser(string name) { user = name;}
+		void setPassWord(string name) { passWord = name;}
 
 };
