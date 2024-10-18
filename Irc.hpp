@@ -40,6 +40,7 @@ using std::cerr;
 using std::endl;
 
 class Client;
+class Channel;
 class EpollManager;
 
 #include "src/client/Client.hpp"
@@ -82,8 +83,10 @@ class Irc
 
 	private:
 		void privmsgCmd(std::istringstream &ss, Client* actualClient);
+		void joinCmd(std::istringstream &ss, Client* actualClient);
 		Client* findClient(int target);
 		Client* findClient(string name);
-		// std::vector<Channel> _serverChannels;
+		Channel* findChannel(string name);
+		std::vector<Channel*> _serverChannels;
 };
 

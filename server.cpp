@@ -85,6 +85,7 @@ void Irc::readRequest(int targetFd)
 	
 	while (std::getline(conn,buf))
 	{
+
 		std::istringstream line(buf);
 		
 		string cmd;
@@ -103,6 +104,8 @@ void Irc::readRequest(int targetFd)
 		}
 		else if (cmd == "privmsg" || cmd == "PRIVMSG")
 			privmsgCmd(line, actualClient);
+		else if (cmd == "join" || cmd == "JOIN")
+			joinCmd(line, actualClient);
 
 		
 	}

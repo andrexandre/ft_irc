@@ -53,6 +53,16 @@ void Irc::privmsgCmd(std::istringstream &ss, Client* actualClient)
 	}
 	else
 	{
+		ss >> conn;
+		Channel* tarChannel = findChannel(targetName);
+		if (!tarChannel)
+		{
+			//mandar mesangem de erro
+			return;
+		}
+		msg += ":" + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost PRIVMSG " + tarChannel->getChannelName() + " :" + conn + "\r\n";
+
+		tarChannel->sendMsg(actualClient->getSock(), msg);
 		//send message to channel
 	}
 
