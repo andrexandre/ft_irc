@@ -1,6 +1,20 @@
 #include "Irc.hpp"
 
-Irc::Irc(void) {}
+//Comentado por não ter nenhum comando criado ( o PASS é só para teste )
+Irc::Irc(void) {
+	cmds["PASS"] = &Irc::passCmd;
+	/*cmds["NICK"] = &Irc::nickCmd;
+	cmds["USER"] = &Irc::userCmd;
+	cmds["QUIT"] = &Irc::quitCmd;
+	cmds["NOTICE"] = &Irc::noticeCmd;
+	cmds["JOIN"] = &Irc::joinCmd;
+	cmds["WHO"] = &Irc::whoCmd;
+	cmds["MODE"] = &Irc::modeCmd;
+	cmds["TOPIC"] = &Irc::topicCmd;
+	cmds["INVITE"] = &Irc::inviteCmd;
+	cmds["KICK"] = &Irc::kickCmd;
+	cmds["PRIVMSG"] = &Irc::privmsgCmd;*/
+}
 
 Irc::~Irc(void) 
 {
@@ -11,7 +25,6 @@ Irc::~Irc(void)
 	if (epfds)
 		delete epfds;
 }
-
 
 void Irc::setPassword(string arg) {
 	_passWord = arg;
@@ -26,4 +39,9 @@ void Irc::setPort(string arg)
 		throw std::runtime_error("Error: Invalid port!");;
 
 	_port = num;	
+}
+void Irc::passCmd(Client* actualClient, vector<string> args){
+	(void)actualClient;
+	(void)args;
+	cout << "estou no pass\n";
 }

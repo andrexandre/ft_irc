@@ -38,6 +38,9 @@ using std::string;
 using std::cout;
 using std::cerr;
 using std::endl;
+using std::vector;
+using std::map;
+using std::istringstream;
 
 class Client;
 class EpollManager;
@@ -45,14 +48,16 @@ class EpollManager;
 #include "src/client/Client.hpp"
 #include "src/epoll/EpollManager.hpp"
 
-
 class Irc
 {
 	private:
 		int _serverSock;
-		std::map<int, Client*> _clients; 
+		map<int, Client*> _clients; 
 		EpollManager* epfds;
-	
+		string msg; //Para ter o buffer da msg enviada pelo client
+		typedef void (Irc::*Command)(Client* actualClient, vector<string> args); //Recebe os mesmos parâmetros das funções de cada comando, é usado no map
+		map<string, Command> cmds; //Map para facilitar a chamada de cada comando. Key == comando Value == função de cada comando
+		
 	private:
 		int _port;
 		string _passWord;
@@ -61,18 +66,34 @@ class Irc
 		void initNetWork(void);
 		bool isNewClient(int targetFd);
 		void acceptClient(int serverFd);
-		void deleteClient(std::map<int, Client*>::iterator& it);
+		void deleteClient(map<int, Client*>::iterator& it);
 	
-	//See if we really need them?
 	private:
-		void readRequest(int targetFd);
+		void parsing(int targetFd);
 		void sendResponse(int targetFd);
 
 	public:
 		Irc(void);
 		~Irc(void);
 		int run_server(char **av);
+		
 	public:
 		void setPort(string arg);
 		void setPassword(string arg);
+
+	private:
+		void passCmd(Client* actualClient, vector<string> args);
+		/*void nickCmd(Client* actualClient, vector<string> args);
+		void userCmd(Client* actualClient, vector<string> args);
+		void quitCmd(Client* actualClient, vector<string> args);
+		void noticeCmd(Client* actualClient, vector<string> args);
+		void joinCmd(Client* actualClient, vector<string> args);
+		void whoCmd(Client* actualClient, vector<string> args);
+		void partCmd(Client* actualClient, vector<string> args);
+		void modeCmd(Client* actualClient, vector<string> args);
+		void topicCmd(Client* actualClient, vector<string> args);
+		void inviteCmd(Client* actualClient, vector<string> args);
+		void kickCmd(Client* actualClient, vector<string> args);
+		void privmsgCmd(Client* actualClient, vector<string> args);*/
+
 };

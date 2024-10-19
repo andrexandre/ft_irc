@@ -61,16 +61,6 @@ void Irc::sendResponse(int targetFd)
 	(void) targetFd;
 }
 
-void Irc::readRequest(int targetFd)
-{
-	char buffer[30000];
-	bzero(buffer, sizeof(buffer));
-	if (read(targetFd, &buffer, 30000) < 0)
-		throw std::runtime_error("Error: in readind the fd");
-	
-	cout << buffer << endl;
-}
-
 void Irc::deleteClient(std::map<int, Client*>::iterator& it)
 {
 	(void)it;
@@ -107,7 +97,7 @@ int Irc::run_server(char **av)
 				 if (isNewClient(evs[i].data.fd) && evs[i].events & EPOLLIN)//new client to the server
 					acceptClient(evs[i].data.fd);
 				else if (evs[i].events & EPOLLIN)//new request from client
-					readRequest(evs[i].data.fd);
+					parsing(evs[i].data.fd);
 				else if (evs[i].events & EPOLLOUT)//send response to client
 					return 0;
 					// sendResponse(evs[i].data.fd);
