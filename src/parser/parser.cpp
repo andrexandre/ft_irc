@@ -10,12 +10,12 @@ string trim(const string &str) {
     return str.substr(start, end - start + 1);
 }
 
-std::string toUpper(const std::string &cmd2) {
-    std::string uppercmd2;
-    for (size_t i = 0; i < cmd2.size(); i++) {
-        uppercmd2 += std::toupper(cmd2[i]);
+std::string toUpper(const std::string &cmd) {
+    std::string uppercmd;
+    for (size_t i = 0; i < cmd.size(); i++) {
+        uppercmd += std::toupper(cmd[i]);
     }
-    return uppercmd2;
+    return uppercmd;
 }
 
 void Irc::parsing(int targetFd){
@@ -24,29 +24,29 @@ void Irc::parsing(int targetFd){
 	if (read(targetFd, &buffer, 30000) < 0)
 		throw std::runtime_error("Error: in readind the fd");
 	
-	Cmd2 *cmd2 = new Cmd2();
+	Cmd *cmd = new Cmd();
 
-	cmd2->setMsg(buffer);
-	cmd2->setActualClient(_clients[targetFd]);
+	cmd->setMsg(buffer);
+	cmd->setActualClient(_clients[targetFd]);
 
 	Client *client = _clients[targetFd];
-	istringstream ss(cmd2->getMsg());
-	string parsecmd2;
+	istringstream ss(cmd->getMsg());
+	string parsecmd;
 	string arg;
 
-	ss >> parsecmd2;
+	ss >> parsecmd;
 	while (ss >> arg) {
-        cmd2->addArg(trim(arg));
+        cmd->addArg(trim(arg));
     }
 
-	if(cmd2->commands.find(trim(toUpper(parsecmd2))) != cmd2->commands.end()){
-		(cmd2->*(cmd2->commands[trim(toUpper(parsecmd2))]))();
-		requests[_clients[targetFd]] = cmd2;
+	if(cmd->commands.find(trim(toUpper(parsecmd))) != cmd->commands.end()){
+		(cmd->*(cmd->commands[trim(toUpper(parsecmd))]))();
+		requests[_clients[targetFd]] = cmd;
 	}else{
 		send(client->getSock(), "Command not found.\r\n", 21, 0);
 		//Aqui poderia ser exibido uma lista com todos os comandos possíveis
 	}
 
-	cout << "Client Msg: "<< cmd2->getMsg() << endl;
-	cmd2->getMsg().clear();
+	cout << "Client Msg: "<< cmd->getMsg() << endl;
+	cmd->getMsg().clear();
 }

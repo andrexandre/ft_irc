@@ -44,11 +44,11 @@ using std::istringstream;
 
 class Client;
 class EpollManager;
-class Cmd2;
+class Cmd;
 
 #include "src/client/Client.hpp"
 #include "src/epoll/EpollManager.hpp"
-#include "src/cmd2/Cmd2.hpp"
+#include "src/cmd2/Cmd.hpp"
 
 class Irc
 {
@@ -56,7 +56,7 @@ class Irc
 		int _serverSock;
 		map<int, Client*> _clients; 
 		EpollManager* epfds;
-		map<Client*, Cmd2*> requests;
+		map<Client*, Cmd*> requests;
 		
 		
 	private:

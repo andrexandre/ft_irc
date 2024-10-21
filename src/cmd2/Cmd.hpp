@@ -2,13 +2,13 @@
 
 #include "../../Irc.hpp"
 
-class Cmd2{
+class Cmd{
 
     private:
         string msg; //Para ter o buffer da msg enviada pelo client
         vector<string> args;
         Client* actualClient;
-		typedef void (Cmd2::*Command)(); //Recebe os mesmos parâmetros das funções de cada comando, é usado no map
+		typedef void (Cmd::*Command)(); //Recebe os mesmos parâmetros das funções de cada comando, é usado no map
 		
         void passCmd();
 		/*void nickCmd();
@@ -25,8 +25,8 @@ class Cmd2{
 		void privmsgCmd();*/
 
     public:
-		Cmd2(void);
-		~Cmd2(void);
+		Cmd(void);
+		~Cmd(void);
         map<string, Command> commands; //Map para facilitar a chamada de cada comando. Key == comando Value == função de cada comando
     
         void setMsg(char buffer[30000]);
