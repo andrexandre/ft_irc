@@ -24,26 +24,29 @@ void Irc::parsing(int targetFd){
 	if (read(targetFd, &buffer, 30000) < 0)
 		throw std::runtime_error("Error: in readind the fd");
 	
-	msg += buffer;
+	Cmd* cmd = new Cmd();
 
-	vector<string> args;
+	cmd->setMsg(buffer);
+	cmd->setActualClient(_clients[targetFd]);
+
 	Client *client = _clients[targetFd];
-	istringstream ss(msg);
-	string cmd;
+	istringstream ss(cmd->getMsg());
+	string parseCmd;
 	string arg;
 
-	ss >> cmd;
+	ss >> parseCmd;
 	while (ss >> arg) {
-        args.push_back(trim(arg));
+        cmd->addArg(trim(arg));
     }
 
-	if(cmds.find(trim(toUpper(cmd))) != cmds.end()){
-		(this->*(this->cmds[trim(toUpper(cmd))]))(client,args);
+	if(cmd->commands.find(trim(toUpper(parseCmd))) != cmd->commands.end()){
+		(cmd->*(cmd->commands[trim(toUpper(parseCmd))]))();
+		requests[_clients[targetFd]] = cmd;
 	}else{
 		send(client->getSock(), "Command not found.\r\n", 21, 0);
 		//Aqui poderia ser exibido uma lista com todos os comandos possíveis
 	}
 
-	cout << "Client Msg: "<< msg << endl;
-	msg.clear();
+	cout << "Client Msg: "<< cmd->getMsg() << endl;
+	cmd->getMsg().clear();
 }
