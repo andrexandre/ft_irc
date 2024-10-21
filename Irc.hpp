@@ -43,6 +43,7 @@ class Client;
 class Channel;
 class EpollManager;
 
+#include "serverNumeric.hpp"
 #include "src/client/Client.hpp"
 #include "src/channel/Channel.hpp"
 #include "src/epoll/EpollManager.hpp"
@@ -84,9 +85,15 @@ class Irc
 	private:
 		void privmsgCmd(std::istringstream &ss, Client* actualClient);
 		void joinCmd(std::istringstream &ss, Client* actualClient);
+		void partCmd(std::istringstream &ss, Client* actualClient);
+		void topicCmd(std::istringstream &ss, Client* actualClient);
 		Client* findClient(int target);
 		Client* findClient(string name);
 		Channel* findChannel(string name);
+		Channel* createChannel(string name);
 		std::vector<Channel*> _serverChannels;
+		static void serverErrorMsg(int fd, string errMsg);
 };
+
+
 

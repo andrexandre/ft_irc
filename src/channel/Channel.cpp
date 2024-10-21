@@ -16,8 +16,16 @@ void Channel::setChannelUsers(bool oprt, Client* ptr)
 	_usersNumber++;
 }
 
+void Channel::setChannelTopic(string content) {
+	_channelTopic = content;
+}
+
 size_t Channel::getUsersNumber(void) const {
 	return (_usersNumber);
+}
+
+string Channel::getChannelTopic(void) const {
+	return (_channelTopic);
 }
 
 bool Channel::isPartOfChannel(string userName) const
@@ -32,15 +40,37 @@ bool Channel::isPartOfChannel(string userName) const
 	return (false);
 }
 
-void Channel::sendMsg(int fd, string& msg) const 
+void Channel::sendPrivMsg(int fd, string& msg) const 
 {
 	std::map<Client*, bool>::const_iterator it;
 	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
 	{
 		if (it->first->getSock() != fd)
 		{
-			if (send(fd, msg.c_str(), msg.size(), 0) == -1)
+			if (send(it->first->getSock(), msg.c_str(), msg.size(), 0) == -1)
 				throw std::runtime_error("Error: in sending the response");
 		}
 	}
+}
+
+void Channel::sendAll(string& msg) const 
+{
+	std::map<Client*, bool>::const_iterator it;
+	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
+	{
+			if (send(it->first->getSock(), msg.c_str(), msg.size(), 0) == -1)
+				throw std::runtime_error("Error: in sending the response");
+	}
+}
+
+void Channel::removeClient(Client* ptr)
+{
+	std::map<Client*, bool>::iterator it;
+	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
+	{
+		if (it->first == ptr)
+			break;
+	}
+	_channelUsers.erase(it);
+	_usersNumber--;
 }

@@ -4,6 +4,36 @@ JOIN
 req: JOIN #alexGroug
 resp: :andre!andre21@9C5B1D.95C97E.C247D8.AE513.IP JOIN #alexGroug * :realname
 
+// Criar um canal
+// << JOIN #lol
+// >> :alex!alex21@9C5B1D.95C97E.C247D8.AE513.IP JOIN #lol * :realname
+// << MODE #lol
+// << WHO #lol %chtsunfra,152
+// >> :luna.AfterNET.Org 353 alex = #lol :@alex!alex21@9C5B1D.95C97E.C247D8.AE513.IP
+// >> :luna.AfterNET.Org 366 alex #lol :End of /NAMES list.
+// >> :luna.AfterNET.Org 324 alex #lol +tn 
+// >> :luna.AfterNET.Org 329 alex #lol 1729253221
+// >> :luna.AfterNET.Org 354 alex 152 #lol alex21 9C5B1D.95C97E.C247D8.AE513.IP *.afternet.org alex H@xz 0 :realname
+// >> :luna.AfterNET.Org 315 alex #lol :End of /WHO list
+
+
+
+// Juntar a um canal ja criado
+//  JOIN #lol
+// >> :andre!andre21@9C5B1D.95C97E.C247D8.AE513.IP JOIN #lol * :realname
+// << MODE #lol
+// << WHO #lol %chtsunfra,152
+// >> :luna.AfterNET.Org 353 andre = #lol :andre!andre21@9C5B1D.95C97E.C247D8.AE513.IP @alex!alex21@9C5B1D.95C97E.C247D8.AE513.IP
+// >> :luna.AfterNET.Org 366 andre #lol :End of /NAMES list.
+// >> :luna.AfterNET.Org 324 andre #lol +tn 
+// >> :luna.AfterNET.Org 329 andre #lol 1729253221
+// >> :luna.AfterNET.Org 354 andre 152 #lol andre21 9C5B1D.95C97E.C247D8.AE513.IP *.afternet.org andre Hxz 0 :realname
+// >> :luna.AfterNET.Org 354 andre 152 #lol alex21 9C5B1D.95C97E.C247D8.AE513.IP *.afternet.org alex H@xz 0 :realname
+// >> :luna.AfterNET.Org 315 andre #lol :End of /WHO list
+
+
+
+
 PRIVMSG
 se estiver em um channel
 req: PRIVMSG #alexGroug :ola

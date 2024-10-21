@@ -32,8 +32,8 @@ void Irc::privmsgCmd(std::istringstream &ss, Client* actualClient)
 	if (!isChannel)
 	{
 		ss >> conn;
-
 		Client* targetClient = findClient(targetName);
+
 		if (targetClient)
 		{
 			msg += ":" + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost PRIVMSG " + targetClient->getNick() + " :" + conn + "\r\n";
@@ -42,28 +42,40 @@ void Irc::privmsgCmd(std::istringstream &ss, Client* actualClient)
 		}
 		else
 		{
-			conn = " :No such nick";
-			//>> :Aurora.AfterNET.Org 401 alex loiky7 :No such nick
-			msg += ":localhost 401 " + actualClient->getNick() + ' ' + targetName  + conn + "\r\n";
+			msg += ERR_NOSUCHNICK(actualClient->getNick(), targetName);
 			cout << msg << endl;
-			send(actualClient->getSock(), msg.c_str(), msg.size(), 0);
-			//client dont exist
+			//apagar os dois acima depois 
+			return serverErrorMsg(actualClient->getSock(), ERR_NOSUCHNICK(actualClient->getNick(), targetName));
 		}
-
 	}
 	else
 	{
-		ss >> conn;
+		string tmp = ss.str();
+		
+		conn = tmp.substr((tmp.find(targetName) + targetName.size() + 1));
 		Channel* tarChannel = findChannel(targetName);
 		if (!tarChannel)
 		{
 			//mandar mesangem de erro
 			return;
 		}
+		//send message to channel to all people in channel
 		msg += ":" + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost PRIVMSG " + tarChannel->getChannelName() + " :" + conn + "\r\n";
-
-		tarChannel->sendMsg(actualClient->getSock(), msg);
-		//send message to channel
+		cout << msg << endl;
+		return tarChannel->sendPrivMsg(actualClient->getSock(), msg);
 	}
 
 }
+
+
+
+
+// ERR_NOSUCHNICK (401)
+// ERR_NOSUCHSERVER (402)
+// ERR_CANNOTSENDTOCHAN (404)
+// ERR_TOOMANYTARGETS (407)
+// ERR_NORECIPIENT (411)
+// ERR_NOTEXTTOSEND (412)
+// ERR_NOTOPLEVEL (413)
+// ERR_WILDTOPLEVEL (414)
+// RPL_AWAY (301)

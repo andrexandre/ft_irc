@@ -28,3 +28,9 @@ void Irc::setPort(string arg)
 
 	_port = num;	
 }
+
+void Irc::serverErrorMsg(int fd, string errMsg)
+{
+	if (send(fd, errMsg.c_str(), errMsg.size(), 0) == -1)
+		throw std::runtime_error("Error: in sending the response");
+}

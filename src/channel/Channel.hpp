@@ -8,14 +8,22 @@ class Channel
 	private:
 		size_t _usersNumber;
 		string _channelName;
+		string _channelTopic;
 		std::map<Client*, bool> _channelUsers;
 
 	public:
 		string getChannelName(void) const;
 		size_t getUsersNumber(void) const;
+		string getChannelTopic(void) const;
+
 		void setChannelUsers(bool oprt, Client* ptr);
+		void setChannelTopic(string content);
+
+		void removeClient(Client* ptr);
 		bool isPartOfChannel(string userName) const;
-		void sendMsg(int fd, string& msg) const;
+
+		void sendAll(string& msg) const;
+		void sendPrivMsg(int fd, string& msg) const;
 
 	public:
 		Channel(string name);

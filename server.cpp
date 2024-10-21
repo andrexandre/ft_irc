@@ -106,6 +106,8 @@ void Irc::readRequest(int targetFd)
 			privmsgCmd(line, actualClient);
 		else if (cmd == "join" || cmd == "JOIN")
 			joinCmd(line, actualClient);
+		else if (cmd == "PART" || cmd == "part")
+			partCmd(line, actualClient);
 
 		
 	}
@@ -145,7 +147,7 @@ int Irc::run_server(char **av)
 			cout << "EVENTS READY: " << event_count << '\n' << endl;
 			for (int i = 0; i < event_count; i++)
 			{
-				cout << RED << "Socket that was ready(" << evs[i].data.fd  << ") and the event: " << static_cast<int>(evs[i].events) << END << endl;;
+				cout << RED << "Socket that was ready(" << evs[i].data.fd  << ") and the event: " << static_cast<int>(evs[i].events) << END << endl;
 				 if (isNewClient(evs[i].data.fd) && evs[i].events & EPOLLIN)//new client to the server
 					acceptClient(evs[i].data.fd);
 				else if (evs[i].events & EPOLLIN)//new request from client
