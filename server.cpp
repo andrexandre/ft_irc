@@ -89,8 +89,9 @@ void Irc::readRequest(int targetFd)
 		std::istringstream line(buf);
 		
 		string cmd;
-		string content;
+		string content; // temp
 		line >> cmd;
+		// std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::toupper);
 
 		if (cmd == "NICK")
 		{
