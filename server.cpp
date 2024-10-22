@@ -151,7 +151,7 @@ int Irc::run_server(char **av)
 				 if (isNewClient(evs[i].data.fd) && evs[i].events & EPOLLIN)//new client to the server
 					acceptClient(evs[i].data.fd);
 				else if (evs[i].events & EPOLLIN)//new request from client
-					readRequest(evs[i].data.fd);
+					parsing(evs[i].data.fd);
 				else if (evs[i].events & EPOLLOUT)//send response to client
 					sendResponse(evs[i].data.fd);
 					// return 1;

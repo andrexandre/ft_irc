@@ -38,15 +38,20 @@ using std::string;
 using std::cout;
 using std::cerr;
 using std::endl;
+using std::vector;
+using std::map;
+using std::istringstream;
 
 class Client;
 class Channel;
 class EpollManager;
+class Cmd;
 
 #include "serverNumeric.hpp"
 #include "src/client/Client.hpp"
 #include "src/channel/Channel.hpp"
 #include "src/epoll/EpollManager.hpp"
+#include "src/cmd2/Cmd.hpp"
 
 extern bool running;
 
@@ -54,9 +59,11 @@ class Irc
 {
 	private:
 		int _serverSock;
-		std::map<int, Client*> _clients; 
+		map<int, Client*> _clients; 
 		EpollManager* epfds;
-	
+		map<Client*, Cmd*> requests;
+		
+		
 	private:
 		int _port;
 		string _passWord;
@@ -65,12 +72,12 @@ class Irc
 		void initNetWork(void);
 		bool isNewClient(int targetFd);
 		void acceptClient(int serverFd);
-		void deleteClient(std::map<int, Client*>::iterator& it);
+		void deleteClient(map<int, Client*>::iterator& it);
 	
 	
 	//See if we really need them?
 	private:
-		void readRequest(int targetFd);
+		void parsing(int targetFd);
 		void sendResponse(int targetFd);
 
 	public:
@@ -78,6 +85,7 @@ class Irc
 		Irc(void);
 		~Irc(void);
 		int run_server(char **av);
+		
 	public:
 		void setPort(string arg);
 		void setPassword(string arg);
@@ -93,6 +101,7 @@ class Irc
 		Channel* createChannel(string name);
 		std::vector<Channel*> _serverChannels;
 		static void serverErrorMsg(int fd, string errMsg);
+		void readRequest(int targetFd);
 };
 
 

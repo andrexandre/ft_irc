@@ -13,7 +13,6 @@ Irc::~Irc(void)
 		delete epfds;
 }
 
-
 void Irc::setPassword(string arg) {
 	_passWord = arg;
 }
