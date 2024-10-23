@@ -9,7 +9,7 @@ void Irc::partCmd(std::istringstream &ss, Client* actualClient)
 
 	ss >> channelName;
 	Channel* tarChannel = findChannel(channelName);
-	if (tarChannel)
+	if (tarChannel && tarChannel->isPartOfChannel(actualClient->getNick()))
 	{
 		//ver se faz parte do channel
 		if (!tarChannel->isPartOfChannel(actualClient->getNick()))
@@ -25,12 +25,12 @@ void Irc::partCmd(std::istringstream &ss, Client* actualClient)
 	}
 	else
 	{
-		//erro prvavelmente
+		if (!tarChannel)
+			serverErrorMsg(actualClient->getSock(), ERR_NOSUCHCHANNEL(actualClient->getNick(), channelName));
+		else
+			serverErrorMsg(actualClient->getSock(), ERR_NOTONCHANNEL(actualClient->getNick(), channelName));
+
 	}
 }
 
-
-
 // ERR_NEEDMOREPARAMS (461) 
-// ERR_NOSUCHCHANNEL (403) // canal nao existe
-// ERR_NOTONCHANNEL (442) // nao esta no canal

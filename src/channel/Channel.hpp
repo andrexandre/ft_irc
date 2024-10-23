@@ -21,6 +21,7 @@ class Channel
 
 		void removeClient(Client* ptr);
 		bool isPartOfChannel(string userName) const;
+		bool isOperator(string userName) const;
 
 		void sendAll(string& msg) const;
 		void sendPrivMsg(int fd, string& msg) const;
