@@ -111,6 +111,8 @@ void Irc::readRequest(int targetFd)
 			partCmd(line, actualClient);
 		else if (cmd == "TOPIC" || cmd == "topic")
 			topicCmd(line, actualClient);
+		else if (cmd == "MODE" || cmd == "mode")
+			modeCmd(line, actualClient);
 
 
 		

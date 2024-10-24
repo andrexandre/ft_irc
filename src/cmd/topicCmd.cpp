@@ -27,6 +27,9 @@ void Irc::topicCmd(std::istringstream &ss, Client* actualClient)
 			if (!tarChannel->isOperator(actualClient->getNick()))
 				return (serverErrorMsg(actualClient->getSock(), ERR_CHANOPRIVSNEEDED(actualClient->getNick(), channelName)));
 			
+			string tmp;
+			std::getline(ss, tmp);
+			content += tmp;
 			// content += ss.str().substr(0, ss.str().find(con));
 			tarChannel->setChannelTopic(content);
 			msg += ':' + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost TOPIC " + channelName + ' ' + tarChannel->getChannelTopic() + "\r\n";

@@ -11,6 +11,8 @@ class Channel
 		string _channelTopic;
 		std::map<Client*, bool> _channelUsers;
 
+		vector<string> _inviteUsers; //i: Set/remove Invite-only channel
+
 	public:
 		string getChannelName(void) const;
 		size_t getUsersNumber(void) const;

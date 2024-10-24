@@ -8,6 +8,8 @@
 //>> :luna.AfterNET.Org 331 alex #a32 :No topic is set.
 #define RPL_NOTOPIC(nick, channelName) (":localhost 331 " + (nick) + ' ' + (channelName) + ' ' + ":No topic is set." + "\r\n")
 
+//>> :Aurora.AfterNET.Org 324 alex #kk3 +tn 
+#define RPL_CHANNELMODEIS(nick, channelName, modeFlags) (":localhost 324 " + (nick) + ' ' + (channelName) + " :" + (modeFlags) + "\r\n")
 
 //ERROS
 #define ERR_SAMPLE(code, errName, nick, targetNick) (string(":localhost ") + (code) + ' ' + (nick) + ' ' + (targetNick) + " :" + (errName) + "\r\n")

@@ -95,6 +95,7 @@ class Irc
 		void joinCmd(std::istringstream &ss, Client* actualClient);
 		void partCmd(std::istringstream &ss, Client* actualClient);
 		void topicCmd(std::istringstream &ss, Client* actualClient);
+		void modeCmd(std::istringstream &ss, Client* actualClient);
 		Client* findClient(int target);
 		Client* findClient(string name);
 		Channel* findChannel(string name);
