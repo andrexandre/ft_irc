@@ -72,11 +72,37 @@ bool Irc::isNewClient(int targetFd){
 
 void Irc::sendResponse(int targetFd)
 {
-	string nick = "aleperei";
-	string msg = nick + " has logged in" + "\r\n";
-	send(targetFd, msg.c_str(), msg.size(), 0);
+	Client* actualClient = findClient(targetFd);
+	map<int, string>::iterator it = requests.find(targetFd);
+	
+	istringstream ss(it->second);
+	string tmp;
+	string cmdName;
+	string content;
+
+	while (std::getline(ss, tmp))
+	{
+		istringstream line(tmp);
+		line >> cmdName;
+		cout << cmdName << endl;
+		if (cmdName == "NICK")
+		{
+			line >> content;
+			actualClient->setNick(content);
+		}
+		else if (cmdName == "USER")
+		{
+			line >> content;
+			actualClient->setUser(content);
+		}
+		if (this->cmds.find(cmdName) != this->cmds.end())
+			(this->*(this->cmds[cmdName]))(line, actualClient);
+		else {/*erro*/}
+	}
+	
+	// it->second.execute();
+	requests.erase(it);
 	epfds->modFd(targetFd, EPOLLIN);
-	// (void) targetFd;
 }
 
 void Irc::readRequest(int targetFd)
@@ -88,17 +114,17 @@ void Irc::readRequest(int targetFd)
 	
 	cout << buffer << endl;
 
-	std::istringstream conn((string(buffer)));
-	string buf;
+	std::istringstream fullContent((string(buffer)));
+	string tmp;
 	Client* actualClient = findClient(targetFd);
-	while (std::getline(conn,buf))
+	// Order of commands must be checked !!!
+	while (std::getline(fullContent, tmp))
 	{
-		std::istringstream line(buf);
+		std::istringstream line(tmp);
 		string cmd;
 		string content; // temp
 		line >> cmd;
 		// std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::toupper);
-
 		if (cmd == "NICK")
 		{
 			line >> content;
@@ -109,6 +135,8 @@ void Irc::readRequest(int targetFd)
 			line >> content;
 			actualClient->setUser(content);
 		}
+		else if (cmd == "PASS")
+			passCmd(line, actualClient);
 		else if (cmd == "privmsg" || cmd == "PRIVMSG")
 			privmsgCmd(line, actualClient);
 		else if (cmd == "join" || cmd == "JOIN")
@@ -118,7 +146,7 @@ void Irc::readRequest(int targetFd)
 		else if (cmd == "TOPIC" || cmd == "topic")
 			topicCmd(line, actualClient);
 		else if (cmd == "MODE" || cmd == "mode")
-			modeCmd(line, actualClient);		
+			modeCmd(line, actualClient);
 	}
 	
 	// epfds->modFd(targetFd, EPOLLOUT); //depois
@@ -133,7 +161,6 @@ void Irc::deleteClient(std::map<int, Client*>::iterator& it)
 	// delete tmp->second;
 	// _clients.erase(tmp);
 }
-
 
 int Irc::run_server(char **av)
 {
@@ -157,10 +184,10 @@ int Irc::run_server(char **av)
 			for (int i = 0; i < event_count; i++)
 			{
 				cout << RED << "Socket that was ready(" << evs[i].data.fd  << ") and the event: " << static_cast<int>(evs[i].events) << END << endl;
-				 if (isNewClient(evs[i].data.fd) && evs[i].events & EPOLLIN)//new client to the server
+				if (isNewClient(evs[i].data.fd) && evs[i].events & EPOLLIN)//new client to the server
 					acceptClient(evs[i].data.fd);
 				else if (evs[i].events & EPOLLIN)//new request from client
-					readRequest(evs[i].data.fd);
+					parsing(evs[i].data.fd);
 				else if (evs[i].events & EPOLLOUT)//send response to client
 					sendResponse(evs[i].data.fd);
 					// return 1;

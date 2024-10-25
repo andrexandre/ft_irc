@@ -21,7 +21,6 @@
 #include <sys/epoll.h>  // Para epoll
 #include <fcntl.h>
 
-
 #define END			"\033[0m"
 #define RED			"\033[1;31m"
 #define GREEN		"\033[1;32m"
@@ -45,13 +44,11 @@ using std::istringstream;
 class Client;
 class Channel;
 class EpollManager;
-class Cmd;
 
 #include "serverNumeric.hpp"
 #include "src/client/Client.hpp"
 #include "src/channel/Channel.hpp"
 #include "src/epoll/EpollManager.hpp"
-#include "src/cmd/Cmd.hpp"
 
 extern bool running;
 
@@ -59,10 +56,14 @@ class Irc
 {
 	private:
 		int _serverSock;
-		map<int, Client*> _clients; 
+		// fd e o respetivo cliente
+		map<int, Client*> _clients;
 		EpollManager* epfds;
-		map<Client*, Cmd*> requests;
-		
+		// requests é o conjunto de todas as reuqest que tem de ser feitas
+		// fd e a respetiva class que contem o comando a ser feito
+		// map<int, Request> requests;
+		map<int, string> requests;
+
 	private:
 		int _port;
 		string _passWord;
@@ -72,7 +73,6 @@ class Irc
 		bool isNewClient(int targetFd);
 		void acceptClient(int serverFd);
 		void deleteClient(map<int, Client*>::iterator& it);
-	
 	
 	//See if we really need them?
 	private:
@@ -90,11 +90,16 @@ class Irc
 		void setPassword(string arg);
 
 	private:
+		typedef void (Irc::*CommandPtr)(std::istringstream& line,  Client* actualClient);
+		map<string, CommandPtr> cmds;
+
 		void privmsgCmd(std::istringstream &ss, Client* actualClient);
 		void joinCmd(std::istringstream &ss, Client* actualClient);
 		void partCmd(std::istringstream &ss, Client* actualClient);
 		void topicCmd(std::istringstream &ss, Client* actualClient);
 		void modeCmd(std::istringstream &ss, Client* actualClient);
+		void passCmd(std::istringstream &ss, Client* actualClient);
+		void nickCmd(std::istringstream &ss, Client* actualClient);
 		Client* findClient(int target);
 		Client* findClient(string name);
 		Channel* findChannel(string name);
@@ -103,6 +108,3 @@ class Irc
 		static void serverErrorMsg(int fd, string errMsg);
 		void readRequest(int targetFd);
 };
-
-
-
