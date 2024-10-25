@@ -82,12 +82,9 @@ void Irc::readRequest(int targetFd)
 	std::istringstream conn((string(buffer)));
 	string buf;
 	Client* actualClient = findClient(targetFd);
-	
 	while (std::getline(conn,buf))
 	{
-
 		std::istringstream line(buf);
-		
 		string cmd;
 		string content; // temp
 		line >> cmd;
@@ -112,10 +109,7 @@ void Irc::readRequest(int targetFd)
 		else if (cmd == "TOPIC" || cmd == "topic")
 			topicCmd(line, actualClient);
 		else if (cmd == "MODE" || cmd == "mode")
-			modeCmd(line, actualClient);
-
-
-		
+			modeCmd(line, actualClient);		
 	}
 	
 	// epfds->modFd(targetFd, EPOLLOUT); //depois

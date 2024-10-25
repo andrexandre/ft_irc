@@ -51,7 +51,7 @@ class Cmd;
 #include "src/client/Client.hpp"
 #include "src/channel/Channel.hpp"
 #include "src/epoll/EpollManager.hpp"
-#include "src/cmd2/Cmd.hpp"
+#include "src/cmd/Cmd.hpp"
 
 extern bool running;
 

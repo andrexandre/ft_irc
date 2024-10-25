@@ -35,9 +35,7 @@ string retrieveContent(std::istringstream &ss)
 		content += tmp;
 	}
 	else
-	{
-		while (ss >> content){}
-	}
+		while (ss >> content);
 	return (content);
 }
 
