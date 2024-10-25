@@ -29,26 +29,16 @@ void Irc::joinCmd(std::istringstream &ss, Client* actualClient)
 	ss >> channelName;
 
 	if (channelName[0] != '#')
-	{
-		//>> :localhost 403 "actualClient nick" channelName :No such channel
-		//mensagem de erro
-		return;
-	}
+		return (serverErrorMsg(actualClient->getSock(), ERR_NOSUCHCHANNEL(actualClient->getNick(), channelName)));
 
-	// cout << channelName << endl;
-	Channel* tarChannel = findChannel(channelName);
+	Channel* tarChannel;
 	if ((tarChannel = findChannel(channelName)))
 	{
-		// tarChannel->sendMsg(actualClient->getSock(), )
-		// if (tarChannel->isPartOfChannel(actualClient->getNick()))
-		// {
-		// 	//ver se o user faz parte do channel
-		// }
 		//ver se o user ja foi bannido do channel
+		//ver se o user ja foi convidado para o channel
 
 		msg += ':' + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost JOIN " + channelName + " * :realname\r\n";
 		tarChannel->setChannelUsers(false, actualClient);
-		//enviar a mensagem
 		tarChannel->sendAll(msg);
 		return;
 	}
@@ -59,8 +49,6 @@ void Irc::joinCmd(std::istringstream &ss, Client* actualClient)
 	msg += ':' + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost JOIN " + channelName + " * :realname\r\n";
 	cout << msg << endl;
 	tarChannel->sendAll(msg);
-	// send(actualClient->getSock(), msg.c_str(), msg.size(), 0);
-
 }
 
 

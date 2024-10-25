@@ -5,32 +5,30 @@ void Irc::partCmd(std::istringstream &ss, Client* actualClient)
 {
 	string msg;
 	string channelName;
-	string reasonToPart = " :Leaving";
+	string reasonToPart;
 
 	ss >> channelName;
 	Channel* tarChannel = findChannel(channelName);
-	if (tarChannel)
+	if (tarChannel && tarChannel->isPartOfChannel(actualClient->getNick()))
 	{
-		//ver se faz parte do channel
-		if (!tarChannel->isPartOfChannel(actualClient->getNick()))
+		if (ss >> reasonToPart)
 		{
-			//erro
-			return;
+			string tmp;
+			std::getline(ss, tmp);
+			reasonToPart += tmp;
 		}
 
-		// mandar msg
-		msg += ':' + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost PART " + channelName + reasonToPart + "\r\n";
+		msg += ':' + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost PART " + channelName + " " + reasonToPart + "\r\n";
 		tarChannel->sendAll(msg);
 		tarChannel->removeClient(actualClient);
 	}
 	else
 	{
-		//erro prvavelmente
+		if (!tarChannel)
+			serverErrorMsg(actualClient->getSock(), ERR_NOSUCHCHANNEL(actualClient->getNick(), channelName));
+		else
+			serverErrorMsg(actualClient->getSock(), ERR_NOTONCHANNEL(actualClient->getNick(), channelName));
 	}
 }
 
-
-
 // ERR_NEEDMOREPARAMS (461) 
-// ERR_NOSUCHCHANNEL (403) // canal nao existe
-// ERR_NOTONCHANNEL (442) // nao esta no canal

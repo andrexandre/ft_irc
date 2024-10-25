@@ -58,8 +58,8 @@ val: re
 	@echo "\n$(BLUE)$(NAME)$(END) $(GREEN)started with valgrind$(END) ⚫\n"
 	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes ./$(NAME) $(VARS)
 
-alex: re
+alex:
 	@clear
-	@./$(NAME) $(VARS)
+	@make -s run
 
 .PHONY: all clean fclean re run detached stop reload val

@@ -20,23 +20,44 @@ Client* Irc::findClient(string name)
 	return (NULL);
 }
 
+
+string retrieveContent(std::istringstream &ss)
+{
+	string content;
+	ss >> content;
+	bool	colon = (content[0] == ':') ? true : false;
+
+	if (colon)
+	{
+		content.erase(0,1);
+		string tmp;
+		std::getline(ss, tmp);
+		content += tmp;
+	}
+	else
+		while (ss >> content);
+	return (content);
+}
+
+//ver se e preciso enviar msg para ele proprio
 void Irc::privmsgCmd(std::istringstream &ss, Client* actualClient)
 {
 	string targetName;
 	string msg;
-	string conn;
+	string conntent;
 	ss >> targetName;
-	bool isChannel = targetName[0] == '#' ? 1 : 0;
+	bool isChannel = (targetName[0] == '#') ? 1 : 0;
 
 
 	if (!isChannel)
 	{
-		ss >> conn;
+		// ss >> conntent;
+		conntent = retrieveContent(ss);
 		Client* targetClient = findClient(targetName);
 
 		if (targetClient)
 		{
-			msg += ":" + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost PRIVMSG " + targetClient->getNick() + " :" + conn + "\r\n";
+			msg += ":" + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost PRIVMSG " + targetClient->getNick() + " :" + conntent + "\r\n";
 			cout << msg << endl;
 			send(targetClient->getSock(), msg.c_str(), msg.size(), 0);
 		}
@@ -50,9 +71,10 @@ void Irc::privmsgCmd(std::istringstream &ss, Client* actualClient)
 	}
 	else
 	{
-		string tmp = ss.str();
-		
-		conn = tmp.substr((tmp.find(targetName) + targetName.size() + 1));
+		// string tmp = ss.str();
+		// conntent = tmp.substr((tmp.find(targetName) + targetName.size() + 1));
+
+		conntent = retrieveContent(ss);
 		Channel* tarChannel = findChannel(targetName);
 		if (!tarChannel)
 		{
@@ -60,7 +82,7 @@ void Irc::privmsgCmd(std::istringstream &ss, Client* actualClient)
 			return;
 		}
 		//send message to channel to all people in channel
-		msg += ":" + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost PRIVMSG " + tarChannel->getChannelName() + " :" + conn + "\r\n";
+		msg += ":" + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost PRIVMSG " + tarChannel->getChannelName() + " :" + conntent + "\r\n";
 		cout << msg << endl;
 		return tarChannel->sendPrivMsg(actualClient->getSock(), msg);
 	}

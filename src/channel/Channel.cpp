@@ -20,12 +20,26 @@ void Channel::setChannelTopic(string content) {
 	_channelTopic = content;
 }
 
+
 size_t Channel::getUsersNumber(void) const {
 	return (_usersNumber);
 }
 
 string Channel::getChannelTopic(void) const {
 	return (_channelTopic);
+}
+
+
+void Channel::removeClient(Client* ptr)
+{
+	std::map<Client*, bool>::iterator it;
+	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
+	{
+		if (it->first == ptr)
+			break;
+	}
+	_channelUsers.erase(it);
+	_usersNumber--;
 }
 
 bool Channel::isPartOfChannel(string userName) const
@@ -39,6 +53,19 @@ bool Channel::isPartOfChannel(string userName) const
 
 	return (false);
 }
+
+bool Channel::isOperator(string userName) const
+{
+	std::map<Client*, bool>::const_iterator it;
+	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
+	{
+		if (it->first->getNick() == userName)
+			return ((it->second) ? true : false);
+	}
+
+	return (false);
+}
+
 
 void Channel::sendPrivMsg(int fd, string& msg) const 
 {
@@ -63,14 +90,3 @@ void Channel::sendAll(string& msg) const
 	}
 }
 
-void Channel::removeClient(Client* ptr)
-{
-	std::map<Client*, bool>::iterator it;
-	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
-	{
-		if (it->first == ptr)
-			break;
-	}
-	_channelUsers.erase(it);
-	_usersNumber--;
-}
