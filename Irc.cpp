@@ -12,7 +12,6 @@ Irc::~Irc(void)
 		delete epfds;
 }
 
-
 void Irc::setPassword(string arg) {
 	_passWord = arg;
 }
@@ -26,4 +25,10 @@ void Irc::setPort(string arg)
 		throw std::runtime_error("Error: Invalid port!");;
 
 	_port = num;	
+}
+
+void Irc::serverErrorMsg(int fd, string errMsg)
+{
+	if (send(fd, errMsg.c_str(), errMsg.size(), 0) == -1)
+		throw std::runtime_error("Error: in sending the response");
 }

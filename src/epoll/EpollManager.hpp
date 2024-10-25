@@ -13,7 +13,7 @@ class EpollManager
 		~EpollManager(void);
 
 	public:
-		void addFd(int fd);
+		void addFd(int fd, uint32_t newEvent);
 		void deleteFd(int fd);
 		void modFd(int fd, uint32_t newEvent);
 	
