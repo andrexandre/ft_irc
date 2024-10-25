@@ -61,7 +61,7 @@ class Irc
 		int _serverSock;
 		map<int, Client*> _clients; 
 		EpollManager* epfds;
-		map<Client*, Cmd> requests;
+		map<Client*, Cmd*> requests;
 		
 	private:
 		int _port;

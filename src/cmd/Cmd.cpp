@@ -1,6 +1,7 @@
 #include "Cmd.hpp"
 
-Cmd::Cmd(){
+Cmd::Cmd(Client* ptr) : currentClient(ptr)
+{
 	cmd["PASS"] = &Cmd::passCmd;
 	/*cmd["NICK"] = &Cmd::nickCmd;
 	cmd["USER"] = &Cmd::userCmd;
@@ -13,17 +14,26 @@ Cmd::Cmd(){
 	cmd["INVITE"] = &Cmd::inviteCmd;
 	cmd["KICK"] = &Cmd::kickCmd;
 	cmd["PRIVMSG"] = &Cmd::privmsgCmd;*/
+	(void) currentClient;
 }
 
-Cmd::~Cmd(void) 
-{}
+Cmd::~Cmd(void) {}
 
-void Cmd::passCmd(std::istringstream &iss, Client* actualClient){
-	(void)iss;
-    std::stringstream ss;
-    ss << actualClient->getSock();
-    std::string message = "estou no pass com o client = " + ss.str() + "\r\n";
+void Cmd::appendBufer(string msg) {
+	buffer += msg;
+}
 
-	cout << message;
-    send(actualClient->getSock(), message.c_str(), message.size(), 0);
+void Cmd::setSs(void) {
+	ss.str(buffer);
+}
+
+
+void Cmd::passCmd(){
+	// (void)iss;
+    // std::stringstream ss;
+    // ss << actualClient->getSock();
+    // std::string message = "estou no pass com o client = " + ss.str() + "\r\n";
+
+	// cout << message;
+    // send(actualClient->getSock(), message.c_str(), message.size(), 0);
 }

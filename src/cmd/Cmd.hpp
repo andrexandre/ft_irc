@@ -2,27 +2,34 @@
 
 #include "../../Irc.hpp"
 
-class Cmd{
-
+class Cmd
+{
     private:
-		typedef void (Cmd::*Command)(std::istringstream &ss, Client* actualClient); //Recebe os mesmos parâmetros das funções de cada comando, é usado no map
+		string buffer;	// Vai guardando o que foi lido para depois setar o ss
+		Client* currentClient;
+		std::istringstream ss; //Vai conter duo o que foi colocado
 		
-        void passCmd(std::istringstream &ss, Client* actualClient);
-		/*void nickCmd(std::istringstream &ss, Client* actualClient);
-		void userCmd(std::istringstream &ss, Client* actualClient);
-		void quitCmd(std::istringstream &ss, Client* actualClient);
-		void noticeCmd(std::istringstream &ss, Client* actualClient);
-		void joinCmd(std::istringstream &ss, Client* actualClient);
-		void whoCmd(std::istringstream &ss, Client* actualClient);
-		void partCmd(std::istringstream &ss, Client* actualClient);
-		void modeCmd(std::istringstream &ss, Client* actualClient);
-		void topicCmd(std::istringstream &ss, Client* actualClient);
-		void inviteCmd(std::istringstream &ss, Client* actualClient);
-		void kickCmd(std::istringstream &ss, Client* actualClient);
-		void privmsgCmd(std::istringstream &ss, Client* actualClient);*/
+		typedef void (Cmd::*Command)(void); //Recebe os mesmos parâmetros das funções de cada comando, é usado no map
+		
+        void passCmd(void);
+		// void nickCmd(void);
+		// void userCmd(void);
+		// void quitCmd(void);
+		// void noticeCmd(void);
+		// void joinCmd(void);
+		// void whoCmd(void);
+		// void partCmd(void);
+		// void modeCmd(void);
+		// void topicCmd(void);
+		// void inviteCmd(void);
+		// void kickCmd(void);
+		// void privmsgCmd(void);
 
     public:
-		Cmd(void);
+		void appendBufer(string msg);
+		void setSs(void);
+		
+		Cmd(Client* ptr);
 		~Cmd(void);
         map<string, Command> cmd; //Map para facilitar a chamada de cada comando. Key == comando Value == função de cada comando
 };
