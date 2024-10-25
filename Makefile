@@ -49,7 +49,7 @@ stop:
 	@kill $$(pgrep $(NAME))
 
 kill:
-	@echo "\n$(BLUE)$(NAME)$(END) $(GREEN)Killed$(END) ⚫🔴⚫\n"
+	@echo "\n$(BLUE)$(NAME)$(END) $(GREEN)killed$(END) ⚫🔴⚫\n"
 	@kill -9 $$(pgrep $(NAME))
 
 reload: re stop detached
