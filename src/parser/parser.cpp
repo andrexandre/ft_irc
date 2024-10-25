@@ -18,35 +18,35 @@ std::string toUpper(const std::string &cmd) {
     return uppercmd;
 }
 
-void Irc::parsing(int targetFd){
+void Irc::parsing(int targetFd)
+{
+	Cmd command(findClient(targetFd));
     char buffer[30000];
 	bzero(buffer, sizeof(buffer));
 	if (read(targetFd, &buffer, 30000) < 0)
 		throw std::runtime_error("Error: in readind the fd");
 	
-	Cmd *cmd = new Cmd();
+	command.appendBufer(string(buffer));
+	command.setSs();
 
-	cmd->setMsg(buffer);
-	cmd->setActualClient(_clients[targetFd]);
+	// istringstream lines((string(buffer)));
+	// string strLine;
 
-	Client *client = _clients[targetFd];
-	istringstream ss(cmd->getMsg());
-	string parsecmd;
-	string arg;
+	// while (std::getline(lines,strLine))
+	// {
+	// 	std::istringstream line(strLine);
+	// 	string cmd;
+	// 	line >> cmd;
 
-	ss >> parsecmd;
-	while (ss >> arg) {
-        cmd->addArg(trim(arg));
-    }
-
-	if(cmd->commands.find(trim(toUpper(parsecmd))) != cmd->commands.end()){
-		(cmd->*(cmd->commands[trim(toUpper(parsecmd))]))();
-		requests[_clients[targetFd]] = cmd;
-	}else{
-		send(client->getSock(), "Command not found.\r\n", 21, 0);
-		//Aqui poderia ser exibido uma lista com todos os comandos possíveis
-	}
-
-	cout << "Client Msg: "<< cmd->getMsg() << endl;
-	cmd->getMsg().clear();
+	// 	if(command.cmd.find(trim(toUpper(cmd))) != command.cmd.end()){
+	// 		(command.*(command.cmd[trim(toUpper(cmd))]))(line, _clients[targetFd]);
+	// 		requests[_clients[targetFd]] = command;
+	// 	}else{
+	// 		send(targetFd, "Command not found.\r\n", 21, 0);
+	// 		//Aqui poderia ser exibido uma lista com todos os comandos possíveis
+	// 	}
+	// 	cout << "Client Msg: "<< buffer << endl;
+	// }
+	requests.insert(std::make_pair(findClient(targetFd), &command));
+	epfds->modFd(targetFd, EPOLLOUT);
 }

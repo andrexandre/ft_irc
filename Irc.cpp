@@ -2,7 +2,6 @@
 
 Irc::Irc(void) {}
 
-
 Irc::~Irc(void) 
 {
 	

@@ -40,6 +40,15 @@ void Irc::initNetWork(void)
 	epfds->addFd(_serverSock, EPOLLIN | EPOLLET);
 }
 
+
+void setNonBloking(int *ptr)
+{
+	int fd = fcntl(*ptr, F_SETFL, O_NONBLOCK);
+	if (fd == -1)
+		throw std::runtime_error("Error: Failed to set the soket to nonBlocking");
+}
+
+
 void Irc::acceptClient(int serverFd)
 {
 	//salvar o addres depois	
@@ -47,14 +56,14 @@ void Irc::acceptClient(int serverFd)
 	socklen_t addrlen = sizeof(address);
 	bzero(&address, addrlen);
 
-	int new_sock;
-	if ((new_sock = accept(serverFd, (struct sockaddr *)&address, &addrlen)) < 0)
+	int newSock;
+	if ((newSock = accept(serverFd, (struct sockaddr *)&address, &addrlen)) < 0)
 		throw std::runtime_error("Error: Failed to accept connection");
 
-
-	epfds->addFd(new_sock, EPOLLIN | EPOLLERR | EPOLLRDHUP | EPOLLHUP);
-	_clients.insert(std::make_pair(new_sock, (new Client(new_sock))));//create new client
-	cout << "NEW CLIENT ADDED TO THE SERVER" << "(fd: " << new_sock << ")" << endl;
+	epfds->addFd(newSock, EPOLLIN | EPOLLERR | EPOLLRDHUP | EPOLLHUP);
+	// setNonBloking(&newSock);
+	_clients.insert(std::make_pair(newSock, (new Client(newSock))));//create new client
+	cout << "NEW CLIENT ADDED TO THE SERVER" << "(fd: " << newSock << ")" << endl;
 }
 
 bool Irc::isNewClient(int targetFd){

@@ -2,35 +2,34 @@
 
 #include "../../Irc.hpp"
 
-class Cmd{
-
+class Cmd
+{
     private:
-        string msg; //Para ter o buffer da msg enviada pelo client
-        vector<string> args;
-        Client* actualClient;
-		typedef void (Cmd::*Command)(); //Recebe os mesmos parâmetros das funções de cada comando, é usado no map
+		string buffer;	// Vai guardando o que foi lido para depois setar o ss
+		Client* currentClient;
+		std::istringstream ss; //Vai conter duo o que foi colocado
 		
-        void passCmd();
-		/*void nickCmd();
-		void userCmd();
-		void quitCmd();
-		void noticeCmd();
-		void joinCmd();
-		void whoCmd();
-		void partCmd();
-		void modeCmd();
-		void topicCmd();
-		void inviteCmd();
-		void kickCmd();
-		void privmsgCmd();*/
+		typedef void (Cmd::*Command)(void); //Recebe os mesmos parâmetros das funções de cada comando, é usado no map
+		
+        void passCmd(void);
+		// void nickCmd(void);
+		// void userCmd(void);
+		// void quitCmd(void);
+		// void noticeCmd(void);
+		// void joinCmd(void);
+		// void whoCmd(void);
+		// void partCmd(void);
+		// void modeCmd(void);
+		// void topicCmd(void);
+		// void inviteCmd(void);
+		// void kickCmd(void);
+		// void privmsgCmd(void);
 
     public:
-		Cmd(void);
+		void appendBufer(string msg);
+		void setSs(void);
+		
+		Cmd(Client* ptr);
 		~Cmd(void);
-        map<string, Command> commands; //Map para facilitar a chamada de cada comando. Key == comando Value == função de cada comando
-    
-        void setMsg(char buffer[30000]);
-        string getMsg(void);
-        void addArg(string arg);
-        void setActualClient(Client* client);
+        map<string, Command> cmd; //Map para facilitar a chamada de cada comando. Key == comando Value == função de cada comando
 };

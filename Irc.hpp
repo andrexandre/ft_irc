@@ -63,7 +63,6 @@ class Irc
 		EpollManager* epfds;
 		map<Client*, Cmd*> requests;
 		
-		
 	private:
 		int _port;
 		string _passWord;
