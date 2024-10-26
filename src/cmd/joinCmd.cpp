@@ -1,27 +1,6 @@
 
 #include "../../Irc.hpp"
 
-
-
-Channel* Irc::createChannel(string name)
-{
-	Channel* newChannel = new Channel(name);
-	_serverChannels.push_back(newChannel);
-	return (newChannel);
-}
-
-Channel* Irc::findChannel(string name)
-{
-	std::vector<Channel*>::iterator it;
-	for (it = _serverChannels.begin(); it != _serverChannels.end(); it++)
-	{
-		if ((*it)->getChannelName() == name)
-			return (*it);
-	}
-	
-	return (NULL);
-}
-
 void Irc::joinCmd(std::istringstream &ss, Client* actualClient)
 {
 	string channelName;

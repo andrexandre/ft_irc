@@ -6,7 +6,6 @@ Irc::Irc(void)
 	cmds["TOPIC"] = &Irc::topicCmd;
 	cmds["PRIVMSG"] = &Irc::privmsgCmd;
 	// cmds["PASS"] = &Irc::passCmd;
-	// cmd.insert(std::make_pair("PASS", &Irc::passCmd));
 	// cmds["NICK"] = &Irc::nickCmd;
 	// cmds["USER"] = &Irc::userCmd;
 	// cmds["QUIT"] = &Irc::quitCmd;
@@ -27,8 +26,8 @@ Irc::~Irc(void)
 		delete epfds;
 }
 
-void Irc::setPassword(string arg) {
-	_passWord = arg;
+void Irc::setServerPassword(string arg) {
+	_serverPassWord = arg;
 }
 
 void Irc::setPort(string arg)

@@ -55,43 +55,46 @@ extern bool running;
 class Irc
 {
 	private:
-		int _serverSock;
-		// fd e o respetivo cliente
-		map<int, Client*> _clients;
-		EpollManager* epfds;
-		// requests é o conjunto de todas as reuqest que tem de ser feitas
-		// fd e a respetiva class que contem o comando a ser feito
-		// map<int, Request> requests;
-		map<int, string> requests;
-
-	private:
 		int _port;
-		string _passWord;
+		string _serverPassWord;
+
+		int _serverSock;
+		EpollManager* epfds;
+		map<int, Client*> _clients; // fd e o respetivo cliente
+		// requests é o conjunto de todas as request que tem de ser feitas
+		map<int, string> requests; // fd e a respetiva string que contem o comando a ser feito
+		std::vector<Channel*> _serverChannels; // Contem todos os canais do server
 
 	private:
 		void initNetWork(void);
+		void parsing(int targetFd);
+		void setNonBloking(int *ptr);
 		bool isNewClient(int targetFd);
 		void acceptClient(int serverFd);
-		void deleteClient(map<int, Client*>::iterator& it);
-	
-	//See if we really need them?
-	private:
-		void parsing(int targetFd);
 		void sendResponse(int targetFd);
+		void readRequest(int targetFd); // Temmporario
+
+	private:
+		Client* findClient(int target);
+		Client* findClient(string name);
+		void deleteClient(map<int, Client*>::iterator& it);
+
+		Channel* findChannel(string name);
+		Channel* createChannel(string name);
+		// void deleteChannel(Channel* ptr);
+
+		void serverErrorMsg(int fd, string errMsg);
 
 	public:
-		// bool running;
 		Irc(void);
 		~Irc(void);
 		int run_server(char **av);
-		
-	public:
 		void setPort(string arg);
-		void setPassword(string arg);
+		void setServerPassword(string arg);
 
 	private:
 		typedef void (Irc::*CommandPtr)(std::istringstream& line,  Client* actualClient);
-		map<string, CommandPtr> cmds;
+		map<string, CommandPtr> cmds; // Nome to comando e o pienter para a respetiva funcao
 
 		void privmsgCmd(std::istringstream &ss, Client* actualClient);
 		void joinCmd(std::istringstream &ss, Client* actualClient);
@@ -100,11 +103,4 @@ class Irc
 		void modeCmd(std::istringstream &ss, Client* actualClient);
 		void passCmd(std::istringstream &ss, Client* actualClient);
 		void nickCmd(std::istringstream &ss, Client* actualClient);
-		Client* findClient(int target);
-		Client* findClient(string name);
-		Channel* findChannel(string name);
-		Channel* createChannel(string name);
-		std::vector<Channel*> _serverChannels;
-		static void serverErrorMsg(int fd, string errMsg);
-		void readRequest(int targetFd);
 };
