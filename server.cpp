@@ -133,6 +133,5 @@ int Irc::run_server(char **av)
 	{
 		cerr << e.what() << " 💀" << '\n';
 	}
-	cout << "alex" << endl;
 	return 0;
 }
