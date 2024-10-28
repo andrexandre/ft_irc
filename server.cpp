@@ -21,17 +21,17 @@ void Irc::sendResponse(int targetFd)
 	string tmpLine;
 	string cmdName;
 
+	cout << RequestSs.str() << endl;
 	while (std::getline(RequestSs, tmpLine))
 	{
 		istringstream lineSs(tmpLine);
 		lineSs >> cmdName;
-		cout << cmdName << endl; // Logger
 		// Executor
 		if (this->cmds.find(cmdName) != this->cmds.end())
 			(this->*(this->cmds[cmdName]))(lineSs, actualClient);
 		else
 		{
-			// proteger contra erros
+			// error command not found
 		}
 	}
 	

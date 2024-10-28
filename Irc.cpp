@@ -8,6 +8,7 @@ Irc::Irc(void)
 	cmds["PASS"] = &Irc::passCmd;
 	cmds["NICK"] = &Irc::nickCmd;
 	cmds["USER"] = &Irc::userCmd;
+	cmds["PART"] = &Irc::partCmd;
 	// cmds["QUIT"] = &Irc::quitCmd;
 	// cmds["NOTICE"] = &Irc::noticeCmd;
 	// cmds["WHO"] = &Irc::whoCmd;

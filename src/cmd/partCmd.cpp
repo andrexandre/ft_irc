@@ -18,7 +18,7 @@ void Irc::partCmd(std::istringstream &ss, Client* actualClient)
 			reasonToPart += tmp;
 		}
 
-		msg += ':' + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost PART " + channelName + " " + reasonToPart + "\r\n";
+		msg += ':' + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost PART " + channelName + ' ' + reasonToPart + "\r\n";
 		tarChannel->sendAll(msg);
 		tarChannel->removeClient(actualClient);
 	}
