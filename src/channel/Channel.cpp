@@ -10,6 +10,7 @@ string Channel::getChannelName(void) const {
 	return (_channelName);
 }
 
+
 void Channel::setChannelUsers(bool oprt, Client* ptr) 
 {
 	_channelUsers.insert(std::make_pair(ptr,oprt));
@@ -18,6 +19,11 @@ void Channel::setChannelUsers(bool oprt, Client* ptr)
 
 void Channel::setChannelTopic(string content) {
 	_channelTopic = content;
+}
+
+void Channel::setMode(string modeFlag)
+{
+	(void) modeFlag;
 }
 
 
