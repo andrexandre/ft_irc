@@ -5,9 +5,9 @@ Irc::Irc(void)
 	cmds["JOIN"] = &Irc::joinCmd;
 	cmds["TOPIC"] = &Irc::topicCmd;
 	cmds["PRIVMSG"] = &Irc::privmsgCmd;
-	// cmds["PASS"] = &Irc::passCmd;
-	// cmds["NICK"] = &Irc::nickCmd;
-	// cmds["USER"] = &Irc::userCmd;
+	cmds["PASS"] = &Irc::passCmd;
+	cmds["NICK"] = &Irc::nickCmd;
+	cmds["USER"] = &Irc::userCmd;
 	// cmds["QUIT"] = &Irc::quitCmd;
 	// cmds["NOTICE"] = &Irc::noticeCmd;
 	// cmds["WHO"] = &Irc::whoCmd;

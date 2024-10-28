@@ -63,7 +63,7 @@ class Irc
 		map<int, Client*> _clients; // fd e o respetivo cliente
 		// requests é o conjunto de todas as request que tem de ser feitas
 		map<int, string> requests; // fd e a respetiva string que contem o comando a ser feito
-		std::vector<Channel*> _serverChannels; // Contem todos os canais do server
+		vector<Channel*> _serverChannels; // Contem todos os canais do server
 
 	private:
 		void initNetWork(void);
@@ -72,7 +72,6 @@ class Irc
 		bool isNewClient(int targetFd);
 		void acceptClient(int serverFd);
 		void sendResponse(int targetFd);
-		void readRequest(int targetFd); // Temmporario
 
 	private:
 		Client* findClient(int target);
@@ -94,7 +93,7 @@ class Irc
 
 	private:
 		typedef void (Irc::*CommandPtr)(std::istringstream& line,  Client* actualClient);
-		map<string, CommandPtr> cmds; // Nome to comando e o pienter para a respetiva funcao
+		map<string, CommandPtr> cmds; // Nome to comando e o pointer para a respetiva funcao
 
 		void privmsgCmd(std::istringstream &ss, Client* actualClient);
 		void joinCmd(std::istringstream &ss, Client* actualClient);
@@ -103,4 +102,5 @@ class Irc
 		void modeCmd(std::istringstream &ss, Client* actualClient);
 		void passCmd(std::istringstream &ss, Client* actualClient);
 		void nickCmd(std::istringstream &ss, Client* actualClient);
+		void userCmd(std::istringstream &ss, Client* actualClient);
 };
