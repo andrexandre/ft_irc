@@ -8,7 +8,11 @@
 // operators
 // · k: Set/remove the channel key (password)
 // · o: Give/take channel operator privilege
+// l: Set/remove the user limit to channel
 
+//  Type B: Modes that change a setting on a channel. These modes MUST always have a parameter.
+// Type C: Modes that change a setting on a channel. These modes MUST have a parameter when being set, and MUST NOT have a parameter when being unset.
+// Type D: Modes that change a setting on a channel. These modes MUST NOT have a parameter.
 
 
 void Irc::modeCmd(std::istringstream &ss, Client* actualClient)
@@ -23,15 +27,15 @@ void Irc::modeCmd(std::istringstream &ss, Client* actualClient)
 	{
 		if (ss >> modeFlag)
 		{
-			if (modeFlag[0] == '+')
-			{
+			// if ((modeFlag[0] != '+' && modeFlag[0] != '-') ||)
+			// {
+			// 	/*ERR_UNKNOWNMODE (472)*/
+			// 	//:localhost 472 andre * :is unknown mode char to me
+			// }
+			// else
+			// {
 
-			}
-			else if (modeFlag[0] == '-')
-			{
-
-			}
-			else {}
+			// }
 		}
 		else{/*Eviar os modes atuais do canal*/}
 

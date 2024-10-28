@@ -20,6 +20,7 @@ class Channel
 
 		void setChannelUsers(bool oprt, Client* ptr);
 		void setChannelTopic(string content);
+		void setMode(string modeFlag);
 
 		void removeClient(Client* ptr);
 		bool isPartOfChannel(string userName) const;
