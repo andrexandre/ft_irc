@@ -29,7 +29,10 @@ void Irc::sendResponse(int targetFd)
 		// Executor
 		if (this->cmds.find(cmdName) != this->cmds.end())
 			(this->*(this->cmds[cmdName]))(lineSs, actualClient);
-		else {/*erro ou pode ser feito no parser*/}
+		else
+		{
+			// proteger contra erros
+		}
 	}
 	
 	requests.erase(it);
@@ -38,7 +41,7 @@ void Irc::sendResponse(int targetFd)
 
 int Irc::run_server(char **av)
 {
-	struct epoll_event evs[MAX_EVENTS]; //pesquisar coisas
+	struct epoll_event evs[MAX_EVENTS];
 	try
 	{
 		setPort(av[1]);
@@ -49,15 +52,15 @@ int Irc::run_server(char **av)
 		int j = 0;	
 		while (running)
 		{
-			cout << "\nPolling for input " << j << "..." << endl;	
+			cout << GREEN "\n" << j << " Inputs received, Waiting for event..." END << endl;
 			event_count = epoll_wait(epfds->getEpSock(), evs, MAX_EVENTS, -1);
 			if (event_count == -1)
-				throw std::runtime_error("Error: in epoll_wait");
+				throw std::runtime_error("epoll_wait");
 
-			cout << "EVENTS READY: " << event_count << '\n' << endl;
+			cout << "Fds received: " << event_count << endl;
 			for (int i = 0; i < event_count; i++)
 			{
-				cout << RED << "Socket that was ready(" << evs[i].data.fd  << ") and the event: " << static_cast<int>(evs[i].events) << END << endl;
+				cout << BLUE "Received Socket nº" << evs[i].data.fd  << " with event nº" << static_cast<int>(evs[i].events) << "\n" END << endl;
 				if (isNewClient(evs[i].data.fd) && evs[i].events & EPOLLIN)//new client to the server
 					acceptClient(evs[i].data.fd);
 				else if (evs[i].events & EPOLLIN)//new request from client
@@ -75,7 +78,7 @@ int Irc::run_server(char **av)
 	}
 	catch(const std::exception& e)
 	{
-		cerr << e.what() << " 💀" << '\n';
+		cerr << "Error: " << e.what() << " 💀" << '\n';
 	}
 	return 0;
 }

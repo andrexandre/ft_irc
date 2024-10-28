@@ -41,13 +41,13 @@ void Irc::topicCmd(std::istringstream &ss, Client* actualClient)
 			{
 				msg += RPL_NOTOPIC(actualClient->getNick(), tarChannel->getChannelName());
 				if (send(actualClient->getSock(), msg.c_str(), msg.size(), 0) == -1)
-					throw std::runtime_error("Error: in sending the response of topic");
+					throw std::runtime_error("Cannot send response of topic");
 			}
 			else
 			{
 				msg += RPL_TOPIC(actualClient->getNick(), tarChannel->getChannelName(), tarChannel->getChannelTopic());
 				if (send(actualClient->getSock(), msg.c_str(), msg.size(), 0) == -1)
-					throw std::runtime_error("Error: in sending the response of topic");
+					throw std::runtime_error("Cannot send response of topic");
 			}
 		}
 	}

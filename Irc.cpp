@@ -36,7 +36,7 @@ void Irc::setPort(string arg)
 	int num = strtol(arg.c_str(), &end, 10);
 
 	if (*end || num <= 0  || num >= 65535)
-		throw std::runtime_error("Error: Invalid port!");;
+		throw std::runtime_error("Invalid port!");;
 
 	_port = num;	
 }
@@ -44,5 +44,5 @@ void Irc::setPort(string arg)
 void Irc::serverErrorMsg(int fd, string errMsg)
 {
 	if (send(fd, errMsg.c_str(), errMsg.size(), 0) == -1)
-		throw std::runtime_error("Error: in sending the response");
+		throw std::runtime_error("Cannot send the response");
 }

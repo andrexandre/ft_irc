@@ -75,7 +75,7 @@ void Channel::sendPrivMsg(int fd, string& msg) const
 		if (it->first->getSock() != fd)
 		{
 			if (send(it->first->getSock(), msg.c_str(), msg.size(), 0) == -1)
-				throw std::runtime_error("Error: in sending the response");
+				throw std::runtime_error("Cannot send response");
 		}
 	}
 }
@@ -85,8 +85,8 @@ void Channel::sendAll(string& msg) const
 	std::map<Client*, bool>::const_iterator it;
 	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
 	{
-			if (send(it->first->getSock(), msg.c_str(), msg.size(), 0) == -1)
-				throw std::runtime_error("Error: in sending the response");
+		if (send(it->first->getSock(), msg.c_str(), msg.size(), 0) == -1)
+			throw std::runtime_error("Cannot send response");
 	}
 }
 
