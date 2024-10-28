@@ -20,15 +20,11 @@ std::string toUpper(const std::string &cmd) {
 
 void Irc::parsing(int targetFd)
 {
-	Cmd command(findClient(targetFd));
     char buffer[30000];
 	bzero(buffer, sizeof(buffer));
 	if (read(targetFd, &buffer, 30000) < 0)
 		throw std::runtime_error("Error: in readind the fd");
 	
-	command.appendBufer(string(buffer));
-	command.setSs();
-
 	// istringstream lines((string(buffer)));
 	// string strLine;
 
@@ -47,6 +43,7 @@ void Irc::parsing(int targetFd)
 	// 	}
 	// 	cout << "Client Msg: "<< buffer << endl;
 	// }
-	requests.insert(std::make_pair(findClient(targetFd), &command));
+	// requests[targetFd] = command;
+	requests.insert(std::make_pair(targetFd, string(buffer)));
 	epfds->modFd(targetFd, EPOLLOUT);
 }
