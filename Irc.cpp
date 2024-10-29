@@ -42,8 +42,14 @@ void Irc::setPort(string arg)
 	_port = num;	
 }
 
-void Irc::serverErrorMsg(int fd, string errMsg)
+void Irc::serverErrorMsg(int fd, string errMsg) const
 {
 	if (send(fd, errMsg.c_str(), errMsg.size(), 0) == -1)
+		throw std::runtime_error("Cannot send the response");
+}
+
+void Irc::sendMsg(int fd, string msg) const
+{
+	if (send(fd, msg.c_str(), msg.size(), 0) == -1)
 		throw std::runtime_error("Cannot send the response");
 }

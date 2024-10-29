@@ -73,7 +73,7 @@ bool Channel::isOperator(string userName) const
 }
 
 
-void Channel::sendPrivMsg(int fd, string& msg) const 
+void Channel::sendPrivMsg(int fd, string msg) const 
 {
 	std::map<Client*, bool>::const_iterator it;
 	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
@@ -86,7 +86,7 @@ void Channel::sendPrivMsg(int fd, string& msg) const
 	}
 }
 
-void Channel::sendAll(string& msg) const 
+void Channel::sendAll(string msg) const 
 {
 	std::map<Client*, bool>::const_iterator it;
 	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)

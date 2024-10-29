@@ -30,9 +30,7 @@ void Irc::sendResponse(int targetFd)
 		if (this->cmds.find(cmdName) != this->cmds.end())
 			(this->*(this->cmds[cmdName]))(lineSs, actualClient);
 		else
-		{
-			// error command not found
-		}
+			serverErrorMsg(actualClient->getSock(), ERR_UNKNOWNCOMMAND(actualClient->getNick(), cmdName));
 	}
 	
 	requests.erase(it);

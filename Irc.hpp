@@ -82,7 +82,8 @@ class Irc
 		Channel* createChannel(string name);
 		// void deleteChannel(Channel* ptr);
 
-		void serverErrorMsg(int fd, string errMsg);
+		void serverErrorMsg(int fd, string errMsg) const;
+		void sendMsg(int fd, string msg) const;
 
 	public:
 		Irc(void);

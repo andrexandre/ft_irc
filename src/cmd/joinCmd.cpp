@@ -15,10 +15,8 @@ void Irc::joinCmd(std::istringstream &ss, Client* actualClient)
 	{
 		//ver se o user ja foi bannido do channel
 		//ver se o user ja foi convidado para o channel
-
-		msg += ':' + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost JOIN " + channelName + " * :realname\r\n";
 		tarChannel->setChannelUsers(false, actualClient);
-		tarChannel->sendAll(msg);
+		tarChannel->sendAll(RPL_JOIN(actualClient->getNick(), actualClient->getUser(), channelName, string("realname")));
 		return;
 	}
 
@@ -27,7 +25,7 @@ void Irc::joinCmd(std::istringstream &ss, Client* actualClient)
 	tarChannel->setChannelUsers(true, actualClient);
 	msg += ':' + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost JOIN " + channelName + " * :realname\r\n";
 	cout << msg << endl;
-	tarChannel->sendAll(msg);
+	tarChannel->sendAll(RPL_JOIN(actualClient->getNick(), actualClient->getUser(), channelName, string("realname")));
 }
 
 

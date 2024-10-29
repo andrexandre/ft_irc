@@ -26,8 +26,8 @@ class Channel
 		bool isPartOfChannel(string userName) const;
 		bool isOperator(string userName) const;
 
-		void sendAll(string& msg) const;
-		void sendPrivMsg(int fd, string& msg) const;
+		void sendAll(string msg) const;
+		void sendPrivMsg(int fd, string msg) const;
 
 	public:
 		Channel(string name);
