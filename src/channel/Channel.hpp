@@ -9,6 +9,7 @@ class Channel
 		size_t _usersNumber;
 		string _channelName;
 		string _channelTopic;
+		string _channelModes;
 		std::map<Client*, bool> _channelUsers;
 
 		vector<string> _inviteUsers; //i: Set/remove Invite-only channel
@@ -20,7 +21,6 @@ class Channel
 
 		void setChannelUsers(bool oprt, Client* ptr);
 		void setChannelTopic(string content);
-		void setMode(string modeFlag);
 
 		void removeClient(Client* ptr);
 		bool isPartOfChannel(string userName) const;
@@ -29,6 +29,10 @@ class Channel
 		void sendAll(string msg) const;
 		void sendPrivMsg(int fd, string msg) const;
 
+		void apllyInviteOnlyFlag(bool optr);
+		void setChannelModes(char flag);
+		void removeChannelModesFlag(char flag);
+		bool isFlagSet(char flag);
 	public:
 		Channel(string name);
 		~Channel(void);

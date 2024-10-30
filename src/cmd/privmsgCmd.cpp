@@ -9,7 +9,7 @@ static string retrieveContent(std::istringstream &ss)
 
 	if (colon)
 	{
-		content.erase(0,1);
+		content.erase(content.begin());
 		string tmp;
 		std::getline(ss, tmp);
 		content += tmp;
@@ -44,8 +44,6 @@ void Irc::privmsgCmd(std::istringstream &ss, Client* actualClient)
 	}
 	else
 	{
-		// string tmp = ss.str();
-		// conntent = tmp.substr((tmp.find(targetName) + targetName.size() + 1));
 
 		conntent = retrieveContent(ss);
 		Channel* tarChannel = findChannel(targetName);

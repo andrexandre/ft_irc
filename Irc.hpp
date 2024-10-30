@@ -84,6 +84,7 @@ class Irc
 
 		void serverErrorMsg(int fd, string errMsg) const;
 		void sendMsg(int fd, string msg) const;
+		void checkMode(Channel* targetChannel, Client* actualClient,string modeFlag);
 
 	public:
 		Irc(void);

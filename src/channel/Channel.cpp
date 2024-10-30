@@ -1,6 +1,6 @@
 #include "Channel.hpp"
 
-Channel::Channel(string name) : _usersNumber(0), _channelName(name) {}
+Channel::Channel(string name) : _usersNumber(0), _channelName(name), _channelModes("+") {}
 
 
 Channel::~Channel(void) {}
@@ -21,10 +21,11 @@ void Channel::setChannelTopic(string content) {
 	_channelTopic = content;
 }
 
-void Channel::setMode(string modeFlag)
-{
-	(void) modeFlag;
+void Channel::setChannelModes(char flag) {
+	_channelModes.push_back(flag);
 }
+
+
 
 
 size_t Channel::getUsersNumber(void) const {

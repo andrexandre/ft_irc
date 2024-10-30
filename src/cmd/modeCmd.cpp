@@ -14,6 +14,40 @@
 // Type C: Modes that change a setting on a channel. These modes MUST have a parameter when being set, and MUST NOT have a parameter when being unset.
 // Type D: Modes that change a setting on a channel. These modes MUST NOT have a parameter.
 
+void Channel::removeChannelModesFlag(char flag) {
+	_channelModes.erase(_channelModes.find(flag), 1);
+}
+
+bool Channel::isFlagSet(char flag) {
+	return((_channelModes.find(flag) != string::npos) ? 1 : 0);
+}
+
+void Channel::apllyInviteOnlyFlag(bool optr)
+{
+	if (optr)
+	{
+		setChannelModes('i');
+		//ver se tenho que colocar os que ja estao no canal no users logo de inicio
+	}
+	else
+		removeChannelModesFlag('i');
+}
+
+void Irc::checkMode(Channel* targetChannel, Client* actualClient,string modeFlag)
+{
+	char flag = modeFlag[1];
+
+	switch (flag)
+	{
+		case 'i':
+			targetChannel->apllyInviteOnlyFlag((flag == '+'));
+			break;
+		
+		default:
+			return (serverErrorMsg(actualClient->getSock(), ERR_UNKNOWNMODE(actualClient->getNick(), modeFlag)));
+	}
+	sendMsg(actualClient->getSock(), RPL_CHANNELMODEIS(actualClient->getNick(), targetChannel->getChannelName(), modeFlag));
+}
 
 void Irc::modeCmd(std::istringstream &ss, Client* actualClient)
 {
@@ -27,15 +61,20 @@ void Irc::modeCmd(std::istringstream &ss, Client* actualClient)
 	{
 		if (ss >> modeFlag)
 		{
-			// if ((modeFlag[0] != '+' && modeFlag[0] != '-') ||)
-			// {
-			// 	/*ERR_UNKNOWNMODE (472)*/
-			// 	//:localhost 472 andre * :is unknown mode char to me
-			// }
-			// else
-			// {
+			if ((modeFlag[0] != '+' && modeFlag[0] != '-') || modeFlag.size() != 2)
+			{
+				return (serverErrorMsg(actualClient->getSock(), ERR_UNKNOWNMODE(actualClient->getNick(), modeFlag)));
+				/*ERR_UNKNOWNMODE (472)*/
+				//:localhost 472 andre * :is unknown mode char to me
+			}
+			
+			if ((modeFlag[0] == '+' && targetChannel->isFlagSet(modeFlag[1])) || (modeFlag[0] == '-' && !targetChannel->isFlagSet(modeFlag[1])))
+				return;
 
-			// }
+			checkMode(targetChannel, actualClient, modeFlag);
+			//:andre!alex21@9C5B1D.95C97E.C247D8.AE513.IP MODE #ggt +i
+			//se aquele mode que foi escolhido ja existir ele nao diz nada
+
 		}
 		else{/*Eviar os modes atuais do canal*/}
 
