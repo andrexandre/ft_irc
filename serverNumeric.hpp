@@ -2,9 +2,12 @@
 
 
 
-#define RPL(nick, user, target, command, character, content) (string(":") + (nick) + '!' + (user) + "@localhost " + (command) + " " + (target) + (character) + (content) + "\r\n")
+#define RPL(nick, user, command, target, character, content) (string(":") + (nick) + '!' + (user) + "@localhost " + (command) + " " + (target) + (character) + (content) + "\r\n")
 
 #define ERR_SAMPLE(code, errName, nick, name) (string(":localhost ") + (code) + ' ' + (nick) + ' ' + (name) + " :" + (errName) + "\r\n")
+
+// to remove if useless in the end of the project
+#define ERR_SAMPLE_NO_NAME(code, errName, nick) (string(":localhost ") + (code) + ' ' + (nick) + " :" + (errName) + "\r\n")
 
 // TOPIC
 #define RPL_TOPIC(nick, channelName, channelTopic) (":localhost 332 " + (nick) + ' ' + (channelName) + ' ' + (channelTopic) + "\r\n")
@@ -24,15 +27,15 @@
 #define ERR_UNKNOWNCOMMAND(nick, targetCommand) (ERR_SAMPLE("421", "Unknown command", nick, targetCommand))
 
 // PRIVMSG
-#define RPL_PRIVMSG(nick, user, target, msg) (RPL(nick, user, target, "PRIVMSG", " :", msg))
+#define RPL_PRIVMSG(nick, user, target, msg) (RPL(nick, user, "PRIVMSG", target, " :", msg))
 
 #define ERR_NOSUCHNICK(nick, targetNick) (ERR_SAMPLE("401", "No such nick", nick, targetNick))
 
 // PART
-#define RPL_PART(nick, user, channelName, reasonToPart) (RPL(nick, user, channelName, "PART", " :", reasonToPart))
+#define RPL_PART(nick, user, channelName, reasonToPart) (RPL(nick, user, "PART", channelName, " :", reasonToPart))
 
 // JOIN
-#define RPL_JOIN(nick, user, channelName, msg) (RPL(nick, user, channelName, "JOIN", " * :", msg))
+#define RPL_JOIN(nick, user, channelName, msg) (RPL(nick, user, "JOIN", channelName, " * :", msg))
 
 #define ERR_NOSUCHCHANNEL(nick, channelName) (ERR_SAMPLE("403", "No such channel", nick, channelName))
 
@@ -44,5 +47,6 @@
 
 // NICK
 #define ERR_NICKNAMEINUSE(nick, targetNick) (ERR_SAMPLE("433", "Nickname is already in use", nick, targetNick))
-// :localhost 433 analexan alex :Nickname is already in use
+
+#define ERR_NONICKNAMEGIVEN(nick) (ERR_SAMPLE_NO_NAME("431", "No nickname given", nick))
 

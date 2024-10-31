@@ -1,6 +1,12 @@
 #include "../../Irc.hpp"
 
-// msg += ':' + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost TOPIC " + channelName + ' ' + tarChannel->getChannelTopic() + "\r\n";
+void Irc::placeholder(istringstream &ss, Client* actualClient)
+{
+	string cmdName;
+	istringstream sss(ss.str());
+	sss >> cmdName;
+	serverErrorMsg(actualClient->getSock(), ERR_SAMPLE("421", "Command not implemented", actualClient->getNick(), cmdName));
+}
 
 void Irc::nickCmd(std::istringstream &ss, Client* actualClient)
 {
@@ -11,13 +17,11 @@ void Irc::nickCmd(std::istringstream &ss, Client* actualClient)
 	else
 	{
 		if (str.empty())
-			return; // error empty nick
-		if (actualClient->getNick().empty())
-			actualClient->setNick(str);
+			return serverErrorMsg(actualClient->getSock(), ERR_NONICKNAMEGIVEN(actualClient->getNick()));
+		// verificar invalid characters (#, &, :)
 		string oldNick = actualClient->getNick();
 		actualClient->setNick(str);
-		str = ':' + oldNick + '!' + actualClient->getUser() + "@localhost NICK :" + actualClient->getNick() + "\r\n";
+		str = RPL(oldNick, actualClient->getUser(), "NICK", "", ":", actualClient->getNick());
 		send(actualClient->getSock(), str.c_str(), str.size(), 0);
-		// :velhoNick!analexan@localhost NICK :novoNick
 	}
 }
