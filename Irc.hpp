@@ -105,4 +105,5 @@ class Irc
 		void passCmd(std::istringstream &ss, Client* actualClient);
 		void nickCmd(std::istringstream &ss, Client* actualClient);
 		void userCmd(std::istringstream &ss, Client* actualClient);
+		void inviteCmd(std::istringstream &ss, Client* actualClient);
 };

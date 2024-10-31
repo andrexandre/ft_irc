@@ -25,7 +25,9 @@ void Channel::setChannelModes(char flag) {
 	_channelModes.push_back(flag);
 }
 
-
+void Channel::setInviteUsers(string nick) {
+	_inviteUsers.push_back(nick);
+}
 
 
 size_t Channel::getUsersNumber(void) const {

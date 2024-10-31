@@ -2,7 +2,7 @@
 
 
 
-#define RPL(nick, user, target, command, character, content) (string(":") + (nick) + '!' + (user) + "@localhost " + (command) + " " + (target) + (character) + (content) + "\r\n")
+#define RPL(nick, user, command, target, character, content) (string(":") + (nick) + '!' + (user) + "@localhost " + (command) + " " + (target) + (character) + (content) + "\r\n")
 
 #define ERR_SAMPLE(code, errName, nick, name) (string(":localhost ") + (code) + ' ' + (nick) + ' ' + (name) + " :" + (errName) + "\r\n")
 
@@ -13,26 +13,26 @@
 
 // MODE
 //>> :localhost 324 alex #channel +tn 
+#define RPL_MODE(nick, user, channelName, flags) (RPL(nick, user, "MODE", channelName, " ", flags))
+
 #define RPL_CHANNELMODEIS(nick, channelName, modeFlags) (":localhost 324 " + (nick) + ' ' + (channelName) + " :" + (modeFlags) + "\r\n")
 
 #define ERR_UNKNOWNMODE(nick, mode) (ERR_SAMPLE("472", "is unknown mode char to me", nick, mode))
 
 
 /// Numeric Replies
-
-// >> :localhost 421 andre flkjdlfkjlkdfjgkljf :Unknown command	
 #define ERR_UNKNOWNCOMMAND(nick, targetCommand) (ERR_SAMPLE("421", "Unknown command", nick, targetCommand))
 
 // PRIVMSG
-#define RPL_PRIVMSG(nick, user, target, msg) (RPL(nick, user, target, "PRIVMSG", " :", msg))
+#define RPL_PRIVMSG(nick, user, target, msg) (RPL(nick, user, "PRIVMSG", target, " :", msg))
 
 #define ERR_NOSUCHNICK(nick, targetNick) (ERR_SAMPLE("401", "No such nick", nick, targetNick))
 
 // PART
-#define RPL_PART(nick, user, channelName, reasonToPart) (RPL(nick, user, channelName, "PART", " :", reasonToPart))
+#define RPL_PART(nick, user, channelName, reasonToPart) (RPL(nick, user, "PART", channelName, " :", reasonToPart))
 
 // JOIN
-#define RPL_JOIN(nick, user, channelName, msg) (RPL(nick, user, channelName, "JOIN", " * :", msg))
+#define RPL_JOIN(nick, user, channelName, msg) (RPL(nick, user, "JOIN", channelName, " * :", msg))
 
 #define ERR_NOSUCHCHANNEL(nick, channelName) (ERR_SAMPLE("403", "No such channel", nick, channelName))
 

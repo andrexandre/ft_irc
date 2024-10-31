@@ -30,6 +30,7 @@ class Channel
 		void sendPrivMsg(int fd, string msg) const;
 
 		void apllyInviteOnlyFlag(bool optr);
+		void setInviteUsers(string nick);
 		void setChannelModes(char flag);
 		void removeChannelModesFlag(char flag);
 		bool isFlagSet(char flag);

@@ -30,9 +30,13 @@ void Channel::apllyInviteOnlyFlag(bool optr)
 		//ver se tenho que colocar os que ja estao no canal no users logo de inicio
 	}
 	else
+	{
+		cout << "aqui\n";
 		removeChannelModesFlag('i');
+	}
 }
 
+// >> :luna.AfterNET.Org 473 andre #eer :Cannot join channel (+i)  entar em um canal invite only
 void Irc::checkMode(Channel* targetChannel, Client* actualClient,string modeFlag)
 {
 	char flag = modeFlag[1];
@@ -40,13 +44,13 @@ void Irc::checkMode(Channel* targetChannel, Client* actualClient,string modeFlag
 	switch (flag)
 	{
 		case 'i':
-			targetChannel->apllyInviteOnlyFlag((flag == '+'));
+			targetChannel->apllyInviteOnlyFlag((modeFlag[0] == '+'));
 			break;
 		
 		default:
 			return (serverErrorMsg(actualClient->getSock(), ERR_UNKNOWNMODE(actualClient->getNick(), modeFlag)));
 	}
-	sendMsg(actualClient->getSock(), RPL_CHANNELMODEIS(actualClient->getNick(), targetChannel->getChannelName(), modeFlag));
+	sendMsg(actualClient->getSock(), RPL_MODE(actualClient->getNick(), actualClient->getUser(), targetChannel->getChannelName(), modeFlag));
 }
 
 void Irc::modeCmd(std::istringstream &ss, Client* actualClient)
