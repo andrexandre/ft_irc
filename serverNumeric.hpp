@@ -16,14 +16,14 @@
 
 // MODE
 //>> :localhost 324 alex #channel +tn 
+#define RPL_MODE(nick, user, channelName, flags) (RPL(nick, user, "MODE", channelName, " ", flags))
+
 #define RPL_CHANNELMODEIS(nick, channelName, modeFlags) (":localhost 324 " + (nick) + ' ' + (channelName) + " :" + (modeFlags) + "\r\n")
 
 #define ERR_UNKNOWNMODE(nick, mode) (ERR_SAMPLE("472", "is unknown mode char to me", nick, mode))
 
 
 /// Numeric Replies
-
-// >> :localhost 421 andre flkjdlfkjlkdfjgkljf :Unknown command	
 #define ERR_UNKNOWNCOMMAND(nick, targetCommand) (ERR_SAMPLE("421", "Unknown command", nick, targetCommand))
 
 // PRIVMSG
