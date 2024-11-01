@@ -42,12 +42,13 @@ int Irc::run_server(char **av)
 	struct epoll_event evs[MAX_EVENTS];
 	try
 	{
+		// signal(SIGINT, handler);
 		setPort(av[1]);
 		setServerPassword(av[2]);
 		initNetWork();
 
 		int event_count = 0;
-		int j = 0;	
+		int j = 0;
 		while (running)
 		{
 			cout << GREEN "\n" << j << " Inputs received, Waiting for event..." END << endl;

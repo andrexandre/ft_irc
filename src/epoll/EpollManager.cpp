@@ -34,7 +34,6 @@ void EpollManager::modFd(int targetFd, uint32_t newEvent)
 	
 	if (std::find(listFds.begin(), listFds.end(), targetFd) == listFds.end())
 		return;
-
 	bzero(&ev, sizeof(ev));
 	ev.events = newEvent;
 	ev.data.fd = targetFd;
