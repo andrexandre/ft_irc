@@ -10,13 +10,12 @@ Irc::Irc(void)
 	cmds["USER"] = &Irc::userCmd;
 	cmds["PART"] = &Irc::partCmd;
 	cmds["MODE"] = &Irc::modeCmd;
-	cmds["QUIT"] = &Irc::placeholder;
 	cmds["NOTICE"] = &Irc::placeholder;
 	cmds["WHO"] = &Irc::placeholder;
 	cmds["KICK"] = &Irc::placeholder;
 	cmds["CAP"] = &Irc::placeholder;
 	cmds["INVITE"] = &Irc::inviteCmd;
-	// cmds["QUIT"] = &Irc::quitCmd;
+	cmds["QUIT"] = &Irc::quitCmd;
 	// cmds["NOTICE"] = &Irc::noticeCmd;
 	// cmds["WHO"] = &Irc::whoCmd;
 	// cmds["KICK"] = &Irc::kickCmd;

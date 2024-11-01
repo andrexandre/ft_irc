@@ -1,6 +1,5 @@
 #include "Irc.hpp"
 
-// int main(void)
 int main(int ac, char **av)
 {
 	static Irc irc;

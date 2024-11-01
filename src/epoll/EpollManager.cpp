@@ -32,6 +32,8 @@ void EpollManager::modFd(int targetFd, uint32_t newEvent)
 {
 	struct epoll_event ev;
 	
+	if (std::find(listFds.begin(), listFds.end(), targetFd) == listFds.end())
+		return;
 	bzero(&ev, sizeof(ev));
 	ev.events = newEvent;
 	ev.data.fd = targetFd;
@@ -46,7 +48,7 @@ void EpollManager::deleteFd(int targetFd)
 	close(targetFd);
 	std::vector<int>::iterator it;
 	it = std::find(listFds.begin(), listFds.end(), targetFd);
-	listFds.erase(it, it);
+	listFds.erase(it);
 }
 
 int EpollManager::getEpSock(void) const {
