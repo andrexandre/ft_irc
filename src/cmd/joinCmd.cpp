@@ -1,6 +1,21 @@
 
 #include "../../Irc.hpp"
 
+bool Channel::isUserInvited(string nick) {
+	return ((std::find(_inviteUsers.begin(), _inviteUsers.end(), nick) != _inviteUsers.end()) ? 1 : 0);
+}
+
+bool verifyChannelmodes(Channel* tarChannel, Client* actualClient)
+{
+	if (tarChannel->isFlagSet('i') && !tarChannel->isUserInvited(actualClient->getNick()))
+	{
+		// cout << RED << "OLA\n" << END ;
+		// >> :luna.AfterNET.Org 473 alex #fft :Cannot join channel (+i)
+		return (serverErrorMsg(actualClient->getSock(), ERR_INVITEONLYCHAN(actualClient->getNick(), tarChannel->getChannelName())), 1);
+	}
+	return 0;
+}
+
 void Irc::joinCmd(std::istringstream &ss, Client* actualClient)
 {
 	string channelName;
@@ -13,10 +28,14 @@ void Irc::joinCmd(std::istringstream &ss, Client* actualClient)
 	Channel* tarChannel;
 	if ((tarChannel = findChannel(channelName)))
 	{
-		//ver se o user ja foi bannido do channel
-		//ver se o user ja foi convidado para o channel
-		tarChannel->setChannelUsers(false, actualClient);
-		tarChannel->sendAll(RPL_JOIN(actualClient->getNick(), actualClient->getUser(), channelName, string("realname")));
+		// i k l mode flags to check
+		if (!verifyChannelmodes(tarChannel, actualClient))
+		{
+			//ver se o user ja foi bannido do channel
+			//ver se o user ja foi convidado para o channel
+			tarChannel->setChannelUsers(false, actualClient);
+			tarChannel->sendAll(RPL_JOIN(actualClient->getNick(), actualClient->getUser(), channelName, string("realname")));
+		}
 		return;
 	}
 

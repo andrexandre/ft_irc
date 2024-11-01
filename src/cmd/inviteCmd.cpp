@@ -12,21 +12,25 @@ void Irc::inviteCmd(std::istringstream &ss, Client* actualClient)
 {
 	string targetNick;
 	string channelName;
+	Client* targetClient;
 	Channel* targetChannel;
 	
 	
-	if ((ss >> targetNick) && !findClient(targetNick))
+	if ((ss >> targetNick) && !(targetClient = findClient(targetNick)))
 		return serverErrorMsg(actualClient->getSock(), ERR_NOSUCHNICK(actualClient->getNick(), targetNick));
 	
 	if ((ss >> channelName) && !(targetChannel = findChannel(channelName)))
 		return serverErrorMsg(actualClient->getSock(), ERR_NOSUCHCHANNEL(actualClient->getNick(), channelName));
 	
-	if (targetChannel->isPartOfChannel(actualClient->getNick()))
+	if (!targetChannel->isPartOfChannel(actualClient->getNick()))
 		return serverErrorMsg(actualClient->getSock(), ERR_NOTONCHANNEL(actualClient->getNick(), channelName));
 
 	if (!targetChannel->isOperator(actualClient->getNick()))
 		return serverErrorMsg(actualClient->getSock(), ERR_CHANOPRIVSNEEDED(actualClient->getNick(), channelName));
 	
 	targetChannel->setInviteUsers(targetNick);
+	sendMsg(actualClient->getSock(), RPL_INVITING(actualClient->getNick(), targetNick, channelName));
+
+	sendMsg(targetClient->getSock(), RPL(actualClient->getNick(), actualClient->getNick(), "INVITE", targetNick, " ", channelName));
 
 }

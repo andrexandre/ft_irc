@@ -31,6 +31,7 @@ class Channel
 
 		void apllyInviteOnlyFlag(bool optr);
 		void setInviteUsers(string nick);
+		bool isUserInvited(string nick);
 		void setChannelModes(char flag);
 		void removeChannelModesFlag(char flag);
 		bool isFlagSet(char flag);

@@ -52,6 +52,10 @@ class EpollManager;
 
 extern bool running;
 
+void sendMsg(int fd, string msg);
+void serverErrorMsg(int fd, string errMsg);
+
+
 class Irc
 {
 	private:
@@ -82,10 +86,6 @@ class Irc
 		Channel* createChannel(string name);
 		// void deleteChannel(Channel* ptr);
 
-		void serverErrorMsg(int fd, string errMsg) const;
-		void sendMsg(int fd, string msg) const;
-		void checkMode(Channel* targetChannel, Client* actualClient,string modeFlag);
-
 	public:
 		Irc(void);
 		~Irc(void);
@@ -107,4 +107,5 @@ class Irc
 		void userCmd(std::istringstream &ss, Client* actualClient);
 		void placeholder(std::istringstream &ss, Client* actualClient);
 		void inviteCmd(std::istringstream &ss, Client* actualClient);
+		void quitCmd(std::istringstream &ss, Client* actualClient);
 };

@@ -20,7 +20,11 @@
 
 #define RPL_CHANNELMODEIS(nick, channelName, modeFlags) (":localhost 324 " + (nick) + ' ' + (channelName) + " :" + (modeFlags) + "\r\n")
 
+//ver se nao e prececiso conlocar no canal a mensagem
 #define ERR_UNKNOWNMODE(nick, mode) (ERR_SAMPLE("472", "is unknown mode char to me", nick, mode))
+
+// INVITE
+#define RPL_INVITING(nick, targetNick, channelName) (":localhost 341 " + (nick) + ' ' + (targetNick) + ' ' + (channelName)  + "\r\n")
 
 
 /// Numeric Replies
@@ -36,6 +40,8 @@
 
 // JOIN
 #define RPL_JOIN(nick, user, channelName, msg) (RPL(nick, user, "JOIN", channelName, " * :", msg))
+
+#define ERR_INVITEONLYCHAN(nick, channelName) (ERR_SAMPLE("473", "Cannot join channel (+i)", nick, channelName))
 
 #define ERR_NOSUCHCHANNEL(nick, channelName) (ERR_SAMPLE("403", "No such channel", nick, channelName))
 

@@ -37,7 +37,7 @@ void Channel::apllyInviteOnlyFlag(bool optr)
 }
 
 // >> :luna.AfterNET.Org 473 andre #eer :Cannot join channel (+i)  entar em um canal invite only
-void Irc::checkMode(Channel* targetChannel, Client* actualClient,string modeFlag)
+void checkMode(Channel* targetChannel, Client* actualClient,string modeFlag)
 {
 	char flag = modeFlag[1];
 

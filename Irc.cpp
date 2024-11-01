@@ -10,13 +10,12 @@ Irc::Irc(void)
 	cmds["USER"] = &Irc::userCmd;
 	cmds["PART"] = &Irc::partCmd;
 	cmds["MODE"] = &Irc::modeCmd;
-	cmds["QUIT"] = &Irc::placeholder;
+	cmds["INVITE"] = &Irc::inviteCmd;
 	cmds["NOTICE"] = &Irc::placeholder;
 	cmds["WHO"] = &Irc::placeholder;
 	cmds["KICK"] = &Irc::placeholder;
 	cmds["CAP"] = &Irc::placeholder;
-	cmds["INVITE"] = &Irc::inviteCmd;
-	// cmds["QUIT"] = &Irc::quitCmd;
+	cmds["QUIT"] = &Irc::quitCmd;
 	// cmds["NOTICE"] = &Irc::noticeCmd;
 	// cmds["WHO"] = &Irc::whoCmd;
 	// cmds["KICK"] = &Irc::kickCmd;
@@ -45,16 +44,4 @@ void Irc::setPort(string arg)
 		throw std::runtime_error("Invalid port!");;
 
 	_port = num;	
-}
-
-void Irc::serverErrorMsg(int fd, string errMsg) const
-{
-	if (send(fd, errMsg.c_str(), errMsg.size(), 0) == -1)
-		throw std::runtime_error("Cannot send the response");
-}
-
-void Irc::sendMsg(int fd, string msg) const
-{
-	if (send(fd, msg.c_str(), msg.size(), 0) == -1)
-		throw std::runtime_error("Cannot send the response");
 }
