@@ -26,7 +26,7 @@ void checkMode(Channel* targetChannel, Client* actualClient,string modeFlag)
 			break;
 		
 		case 't':
-			targetChannel->apllyInviteOnlyFlag((modeFlag[0] == '+'));
+			targetChannel->apllyTopicRestrictionFlag((modeFlag[0] == '+'));
 			break;
 		
 		default:
