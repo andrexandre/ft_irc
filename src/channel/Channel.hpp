@@ -23,13 +23,14 @@ class Channel
 		void setChannelTopic(string content);
 
 		void removeClient(Client* ptr);
-		bool isPartOfChannel(string userName) const;
-		bool isOperator(string userName) const;
+		bool isPartOfChannel(string nick) const;
+		bool isOperator(string nick) const;
 
 		void sendAll(string msg) const;
 		void sendPrivMsg(int fd, string msg) const;
 
 		void apllyInviteOnlyFlag(bool optr);
+		void apllyTopicRestrictionFlag(bool optr);
 		void setInviteUsers(string nick);
 		bool isUserInvited(string nick);
 		void setChannelModes(char flag);

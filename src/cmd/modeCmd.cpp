@@ -14,29 +14,7 @@
 // Type C: Modes that change a setting on a channel. These modes MUST have a parameter when being set, and MUST NOT have a parameter when being unset.
 // Type D: Modes that change a setting on a channel. These modes MUST NOT have a parameter.
 
-void Channel::removeChannelModesFlag(char flag) {
-	_channelModes.erase(_channelModes.find(flag), 1);
-}
 
-bool Channel::isFlagSet(char flag) {
-	return((_channelModes.find(flag) != string::npos) ? 1 : 0);
-}
-
-void Channel::apllyInviteOnlyFlag(bool optr)
-{
-	if (optr)
-	{
-		setChannelModes('i');
-		//ver se tenho que colocar os que ja estao no canal no users logo de inicio
-	}
-	else
-	{
-		cout << "aqui\n";
-		removeChannelModesFlag('i');
-	}
-}
-
-// >> :luna.AfterNET.Org 473 andre #eer :Cannot join channel (+i)  entar em um canal invite only
 void checkMode(Channel* targetChannel, Client* actualClient,string modeFlag)
 {
 	char flag = modeFlag[1];
@@ -47,10 +25,14 @@ void checkMode(Channel* targetChannel, Client* actualClient,string modeFlag)
 			targetChannel->apllyInviteOnlyFlag((modeFlag[0] == '+'));
 			break;
 		
+		case 't':
+			targetChannel->apllyInviteOnlyFlag((modeFlag[0] == '+'));
+			break;
+		
 		default:
 			return (serverErrorMsg(actualClient->getSock(), ERR_UNKNOWNMODE(actualClient->getNick(), modeFlag)));
 	}
-	sendMsg(actualClient->getSock(), RPL_MODE(actualClient->getNick(), actualClient->getUser(), targetChannel->getChannelName(), modeFlag));
+	targetChannel->sendAll(RPL_MODE(actualClient->getNick(), actualClient->getUser(), targetChannel->getChannelName(), modeFlag));
 }
 
 void Irc::modeCmd(std::istringstream &ss, Client* actualClient)

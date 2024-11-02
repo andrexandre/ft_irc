@@ -13,20 +13,16 @@ string Channel::getChannelName(void) const {
 
 void Channel::setChannelUsers(bool oprt, Client* ptr) 
 {
+	vector<string>::iterator it = std::find(_inviteUsers.begin(), _inviteUsers.end(), ptr->getNick());
+	if (it != _inviteUsers.end())
+		_inviteUsers.erase(it);
+	
 	_channelUsers.insert(std::make_pair(ptr,oprt));
 	_usersNumber++;
 }
 
 void Channel::setChannelTopic(string content) {
 	_channelTopic = content;
-}
-
-void Channel::setChannelModes(char flag) {
-	_channelModes.push_back(flag);
-}
-
-void Channel::setInviteUsers(string nick) {
-	_inviteUsers.push_back(nick);
 }
 
 
@@ -51,24 +47,24 @@ void Channel::removeClient(Client* ptr)
 	_usersNumber--;
 }
 
-bool Channel::isPartOfChannel(string userName) const
+bool Channel::isPartOfChannel(string nick) const
 {
 	std::map<Client*, bool>::const_iterator it;
 	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
 	{
-		if (it->first->getNick() == userName)
+		if (it->first->getNick() == nick)
 			return (true);
 	}
 
 	return (false);
 }
 
-bool Channel::isOperator(string userName) const
+bool Channel::isOperator(string nick) const
 {
 	std::map<Client*, bool>::const_iterator it;
 	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
 	{
-		if (it->first->getNick() == userName)
+		if (it->first->getNick() == nick)
 			return ((it->second) ? true : false);
 	}
 

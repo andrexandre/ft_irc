@@ -44,6 +44,8 @@
 
 #define ERR_NOSUCHCHANNEL(nick, channelName) (ERR_SAMPLE("403", "No such channel", nick, channelName))
 
+#define ERR_USERONCHANNEL(nick, channelName) (ERR_SAMPLE("443", "is already on channel", nick, channelName))
+
 // PART
 #define ERR_NOTONCHANNEL(nick, channelName) (ERR_SAMPLE("442", "You're not on that channel", nick, channelName))
 
