@@ -9,6 +9,11 @@ bool verifyChannelmodes(Channel* tarChannel, Client* actualClient)
 	{
 		return (serverErrorMsg(actualClient->getSock(), ERR_INVITEONLYCHAN(actualClient->getNick(), tarChannel->getChannelName())), 1);
 	}
+	else if (tarChannel->isFlagSet('l') && tarChannel->isChannelFull())
+	{
+		// >> :Aurora.AfterNET.Org 471 leo #dd :Cannot join channel (+l)
+		return (serverErrorMsg(actualClient->getSock(), ERR_CHANNELISFULL(actualClient->getNick(), tarChannel->getChannelName())), 1);
+	}
 	return 0;
 }
 
@@ -42,7 +47,6 @@ void Irc::joinCmd(std::istringstream &ss, Client* actualClient)
 	tarChannel->sendAll(RPL_JOIN(actualClient->getNick(), actualClient->getUser(), channelName, string("realname")));
 }
 
-// ERR_CHANNELISFULL (471)
 // ERR_NEEDMOREPARAMS (461)
 // ERR_TOOMANYCHANNELS (405)
 // ERR_BADCHANNELKEY (475)

@@ -1,14 +1,9 @@
 #include "Channel.hpp"
 
-Channel::Channel(string name) : _usersNumber(0), _channelName(name), _channelModes("+") {}
+Channel::Channel(string name) : _channelName(name), _channelModes("+"), _maxUsersNumber(0) {}
 
 
 Channel::~Channel(void) {}
-
-
-string Channel::getChannelName(void) const {
-	return (_channelName);
-}
 
 
 void Channel::setChannelUsers(bool oprt, Client* ptr) 
@@ -18,20 +13,31 @@ void Channel::setChannelUsers(bool oprt, Client* ptr)
 		_inviteUsers.erase(it);
 	
 	_channelUsers.insert(std::make_pair(ptr,oprt));
-	_usersNumber++;
 }
 
 void Channel::setChannelTopic(string content) {
 	_channelTopic = content;
 }
 
+void Channel::setMaxUsersNumber(size_t nb) {
+	_maxUsersNumber = nb;
+}
 
-size_t Channel::getUsersNumber(void) const {
-	return (_usersNumber);
+
+string Channel::getChannelName(void) const {
+	return (_channelName);
+}
+
+size_t Channel::getMaxUsersNumber(void) const {
+	return (_maxUsersNumber);
 }
 
 string Channel::getChannelTopic(void) const {
 	return (_channelTopic);
+}
+
+size_t Channel::getNumberOfUsersOnChannel(void) const {
+	return (_channelUsers.size());
 }
 
 
@@ -44,7 +50,6 @@ void Channel::removeClient(Client* ptr)
 			break;
 	}
 	_channelUsers.erase(it);
-	_usersNumber--;
 }
 
 bool Channel::isPartOfChannel(string nick) const

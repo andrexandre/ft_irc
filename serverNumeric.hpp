@@ -40,11 +40,15 @@
 // JOIN
 #define RPL_JOIN(nick, user, channelName, msg) (RPL(nick, user, "JOIN", channelName, " * :", msg))
 
-#define ERR_INVITEONLYCHAN(nick, channelName) (ERR_SAMPLE("473", "Cannot join channel (+i)", nick, channelName))
-
 #define ERR_NOSUCHCHANNEL(nick, channelName) (ERR_SAMPLE("403", "No such channel", nick, channelName))
 
 #define ERR_USERONCHANNEL(nick, channelName) (ERR_SAMPLE("443", "is already on channel", nick, channelName))
+
+#define ERR_NEEDMOREPARAMS(nick, command) (ERR_SAMPLE("461", "Not enough parameters", nick, command))
+
+#define ERR_CHANNELISFULL(nick, channelName) (ERR_SAMPLE("471", "Cannot join channel (+l)", nick, channelName))
+
+#define ERR_INVITEONLYCHAN(nick, channelName) (ERR_SAMPLE("473", "Cannot join channel (+i)", nick, channelName))
 
 // PART
 #define ERR_NOTONCHANNEL(nick, channelName) (ERR_SAMPLE("442", "You're not on that channel", nick, channelName))

@@ -1,19 +1,24 @@
 #include "Channel.hpp"
 
-bool Channel::isFlagSet(char flag) {
+bool Channel::isFlagSet(char flag) const {
 	return((_channelModes.find(flag) != string::npos) ? 1 : 0);
 }
 
-bool Channel::isUserInvited(string nick) {
+bool Channel::isChannelFull(void) const {
+	return((getNumberOfUsersOnChannel() >= getMaxUsersNumber()) ? 1 : 0);
+}
+
+bool Channel::isUserInvited(string nick) const {
 	return ((std::find(_inviteUsers.begin(), _inviteUsers.end(), nick) != _inviteUsers.end()) ? 1 : 0);
+}
+
+
+void Channel::setChannelModes(char flag) {
+	_channelModes.push_back(flag);
 }
 
 void Channel::removeChannelModesFlag(char flag) {
 	_channelModes.erase(_channelModes.find(flag), 1);
-}
-
-void Channel::setChannelModes(char flag) {
-	_channelModes.push_back(flag);
 }
 
 void Channel::setInviteUsers(string nick) 
@@ -22,6 +27,7 @@ void Channel::setInviteUsers(string nick)
 	if (!_inviteUsers.size() || std::find(_inviteUsers.begin(), _inviteUsers.end(), nick) != _inviteUsers.end())
 		_inviteUsers.push_back(nick);
 }
+
 
 void Channel::apllyTopicRestrictionFlag(bool optr)
 {

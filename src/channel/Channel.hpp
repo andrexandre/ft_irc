@@ -6,21 +6,23 @@
 class Channel
 {
 	private:
-		size_t _usersNumber;
 		string _channelName;
 		string _channelTopic;
 		string _channelModes;
 		std::map<Client*, bool> _channelUsers;
 
-		vector<string> _inviteUsers; //i: Set/remove Invite-only channel
+		size_t _maxUsersNumber; // l: Set/remove limit of user on channel
+		vector<string> _inviteUsers; // i: Set/remove Invite-only channel
 
 	public:
 		string getChannelName(void) const;
-		size_t getUsersNumber(void) const;
 		string getChannelTopic(void) const;
+		size_t getMaxUsersNumber(void) const;
+		size_t getNumberOfUsersOnChannel(void) const;
 
-		void setChannelUsers(bool oprt, Client* ptr);
+		void setMaxUsersNumber(size_t nb);
 		void setChannelTopic(string content);
+		void setChannelUsers(bool oprt, Client* ptr);
 
 		void removeClient(Client* ptr);
 		bool isPartOfChannel(string nick) const;
@@ -32,10 +34,11 @@ class Channel
 		void apllyInviteOnlyFlag(bool optr);
 		void apllyTopicRestrictionFlag(bool optr);
 		void setInviteUsers(string nick);
-		bool isUserInvited(string nick);
 		void setChannelModes(char flag);
 		void removeChannelModesFlag(char flag);
-		bool isFlagSet(char flag);
+		bool isFlagSet(char flag) const;
+		bool isChannelFull(void) const;
+		bool isUserInvited(string nick) const;
 	public:
 		Channel(string name);
 		~Channel(void);
