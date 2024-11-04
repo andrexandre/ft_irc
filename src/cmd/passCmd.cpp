@@ -3,15 +3,10 @@
 void Irc::passCmd(std::istringstream &ss, Client* actualClient)
 {
 	string str;
-	ss >> str;
+	
+	if (!(ss >> str))
+		return serverErrorMsg(actualClient->getSock(), ERR_NEEDMOREPARAMS(actualClient->getNick(), "PASS"));
+	if (!actualClient->getUser().empty())
+		return serverErrorMsg(actualClient->getSock(), ERR_ALREADYREGISTRED(actualClient->getNick()));
 	actualClient->setPassWord(str);
 }
-/*
-// This is what should be on the authenticateClient() function
-	if (actualClient->getPassWord().empty())
-		cout << YELLOW "Password is empty!" END << endl;
-	else if (actualClient->getPassWord() == _passWord)
-		cout << YELLOW "Correct Password!" END << endl;
-	else
-		cout << YELLOW "Incorrect Password!" END << endl;
-*/

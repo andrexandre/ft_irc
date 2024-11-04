@@ -63,3 +63,11 @@
 
 #define ERR_ERRONEUSNICKNAME(nick, targetNick) (ERR_SAMPLE("432", "Erroneous nickname", nick, targetNick))
 
+// NOTICE
+#define NOTICE_MSG(nick, message) (string(":localhost NOTICE ") + (nick) + " :" + (message) + "\r\n")
+
+// USER
+#define ERR_ALREADYREGISTRED(nick) (ERR_SAMPLE_NO_NAME("462", "You may not reregister", nick))
+
+// PASS
+#define ERR_PASSWDMISMATCH(nick) (ERR_SAMPLE_NO_NAME("464", "Password incorrect", nick))

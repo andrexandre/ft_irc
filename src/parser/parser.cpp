@@ -6,8 +6,6 @@ void Irc::parsing(int targetFd)
 	bzero(buffer, sizeof(buffer));
 	if (read(targetFd, &buffer, 30000) < 0)
 		throw std::runtime_error("reading the fd");
-	
-	// authenticateClient() will be here
 
 	requests.insert(std::make_pair(targetFd, string(buffer)));
 	epfds->modFd(targetFd, EPOLLOUT);
