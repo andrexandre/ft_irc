@@ -27,6 +27,12 @@ void Irc::sendResponse(int targetFd)
 		istringstream lineSs(tmpLine);
 		lineSs >> cmdName;
 		// Executor
+		if (!actualClient->isAuthenticated() && cmdName != "PASS" && cmdName != "NICK" &&
+			cmdName != "USER" && cmdName != "CAP" && cmdName != "QUIT")
+		{
+			serverErrorMsg(actualClient->getSock(), ERR_NOTREGISTERED(actualClient->getNick()));
+			continue;
+		}
 		if (this->cmds.find(cmdName) != this->cmds.end())
 			(this->*(this->cmds[cmdName]))(lineSs, actualClient);
 		else
@@ -72,6 +78,11 @@ int Irc::run_server(char **av)
 					break;
 			}
 			j++;
+			if (j == 1000)
+			{
+				cout << RED "Infinite loop detected, closing server" END << endl;
+				break;
+			}
 		}
 		cout << RED "Reached uncommon place" END << endl;
 	}

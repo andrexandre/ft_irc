@@ -71,3 +71,6 @@
 
 // PASS
 #define ERR_PASSWDMISMATCH(nick) (ERR_SAMPLE_NO_NAME("464", "Password incorrect", nick))
+
+
+#define ERR_NOTREGISTERED(nick) (ERR_SAMPLE_NO_NAME("451", "You have not registered", nick))

@@ -6,6 +6,7 @@ class Client
 {
 	private:
 		int _connectionSock;
+		int _isAuthenticated;
 
 		string nick;
 		string user;
@@ -17,6 +18,7 @@ class Client
 	
 	public:
 		int getSock(void) const;
+		int isAuthenticated(void) const;
 		string getNick(void) const { return (nick);}
 		string getUser(void) const { return (user);}
 		string getPassWord(void) const { return (passWord);}
@@ -24,5 +26,6 @@ class Client
 		void setNick(string name) { nick = name;}
 		void setUser(string name) { user = name;}
 		void setPassWord(string name) { passWord = name;}
+		void authenticate(void);
 
 };
