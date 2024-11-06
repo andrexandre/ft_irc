@@ -14,11 +14,10 @@ Irc::Irc(void)
 	cmds["QUIT"] = &Irc::quitCmd;
 	// cmds["NOTICE"] = &Irc::noticeCmd;
 	// cmds["WHO"] = &Irc::whoCmd;
-	// cmds["KICK"] = &Irc::kickCmd;
+	cmds["KICK"] = &Irc::kickCmd;
 
 	cmds["NOTICE"] = &Irc::placeholder;
 	cmds["WHO"] = &Irc::placeholder;
-	cmds["KICK"] = &Irc::placeholder;
 	cmds["CAP"] = &Irc::placeholder;
 }
 

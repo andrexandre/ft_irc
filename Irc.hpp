@@ -109,4 +109,5 @@ class Irc
 		// placeholder is in nickCmd.cpp
 		void inviteCmd(std::istringstream &ss, Client* actualClient);
 		void quitCmd(std::istringstream &ss, Client* actualClient);
+		void kickCmd(std::istringstream &ss, Client* actualClient);
 };
