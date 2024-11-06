@@ -2,7 +2,6 @@
 
 EpollManager::EpollManager(void) : epSock(epoll_create(1))
 {
-	
 	if (epSock < 0)
 		throw std::runtime_error("creating epoll instance");
 }
@@ -11,7 +10,6 @@ EpollManager::~EpollManager(void)
 {
 	for (size_t i = 0; i < listFds.size(); i++)
 		deleteFd(listFds[i]);
-	
 	close(epSock);
 }
 

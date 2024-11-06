@@ -11,11 +11,8 @@ Channel* Irc::findChannel(string name)
 {
 	std::vector<Channel*>::iterator it;
 	for (it = _serverChannels.begin(); it != _serverChannels.end(); it++)
-	{
 		if ((*it)->getChannelName() == name)
 			return (*it);
-	}
-	
 	return (NULL);
 }
 
@@ -30,22 +27,15 @@ Client* Irc::findClient(string name)
 {
 	std::map<int, Client*>::iterator it;
 	for (it = _clients.begin(); it != _clients.end(); it++)
-	{
 		if (it->second->getNick() == name)
 			return (it->second);
-	}
-
 	return (NULL);
 }
 
 void Irc::deleteClient(std::map<int, Client*>::iterator& it)
 {
-	(void)it;
-	// std::map<int, Client*>::iterator tmp = it;
-	// ++it;
-	// epfds->deleteFd(tmp->first);
-	// delete tmp->second;
-	// _clients.erase(tmp);
+	delete it->second;
+	epfds->deleteFd(it->first);
 }
 
 void serverErrorMsg(int fd, string errMsg)

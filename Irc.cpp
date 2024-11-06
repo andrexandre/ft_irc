@@ -11,22 +11,23 @@ Irc::Irc(void)
 	cmds["PART"] = &Irc::partCmd;
 	cmds["MODE"] = &Irc::modeCmd;
 	cmds["INVITE"] = &Irc::inviteCmd;
-	cmds["NOTICE"] = &Irc::placeholder;
-	cmds["WHO"] = &Irc::placeholder;
-	cmds["KICK"] = &Irc::placeholder;
-	cmds["CAP"] = &Irc::placeholder;
 	cmds["QUIT"] = &Irc::quitCmd;
 	// cmds["NOTICE"] = &Irc::noticeCmd;
 	// cmds["WHO"] = &Irc::whoCmd;
 	// cmds["KICK"] = &Irc::kickCmd;
+
+	cmds["NOTICE"] = &Irc::placeholder;
+	cmds["WHO"] = &Irc::placeholder;
+	cmds["KICK"] = &Irc::placeholder;
+	cmds["CAP"] = &Irc::placeholder;
 }
 
 Irc::~Irc(void) 
 {
-	
-	std::map<int, Client*>::iterator it;
-	for (it = _clients.begin(); it != _clients.end();)
+	for (map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); it++)
 		deleteClient(it);
+	for (vector<Channel*>::iterator it = _serverChannels.begin(); it != _serverChannels.end(); it++)
+		delete *it;
 	if (epfds)
 		delete epfds;
 }

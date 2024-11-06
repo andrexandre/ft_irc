@@ -5,10 +5,8 @@ bool running = true;
 void handler(int signal)
 {
 	(void)signal;
-	
-	running = false;	
-	cout << RED << running << END << endl;
-	// exit(1);
+	running = false;
+	cout << CYAN "\nServer terminated" END << endl;
 }
 
 void Irc::sendResponse(int targetFd)
@@ -48,7 +46,7 @@ int Irc::run_server(char **av)
 	struct epoll_event evs[MAX_EVENTS];
 	try
 	{
-		// signal(SIGINT, handler);
+		signal(SIGINT, handler);
 		setPort(av[1]);
 		setServerPassword(av[2]);
 		initNetWork();
@@ -65,7 +63,18 @@ int Irc::run_server(char **av)
 			cout << "Fds received: " << event_count << endl;
 			for (int i = 0; i < event_count; i++)
 			{
-				cout << BLUE "Received Socket nº" << evs[i].data.fd  << " with event nº" << static_cast<int>(evs[i].events) << "\n" END << endl;
+				cout << BLUE "Received socket n: " << evs[i].data.fd  << " with event ";
+				int eventType = static_cast<int>(evs[i].events);
+				string eventString;
+				if (eventType == EPOLLIN)
+					eventString = "EPOLLIN";
+				else if (eventType == EPOLLOUT)
+					eventString = "EPOLLOUT";
+				else if (eventType == EPOLLERR || eventType == EPOLLRDHUP || eventType == EPOLLHUP)
+					eventString = "EPOLLERR || EPOLLRDHUP || EPOLLHUP";
+				else
+					eventString = "INVALID";
+				cout << eventString << "\n" END << endl;
 				if (isNewClient(evs[i].data.fd) && evs[i].events & EPOLLIN)//new client to the server
 					acceptClient(evs[i].data.fd);
 				else if (evs[i].events & EPOLLIN)//new request from client
@@ -80,7 +89,7 @@ int Irc::run_server(char **av)
 			j++;
 			if (j == 1000)
 			{
-				cout << RED "Infinite loop detected, closing server" END << endl;
+				cout << RED "Infinite loop detected, terminating server" END << endl;
 				break;
 			}
 		}
