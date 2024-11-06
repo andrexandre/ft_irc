@@ -34,6 +34,7 @@ Client* Irc::findClient(string name)
 
 void Irc::deleteClient(std::map<int, Client*>::iterator& it)
 {
+	cout << YELLOW << "Closing connection, fd: " << it->first << END << endl;
 	delete it->second;
 	epfds->deleteFd(it->first);
 }

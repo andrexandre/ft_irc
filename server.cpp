@@ -6,7 +6,7 @@ void handler(int signal)
 {
 	(void)signal;
 	running = false;
-	cout << CYAN "\nServer terminated" END << endl;
+	cout << CYAN "\nTerminating server" END << endl;
 }
 
 void Irc::sendResponse(int targetFd)
@@ -55,7 +55,7 @@ int Irc::run_server(char **av)
 		int j = 0;
 		while (running)
 		{
-			cout << GREEN "\n" << j << " Inputs received, Waiting for event..." END << endl;
+			cout << BLUE "\n" << j << " Inputs received, Waiting for event..." END << endl;
 			event_count = epoll_wait(epfds->getEpSock(), evs, MAX_EVENTS, -1);
 			if (event_count == -1)
 				throw std::runtime_error("epoll_wait");
@@ -63,7 +63,7 @@ int Irc::run_server(char **av)
 			cout << "Fds received: " << event_count << endl;
 			for (int i = 0; i < event_count; i++)
 			{
-				cout << BLUE "Received socket n: " << evs[i].data.fd  << " with event ";
+				cout << GREEN "Received socket n: " << evs[i].data.fd  << " with event ";
 				int eventType = static_cast<int>(evs[i].events);
 				string eventString;
 				if (eventType == EPOLLIN)
@@ -97,7 +97,8 @@ int Irc::run_server(char **av)
 	}
 	catch(const std::exception& e)
 	{
-		cerr << "Error: " << e.what() << " 💀" << '\n';
+		if (running)
+			cerr << "Error: " << e.what() << " 💀" << '\n';
 	}
 	return 0;
 }

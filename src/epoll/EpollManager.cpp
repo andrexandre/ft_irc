@@ -41,8 +41,6 @@ void EpollManager::modFd(int targetFd, uint32_t newEvent)
 
 void EpollManager::deleteFd(int targetFd)
 {
-	cout << GREEN << "closing fd number: " << targetFd << END << endl;
-	
 	epoll_ctl(epSock, EPOLL_CTL_DEL, targetFd, NULL);
 	close(targetFd);
 	std::vector<int>::iterator it;

@@ -24,7 +24,7 @@ void Irc::acceptClient(int serverFd)
 	// setNonBloking(&newSock);
 	epfds->addFd(newSock, EPOLLIN | EPOLLERR | EPOLLRDHUP | EPOLLHUP);
 	_clients.insert(std::make_pair(newSock, (new Client(newSock))));//create new client
-	cout << YELLOW "New client joined the server" << ", fd: " << newSock << END << endl;
+	cout << MAGENTA "Opening connection, fd: " << newSock << END << endl;
 }
 
 void Irc::initNetWork(void)
