@@ -47,34 +47,9 @@ void checkMode(std::istringstream &ss, Channel* targetChannel, Client* actualCli
 			break;
 		
 		case 'l': // Set/remove the user limit to channel
-		{
-			// Agora falta fazer com que o operador tire o limite(-l)
-			int nb;
-			char* end;
-			string number;
-			std::stringstream converter;
-
-			if (!(ss >> number))
-			{
-				// >> :localhost 461 alex MODE +l :Not enough parameters
-				// >> :Aurora.AfterNET.Org 461 alex MODE +l :Not enough parameters
-				return (serverErrorMsg(actualClient->getSock(), ERR_NEEDMOREPARAMS(actualClient->getNick(), string("MODE +l"))));
-
-			}
-			errno = 0;
-			nb = strtol(number.c_str(), &end, 10);
-			size_t tmp = nb;
-			if (nb <= 0  || errno == ERANGE || tmp == targetChannel->getMaxUsersNumber())
-				return;
-			
-			targetChannel->setMaxUsersNumber(nb);
-			targetChannel->setChannelModes('l');
-			converter << nb;
-			modeFlag += " " + converter.str();
-
-			// targetChannel->apllyTopicRestrictionFlag((modeFlag[0] == '+'));
+			if (targetChannel->apllyLimitRestrictionFlag(ss, modeFlag, (modeFlag[0] == '+'), actualClient))
+				return;			
 			break;
-		}
 		
 		default:
 			return (serverErrorMsg(actualClient->getSock(), ERR_UNKNOWNMODE(actualClient->getNick(), modeFlag)));

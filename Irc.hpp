@@ -40,6 +40,7 @@ using std::endl;
 using std::vector;
 using std::map;
 using std::istringstream;
+using std::stringstream;
 
 class Client;
 class Channel;

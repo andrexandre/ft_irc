@@ -39,6 +39,7 @@ class Channel
 		bool isFlagSet(char flag) const;
 		bool isChannelFull(void) const;
 		bool isUserInvited(string nick) const;
+		bool apllyLimitRestrictionFlag(istringstream& ss, string& modeFlag, bool optr, Client* client);
 	public:
 		Channel(string name);
 		~Channel(void);

@@ -46,3 +46,35 @@ void Channel::apllyInviteOnlyFlag(bool optr)
 		removeChannelModesFlag('i');
 }
 
+bool Channel::apllyLimitRestrictionFlag(istringstream& ss, string& modeFlag, bool optr, Client* client)
+{
+	if (!optr)
+		return ((isFlagSet('l')) ? (removeChannelModesFlag('l'), 0) : 1);	
+	
+	int nb;
+	char* end;
+	string number;
+	stringstream converter;
+
+	if (!(ss >> number))
+	{
+		// >> :localhost 461 alex MODE +l :Not enough parameters
+		// >> :Aurora.AfterNET.Org 461 alex MODE +l :Not enough parameters
+		return (serverErrorMsg(client->getSock(), ERR_NEEDMOREPARAMS(client->getNick(), string("MODE +l"))), 1);
+	}
+
+	errno = 0;
+	nb = strtol(number.c_str(), &end, 10);
+	size_t tmp = nb;
+	if (nb <= 0  || errno == ERANGE || tmp == getMaxUsersNumber())
+		return 1;
+	
+	setMaxUsersNumber(nb);
+	setChannelModes('l');
+	converter << nb;
+	modeFlag += " " + converter.str();
+	
+	return 0;
+}
+
+
