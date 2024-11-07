@@ -1,27 +1,7 @@
 #include "../../Irc.hpp"
 
-// :alex21!alex@9C5B1D.95C97E.C247D8.AE513.IP PRIVMSG loiky :bem?
 
-Client* Irc::findClient(int target)
-{
-	std::map<int, Client*>::iterator it = _clients.find(target);
-	return (it->second);
-}
-
-Client* Irc::findClient(string name)
-{
-	std::map<int, Client*>::iterator it;
-	for (it = _clients.begin(); it != _clients.end(); it++)
-	{
-		if (it->second->getNick() == name)
-			return (it->second);
-	}
-
-	return (NULL);
-}
-
-
-string retrieveContent(std::istringstream &ss)
+static string retrieveContent(std::istringstream &ss)
 {
 	string content;
 	ss >> content;
@@ -29,7 +9,7 @@ string retrieveContent(std::istringstream &ss)
 
 	if (colon)
 	{
-		content.erase(0,1);
+		content.erase(content.begin());
 		string tmp;
 		std::getline(ss, tmp);
 		content += tmp;
@@ -51,40 +31,28 @@ void Irc::privmsgCmd(std::istringstream &ss, Client* actualClient)
 
 	if (!isChannel)
 	{
-		// ss >> conntent;
 		conntent = retrieveContent(ss);
 		Client* targetClient = findClient(targetName);
 
 		if (targetClient)
-		{
-			msg += ":" + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost PRIVMSG " + targetClient->getNick() + " :" + conntent + "\r\n";
-			cout << msg << endl;
-			send(targetClient->getSock(), msg.c_str(), msg.size(), 0);
+		{	
+			cout << RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetClient->getNick(), conntent) << endl;
+			sendMsg(targetClient->getSock(), RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetClient->getNick(), conntent));
 		}
 		else
-		{
-			msg += ERR_NOSUCHNICK(actualClient->getNick(), targetName);
-			cout << msg << endl;
-			//apagar os dois acima depois 
 			return serverErrorMsg(actualClient->getSock(), ERR_NOSUCHNICK(actualClient->getNick(), targetName));
-		}
 	}
 	else
 	{
-		// string tmp = ss.str();
-		// conntent = tmp.substr((tmp.find(targetName) + targetName.size() + 1));
 
 		conntent = retrieveContent(ss);
 		Channel* tarChannel = findChannel(targetName);
 		if (!tarChannel)
-		{
-			//mandar mesangem de erro
-			return;
-		}
+			return serverErrorMsg(actualClient->getSock(), ERR_NOSUCHCHANNEL(actualClient->getNick(), targetName));
+
 		//send message to channel to all people in channel
-		msg += ":" + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost PRIVMSG " + tarChannel->getChannelName() + " :" + conntent + "\r\n";
-		cout << msg << endl;
-		return tarChannel->sendPrivMsg(actualClient->getSock(), msg);
+		cout << RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetName, conntent) << endl;
+		return tarChannel->sendPrivMsg(actualClient->getSock(), RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetName, conntent));
 	}
 
 }

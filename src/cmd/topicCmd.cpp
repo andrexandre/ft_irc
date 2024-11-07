@@ -24,7 +24,7 @@ void Irc::topicCmd(std::istringstream &ss, Client* actualClient)
 		string content;
 		if (ss >> content)
 		{
-			if (!tarChannel->isOperator(actualClient->getNick()))
+			if (tarChannel->isFlagSet('t') && !tarChannel->isOperator(actualClient->getNick()))
 				return (serverErrorMsg(actualClient->getSock(), ERR_CHANOPRIVSNEEDED(actualClient->getNick(), channelName)));
 			
 			string tmp;
@@ -38,17 +38,9 @@ void Irc::topicCmd(std::istringstream &ss, Client* actualClient)
 		else
 		{
 			if (tarChannel->getChannelTopic().empty())
-			{
-				msg += RPL_NOTOPIC(actualClient->getNick(), tarChannel->getChannelName());
-				if (send(actualClient->getSock(), msg.c_str(), msg.size(), 0) == -1)
-					throw std::runtime_error("Error: in sending the response of topic");
-			}
+				return serverErrorMsg(actualClient->getSock(), RPL_NOTOPIC(actualClient->getNick(), tarChannel->getChannelName()));
 			else
-			{
-				msg += RPL_TOPIC(actualClient->getNick(), tarChannel->getChannelName(), tarChannel->getChannelTopic());
-				if (send(actualClient->getSock(), msg.c_str(), msg.size(), 0) == -1)
-					throw std::runtime_error("Error: in sending the response of topic");
-			}
+				return serverErrorMsg(actualClient->getSock(), RPL_TOPIC(actualClient->getNick(), tarChannel->getChannelName(), tarChannel->getChannelTopic()));
 		}
 	}
 	else

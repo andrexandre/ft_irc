@@ -21,7 +21,6 @@
 #include <sys/epoll.h>  // Para epoll
 #include <fcntl.h>
 
-
 #define END			"\033[0m"
 #define RED			"\033[1;31m"
 #define GREEN		"\033[1;32m"
@@ -45,64 +44,70 @@ using std::istringstream;
 class Client;
 class Channel;
 class EpollManager;
-class Cmd;
 
 #include "serverNumeric.hpp"
 #include "src/client/Client.hpp"
 #include "src/channel/Channel.hpp"
 #include "src/epoll/EpollManager.hpp"
-#include "src/cmd/Cmd.hpp"
 
 extern bool running;
+
+void sendMsg(int fd, string msg);
+void serverErrorMsg(int fd, string errMsg);
+
 
 class Irc
 {
 	private:
-		int _serverSock;
-		map<int, Client*> _clients; 
-		EpollManager* epfds;
-		map<Client*, Cmd*> requests;
-		
-	private:
 		int _port;
-		string _passWord;
+		string _serverPassWord;
+
+		int _serverSock;
+		EpollManager* epfds;
+		map<int, Client*> _clients; // fd e o respetivo cliente
+		// requests é o conjunto de todas as request que tem de ser feitas
+		map<int, string> requests; // fd e a respetiva string que contem o comando a ser feito
+		vector<Channel*> _serverChannels; // Contem todos os canais do server
 
 	private:
 		void initNetWork(void);
+		void parsing(int targetFd);
+		void setNonBloking(int *ptr);
 		bool isNewClient(int targetFd);
 		void acceptClient(int serverFd);
-		void deleteClient(map<int, Client*>::iterator& it);
-	
-	
-	//See if we really need them?
-	private:
-		void parsing(int targetFd);
 		void sendResponse(int targetFd);
 
+	private:
+		Client* findClient(int target);
+		Client* findClient(string name);
+		void deleteClient(map<int, Client*>::iterator& it);
+
+		Channel* findChannel(string name);
+		Channel* createChannel(string name);
+		// void deleteChannel(Channel* ptr);
+
 	public:
-		// bool running;
 		Irc(void);
 		~Irc(void);
 		int run_server(char **av);
-		
-	public:
 		void setPort(string arg);
-		void setPassword(string arg);
+		void setServerPassword(string arg);
 
 	private:
+		typedef void (Irc::*CommandPtr)(std::istringstream& line,  Client* actualClient);
+		map<string, CommandPtr> cmds; // Nome to comando e o pointer para a respetiva funcao
+
 		void privmsgCmd(std::istringstream &ss, Client* actualClient);
 		void joinCmd(std::istringstream &ss, Client* actualClient);
 		void partCmd(std::istringstream &ss, Client* actualClient);
 		void topicCmd(std::istringstream &ss, Client* actualClient);
 		void modeCmd(std::istringstream &ss, Client* actualClient);
-		Client* findClient(int target);
-		Client* findClient(string name);
-		Channel* findChannel(string name);
-		Channel* createChannel(string name);
-		std::vector<Channel*> _serverChannels;
-		static void serverErrorMsg(int fd, string errMsg);
-		void readRequest(int targetFd);
+		void passCmd(std::istringstream &ss, Client* actualClient);
+		void nickCmd(std::istringstream &ss, Client* actualClient);
+		void userCmd(std::istringstream &ss, Client* actualClient);
+		void placeholder(std::istringstream &ss, Client* actualClient);
+		// placeholder is in nickCmd.cpp
+		void inviteCmd(std::istringstream &ss, Client* actualClient);
+		void quitCmd(std::istringstream &ss, Client* actualClient);
+		void kickCmd(std::istringstream &ss, Client* actualClient);
 };
-
-
-

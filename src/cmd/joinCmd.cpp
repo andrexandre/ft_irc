@@ -3,23 +3,18 @@
 
 
 
-Channel* Irc::createChannel(string name)
+bool verifyChannelmodes(Channel* tarChannel, Client* actualClient)
 {
-	Channel* newChannel = new Channel(name);
-	_serverChannels.push_back(newChannel);
-	return (newChannel);
-}
-
-Channel* Irc::findChannel(string name)
-{
-	std::vector<Channel*>::iterator it;
-	for (it = _serverChannels.begin(); it != _serverChannels.end(); it++)
+	if (tarChannel->isFlagSet('i') && !tarChannel->isUserInvited(actualClient->getNick()))
 	{
-		if ((*it)->getChannelName() == name)
-			return (*it);
+		return (serverErrorMsg(actualClient->getSock(), ERR_INVITEONLYCHAN(actualClient->getNick(), tarChannel->getChannelName())), 1);
 	}
-	
-	return (NULL);
+	else if (tarChannel->isFlagSet('l') && tarChannel->isChannelFull())
+	{
+		// >> :Aurora.AfterNET.Org 471 leo #dd :Cannot join channel (+l)
+		return (serverErrorMsg(actualClient->getSock(), ERR_CHANNELISFULL(actualClient->getNick(), tarChannel->getChannelName())), 1);
+	}
+	return 0;
 }
 
 void Irc::joinCmd(std::istringstream &ss, Client* actualClient)
@@ -34,36 +29,28 @@ void Irc::joinCmd(std::istringstream &ss, Client* actualClient)
 	Channel* tarChannel;
 	if ((tarChannel = findChannel(channelName)))
 	{
-		//ver se o user ja foi bannido do channel
-		//ver se o user ja foi convidado para o channel
-
-		msg += ':' + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost JOIN " + channelName + " * :realname\r\n";
-		tarChannel->setChannelUsers(false, actualClient);
-		tarChannel->sendAll(msg);
+		// i k l mode flags to check
+		if (!verifyChannelmodes(tarChannel, actualClient))
+		{
+			//ver se o user ja foi convidado para o channel
+			tarChannel->setChannelUsers(false, actualClient);
+			tarChannel->sendAll(RPL_JOIN(actualClient->getNick(), actualClient->getUser(), channelName, string("realname")));
+		}
 		return;
 	}
 
-	//Caso o canal nao exista ele cria o seu canal
 	tarChannel = createChannel(channelName);
 	tarChannel->setChannelUsers(true, actualClient);
+	//apagar depois
 	msg += ':' + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost JOIN " + channelName + " * :realname\r\n";
 	cout << msg << endl;
-	tarChannel->sendAll(msg);
+	tarChannel->sendAll(RPL_JOIN(actualClient->getNick(), actualClient->getUser(), channelName, string("realname")));
 }
 
-
 // ERR_NEEDMOREPARAMS (461)
-// ERR_NOSUCHCHANNEL (403)
 // ERR_TOOMANYCHANNELS (405)
 // ERR_BADCHANNELKEY (475)
-// ERR_BANNEDFROMCHAN (474)
-// ERR_CHANNELISFULL (471)
-// ERR_INVITEONLYCHAN (473)
-// ERR_BADCHANMASK (476)
 // RPL_TOPIC (332)
-// RPL_TOPICWHOTIME (333)
-// RPL_NAMREPLY (353)
-// RPL_ENDOFNAMES (366)
 
 
 
