@@ -39,6 +39,7 @@ using std::cerr;
 using std::endl;
 using std::vector;
 using std::map;
+using std::stringstream;
 using std::istringstream;
 
 class Client;
