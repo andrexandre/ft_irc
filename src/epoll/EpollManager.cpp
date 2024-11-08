@@ -43,7 +43,7 @@ void EpollManager::deleteFd(int targetFd)
 {
 	epoll_ctl(epSock, EPOLL_CTL_DEL, targetFd, NULL);
 	close(targetFd);
-	std::vector<int>::iterator it;
+	vector<int>::iterator it;
 	it = std::find(listFds.begin(), listFds.end(), targetFd);
 	listFds.erase(it);
 }

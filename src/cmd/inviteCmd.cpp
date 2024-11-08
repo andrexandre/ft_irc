@@ -2,7 +2,7 @@
 
 // Talvez vamos ter de fazer os sample do tripo 1 2 3 que vao 
 // significar o numero de argumentos antesa da mensagem especifica
-void Irc::inviteCmd(std::istringstream &ss, Client* actualClient)
+void Irc::inviteCmd(istringstream &ss, Client* actualClient)
 {
 	string targetNick;
 	string channelName;

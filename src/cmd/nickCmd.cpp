@@ -15,7 +15,7 @@ void Irc::placeholder(istringstream &ss, Client* actualClient)
 		serverErrorMsg(actualClient->getSock(), ERR_SAMPLE("0", "Command not implemented", actualClient->getNick(), cmdName));
 }
 
-void Irc::nickCmd(std::istringstream &ss, Client* actualClient)
+void Irc::nickCmd(istringstream &ss, Client* actualClient)
 {
 	string str;
 	ss >> str;

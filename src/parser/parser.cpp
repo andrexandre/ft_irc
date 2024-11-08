@@ -4,17 +4,11 @@ void Irc::parsing(int targetFd)
 {
 	char buffer[30000];
 	bzero(buffer, sizeof(buffer));
+	istringstream ss;
+	Client *client = findClient(targetFd);
 
 	if (recv(targetFd, &buffer, sizeof(buffer), 0) <= 0)
-	{
-		map<int, Client *>::iterator it = _clients.find(targetFd);
-		cout << YELLOW << "Closing connection, fd: " << it->first << END << endl;
-		delete it->second;
-		epfds->deleteFd(it->first);
-		_clients.erase(it->first);
-		return;
-	}
-	Client *client = findClient(targetFd);
+		return quitCmd(ss, client);
 	client->_buffer += string(buffer);
 	if (client->_buffer.find('\n') == string::npos)
 		return;

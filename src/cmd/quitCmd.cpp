@@ -1,6 +1,6 @@
 #include "../../Irc.hpp"
 
-void Irc::quitCmd(std::istringstream &ss, Client* actualClient)
+void Irc::quitCmd(istringstream &ss, Client* actualClient)
 {
 	(void)ss;
 	map<int, Client *>::iterator it = _clients.find(actualClient->getSock());

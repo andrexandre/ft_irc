@@ -1,7 +1,7 @@
 #include "../../Irc.hpp"
 
 
-static string retrieveContent(std::istringstream &ss)
+static string retrieveContent(istringstream &ss)
 {
 	string content;
 	ss >> content;
@@ -20,7 +20,7 @@ static string retrieveContent(std::istringstream &ss)
 }
 
 //ver se e preciso enviar msg para ele proprio
-void Irc::privmsgCmd(std::istringstream &ss, Client* actualClient)
+void Irc::privmsgCmd(istringstream &ss, Client* actualClient)
 {
 	string targetName;
 	string msg;

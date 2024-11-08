@@ -8,7 +8,7 @@ static void retrieveContent(string content, string& reason)
 	reason = tmp;
 }
 	
-void Irc::partCmd(std::istringstream &ss, Client* actualClient)
+void Irc::partCmd(istringstream &ss, Client* actualClient)
 {
 	string msg;
 	string channelName;

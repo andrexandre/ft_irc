@@ -11,7 +11,7 @@
 // << TOPIC #qwe
 
 // >> :luna.AfterNET.Org 333 alex #qwe alex!alex21@9C5B1D.95C97E.C247D8.AE513.IP 1729685524
-void Irc::topicCmd(std::istringstream &ss, Client* actualClient)
+void Irc::topicCmd(istringstream &ss, Client* actualClient)
 {
 	string channelName;
 	string msg;

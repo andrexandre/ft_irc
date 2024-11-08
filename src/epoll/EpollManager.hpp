@@ -6,7 +6,7 @@ class EpollManager
 {
 	private:
 		int epSock;
-		std::vector<int> listFds;
+		vector<int> listFds;
 
 	public:
 		EpollManager(void);

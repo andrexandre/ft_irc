@@ -23,7 +23,7 @@ bool validateModeFlag(string modeFlag, Channel* targetChannel)
 	return false;
 }
 
-void checkMode(std::istringstream &ss, Channel* targetChannel, Client* actualClient, string modeFlag)
+void checkMode(istringstream &ss, Channel* targetChannel, Client* actualClient, string modeFlag)
 {
 	
 	// << MODE #dd +l 9v9
@@ -52,7 +52,7 @@ void checkMode(std::istringstream &ss, Channel* targetChannel, Client* actualCli
 			int nb;
 			char* end;
 			string number;
-			std::stringstream converter;
+			stringstream converter;
 
 			if (!(ss >> number))
 			{
@@ -82,7 +82,7 @@ void checkMode(std::istringstream &ss, Channel* targetChannel, Client* actualCli
 	targetChannel->sendAll(RPL_MODE(actualClient->getNick(), actualClient->getUser(), targetChannel->getChannelName(), modeFlag));
 }
 
-void Irc::modeCmd(std::istringstream &ss, Client* actualClient)
+void Irc::modeCmd(istringstream &ss, Client* actualClient)
 {
 	string channelName;
 	string modeFlag;
