@@ -82,6 +82,7 @@ class Irc
 		Client* findClient(int target);
 		Client* findClient(string name);
 		void deleteClient(map<int, Client*>::iterator& it);
+		void leaveAllChannels(Client* ptr);
 
 		Channel* findChannel(string name);
 		Channel* createChannel(string name);

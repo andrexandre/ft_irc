@@ -41,6 +41,11 @@ void Irc::sendResponse(int targetFd)
 	epfds->modFd(targetFd, EPOLLIN);
 }
 
+// void logger(int mode) // TO-DO
+// {
+// 	// if (mode)
+// }
+
 int Irc::run_server(char **av)
 {
 	struct epoll_event evs[MAX_EVENTS];
@@ -69,8 +74,6 @@ int Irc::run_server(char **av)
 					eventString = "EPOLLIN";
 				else if (evs[i].events & EPOLLOUT)
 					eventString = "EPOLLOUT";
-				else if (evs[i].events & (EPOLLIN | EPOLLRDHUP))
-					eventString = "EPOLLIN | EPOLLRDHUP";
 				else if (evs[i].events & EPOLLERR || evs[i].events & EPOLLRDHUP || evs[i].events & EPOLLHUP)
 					eventString = "EPOLLERR || EPOLLRDHUP || EPOLLHUP";
 				else
