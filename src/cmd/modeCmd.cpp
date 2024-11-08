@@ -4,13 +4,13 @@
 // >> :andre!_Isto@9C5B1D.95C97E.C247D8.AE513.IP MODE #kk3 +
 
 // Feito
-//  i: Set/remove Invite-only channel
+// i: Set/remove Invite-only channel
 // t: Set/remove the restrictions of the TOPIC command to channel operators
+// l: Set/remove the user limit to channel
 
 // Não feito
 // · k: Set/remove the channel key (password)
 // · o: Give/take channel operator privilege
-// . l: Set/remove the user limit to channel
 
 //  Type B: Modes that change a setting on a channel. These modes MUST always have a parameter.
 // Type C: Modes that change a setting on a channel. These modes MUST have a parameter when being set, and MUST NOT have a parameter when being unset.
@@ -47,8 +47,14 @@ void checkMode(std::istringstream &ss, Channel* targetChannel, Client* actualCli
 			break;
 		
 		case 'l': // Set/remove the user limit to channel
-			if (targetChannel->apllyLimitRestrictionFlag(ss, modeFlag, (modeFlag[0] == '+'), actualClient))
+			if (targetChannel->apllyLimitRestrictionFlag(ss, modeFlag, actualClient))
 				return;			
+			break;
+		
+		case 'k': // Set/remove passWord for channel
+			break;
+		
+		case 'o': // Set/remove the operator privilege
 			break;
 		
 		default:

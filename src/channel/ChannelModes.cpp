@@ -46,9 +46,9 @@ void Channel::apllyInviteOnlyFlag(bool optr)
 		removeChannelModesFlag('i');
 }
 
-bool Channel::apllyLimitRestrictionFlag(istringstream& ss, string& modeFlag, bool optr, Client* client)
+bool Channel::apllyLimitRestrictionFlag(istringstream& ss, string& modeFlag, Client* client)
 {
-	if (!optr)
+	if (modeFlag[0] == '-')
 		return ((isFlagSet('l')) ? (removeChannelModesFlag('l'), 0) : 1);	
 	
 	int nb;
@@ -70,7 +70,8 @@ bool Channel::apllyLimitRestrictionFlag(istringstream& ss, string& modeFlag, boo
 		return 1;
 	
 	setMaxUsersNumber(nb);
-	setChannelModes('l');
+	if (!isFlagSet('l'))
+		setChannelModes('l');
 	converter << nb;
 	modeFlag += " " + converter.str();
 	
