@@ -52,6 +52,7 @@ void checkMode(std::istringstream &ss, Channel* targetChannel, Client* actualCli
 			break;
 		
 		case 'k': // Set/remove passWord for channel
+			//>> :alex!alexsandro@9DACE9:F97386:C6EC48:482FF6:IP MODE #aa +k abs
 			break;
 		
 		case 'o': // Set/remove the operator privilege

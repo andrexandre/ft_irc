@@ -19,6 +19,10 @@ void Channel::setChannelTopic(string content) {
 	_channelTopic = content;
 }
 
+void Channel::setChannelPassword(string content) {
+	_channelPassword = content;
+}
+
 void Channel::setMaxUsersNumber(size_t nb) {
 	_maxUsersNumber = nb;
 }
@@ -34,6 +38,10 @@ size_t Channel::getMaxUsersNumber(void) const {
 
 string Channel::getChannelTopic(void) const {
 	return (_channelTopic);
+}
+
+string Channel::getChannelPassword(void) const {
+	return (_channelPassword);
 }
 
 size_t Channel::getNumberOfUsersOnChannel(void) const {

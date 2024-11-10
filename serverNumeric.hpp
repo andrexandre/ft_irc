@@ -46,9 +46,13 @@
 
 #define ERR_NEEDMOREPARAMS(nick, command) (ERR_SAMPLE("461", "Not enough parameters", nick, command))
 
+#define ERR_KEYSET(nick) (ERR_SAMPLE_NO_NAME("467", "Channel key already set", nick))
+
 #define ERR_CHANNELISFULL(nick, channelName) (ERR_SAMPLE("471", "Cannot join channel (+l)", nick, channelName))
 
 #define ERR_INVITEONLYCHAN(nick, channelName) (ERR_SAMPLE("473", "Cannot join channel (+i)", nick, channelName))
+
+#define ERR_BADCHANNELKEY(nick, channelName) (ERR_SAMPLE("475", "Cannot join channel (+k)", nick, channelName))
 
 // PART
 #define ERR_NOTONCHANNEL(nick, channelName) (ERR_SAMPLE("442", "You're not on that channel", nick, channelName))

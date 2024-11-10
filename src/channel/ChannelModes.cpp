@@ -57,11 +57,7 @@ bool Channel::apllyLimitRestrictionFlag(istringstream& ss, string& modeFlag, Cli
 	stringstream converter;
 
 	if (!(ss >> number))
-	{
-		// >> :localhost 461 alex MODE +l :Not enough parameters
-		// >> :Aurora.AfterNET.Org 461 alex MODE +l :Not enough parameters
 		return (serverErrorMsg(client->getSock(), ERR_NEEDMOREPARAMS(client->getNick(), string("MODE +l"))), 1);
-	}
 
 	errno = 0;
 	nb = strtol(number.c_str(), &end, 10);
@@ -78,4 +74,23 @@ bool Channel::apllyLimitRestrictionFlag(istringstream& ss, string& modeFlag, Cli
 	return 0;
 }
 
+bool Channel::apllyPasswordFlag(istringstream& ss, string& modeFlag, Client* client)
+{
+	if (modeFlag[0] == '-')
+	{
+		//remover a flag
+	}
 
+	if (!_channelPassword.empty())
+		return (serverErrorMsg(client->getSock(), ERR_KEYSET(client->getNick())), 1);
+	
+	string pass;
+	if (!(ss >> pass))
+		return (serverErrorMsg(client->getSock(), ERR_NEEDMOREPARAMS(client->getNick(), string("MODE +k"))), 1);
+	
+	setChannelPassword(pass);
+	setChannelModes('k');
+
+	modeFlag += " " + pass;
+	return 0;
+}

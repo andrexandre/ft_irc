@@ -8,6 +8,7 @@ class Channel
 	private:
 		string _channelName;
 		string _channelTopic;
+		string _channelPassword;
 		string _channelModes;
 		std::map<Client*, bool> _channelUsers;
 
@@ -17,11 +18,13 @@ class Channel
 	public:
 		string getChannelName(void) const;
 		string getChannelTopic(void) const;
+		string getChannelPassword(void) const;
 		size_t getMaxUsersNumber(void) const;
 		size_t getNumberOfUsersOnChannel(void) const;
 
 		void setMaxUsersNumber(size_t nb);
 		void setChannelTopic(string content);
+		void setChannelPassword(string content);
 		void setChannelUsers(bool oprt, Client* ptr);
 
 		void removeClient(Client* ptr);
@@ -31,6 +34,7 @@ class Channel
 		void sendAll(string msg) const;
 		void sendPrivMsg(int fd, string msg) const;
 
+		//modes
 		void apllyInviteOnlyFlag(bool optr);
 		void apllyTopicRestrictionFlag(bool optr);
 		void setInviteUsers(string nick);
@@ -40,6 +44,7 @@ class Channel
 		bool isChannelFull(void) const;
 		bool isUserInvited(string nick) const;
 		bool apllyLimitRestrictionFlag(istringstream& ss, string& modeFlag, Client* client);
+		bool apllyPasswordFlag(istringstream& ss, string& modeFlag, Client* client);
 	public:
 		Channel(string name);
 		~Channel(void);
