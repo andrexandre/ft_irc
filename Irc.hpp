@@ -39,6 +39,7 @@ using std::cerr;
 using std::endl;
 using std::vector;
 using std::map;
+using std::stringstream;
 using std::istringstream;
 using std::stringstream;
 
@@ -83,6 +84,7 @@ class Irc
 		Client* findClient(int target);
 		Client* findClient(string name);
 		void deleteClient(map<int, Client*>::iterator& it);
+		void leaveAllChannels(Client* ptr);
 
 		Channel* findChannel(string name);
 		Channel* createChannel(string name);
@@ -96,20 +98,20 @@ class Irc
 		void setServerPassword(string arg);
 
 	private:
-		typedef void (Irc::*CommandPtr)(std::istringstream& line,  Client* actualClient);
+		typedef void (Irc::*CommandPtr)(istringstream& line,  Client* actualClient);
 		map<string, CommandPtr> cmds; // Nome to comando e o pointer para a respetiva funcao
 
-		void privmsgCmd(std::istringstream &ss, Client* actualClient);
-		void joinCmd(std::istringstream &ss, Client* actualClient);
-		void partCmd(std::istringstream &ss, Client* actualClient);
-		void topicCmd(std::istringstream &ss, Client* actualClient);
-		void modeCmd(std::istringstream &ss, Client* actualClient);
-		void passCmd(std::istringstream &ss, Client* actualClient);
-		void nickCmd(std::istringstream &ss, Client* actualClient);
-		void userCmd(std::istringstream &ss, Client* actualClient);
-		void placeholder(std::istringstream &ss, Client* actualClient);
+		void privmsgCmd(istringstream &ss, Client* actualClient);
+		void joinCmd(istringstream &ss, Client* actualClient);
+		void partCmd(istringstream &ss, Client* actualClient);
+		void topicCmd(istringstream &ss, Client* actualClient);
+		void modeCmd(istringstream &ss, Client* actualClient);
+		void passCmd(istringstream &ss, Client* actualClient);
+		void nickCmd(istringstream &ss, Client* actualClient);
+		void userCmd(istringstream &ss, Client* actualClient);
+		void placeholder(istringstream &ss, Client* actualClient);
 		// placeholder is in nickCmd.cpp
-		void inviteCmd(std::istringstream &ss, Client* actualClient);
-		void quitCmd(std::istringstream &ss, Client* actualClient);
-		void kickCmd(std::istringstream &ss, Client* actualClient);
+		void inviteCmd(istringstream &ss, Client* actualClient);
+		void quitCmd(istringstream &ss, Client* actualClient);
+		void kickCmd(istringstream &ss, Client* actualClient);
 };

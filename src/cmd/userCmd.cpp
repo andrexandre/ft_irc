@@ -31,7 +31,6 @@ void Irc::userCmd(istringstream &ss, Client* actualClient)
 		serverErrorMsg(actualClient->getSock(), NOTICE_MSG(actualClient->getNick(), "Unwanted input, username still changed"));
 	if (actualClient->getPassWord() != _serverPassWord)
 	{
-		// doesnt protect against the client sending other commands
 		serverErrorMsg(actualClient->getSock(), ERR_PASSWDMISMATCH(actualClient->getNick()));
 		return quitCmd(ss, actualClient);
 	}

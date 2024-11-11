@@ -41,6 +41,11 @@ void Irc::sendResponse(int targetFd)
 	epfds->modFd(targetFd, EPOLLIN);
 }
 
+// void logger(int mode) // TO-DO
+// {
+// 	// if (mode)
+// }
+
 int Irc::run_server(char **av)
 {
 	struct epoll_event evs[MAX_EVENTS];
@@ -64,25 +69,22 @@ int Irc::run_server(char **av)
 			for (int i = 0; i < event_count; i++)
 			{
 				cout << GREEN "Received socket n: " << evs[i].data.fd  << " with event ";
-				int eventType = static_cast<int>(evs[i].events);
 				string eventString;
-				if (eventType == EPOLLIN)
+				if (evs[i].events & EPOLLIN)
 					eventString = "EPOLLIN";
-				else if (eventType == EPOLLOUT)
+				else if (evs[i].events & EPOLLOUT)
 					eventString = "EPOLLOUT";
-				else if (eventType == EPOLLERR || eventType == EPOLLRDHUP || eventType == EPOLLHUP)
+				else if (evs[i].events & EPOLLERR || evs[i].events & EPOLLRDHUP || evs[i].events & EPOLLHUP)
 					eventString = "EPOLLERR || EPOLLRDHUP || EPOLLHUP";
 				else
 					eventString = "INVALID";
-				cout << eventString << "\n" END << endl;
+				cout << eventString << END << endl;
 				if (isNewClient(evs[i].data.fd) && evs[i].events & EPOLLIN)//new client to the server
 					acceptClient(evs[i].data.fd);
 				else if (evs[i].events & EPOLLIN)//new request from client
 					parsing(evs[i].data.fd);
 				else if (evs[i].events & EPOLLOUT)//send response to client
 					sendResponse(evs[i].data.fd);
-				else if (evs[i].events & EPOLLRDHUP || evs[i].events & EPOLLERR || evs[i].events & EPOLLHUP)
-					throw std::runtime_error("Server stoped with EPOLLERR || EPOLLRDHUP || EPOLLHUP");
 				else
 					break;
 			}

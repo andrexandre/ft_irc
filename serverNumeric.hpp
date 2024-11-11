@@ -82,3 +82,5 @@
 
 
 #define ERR_NOTREGISTERED(nick) (ERR_SAMPLE_NO_NAME("451", "You have not registered", nick))
+
+#define ERR_USERNOTINCHANNEL(nick, channelName) (ERR_SAMPLE("441", "They aren't on that channel", nick, channelName))

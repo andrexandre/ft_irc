@@ -9,7 +9,7 @@ Channel* Irc::createChannel(string name)
 
 Channel* Irc::findChannel(string name)
 {
-	std::vector<Channel*>::iterator it;
+	vector<Channel*>::iterator it;
 	for (it = _serverChannels.begin(); it != _serverChannels.end(); it++)
 		if ((*it)->getChannelName() == name)
 			return (*it);
@@ -19,20 +19,20 @@ Channel* Irc::findChannel(string name)
 
 Client* Irc::findClient(int target)
 {
-	std::map<int, Client*>::iterator it = _clients.find(target);
+	map<int, Client*>::iterator it = _clients.find(target);
 	return (it->second);
 }
 
 Client* Irc::findClient(string name)
 {
-	std::map<int, Client*>::iterator it;
+	map<int, Client*>::iterator it;
 	for (it = _clients.begin(); it != _clients.end(); it++)
 		if (it->second->getNick() == name)
 			return (it->second);
 	return (NULL);
 }
 
-void Irc::deleteClient(std::map<int, Client*>::iterator& it)
+void Irc::deleteClient(map<int, Client*>::iterator& it)
 {
 	cout << YELLOW << "Closing connection, fd: " << it->first << END << endl;
 	delete it->second;

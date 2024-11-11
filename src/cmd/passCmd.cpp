@@ -1,6 +1,6 @@
 #include "../../Irc.hpp"
 
-void Irc::passCmd(std::istringstream &ss, Client* actualClient)
+void Irc::passCmd(istringstream &ss, Client* actualClient)
 {
 	string str;
 	

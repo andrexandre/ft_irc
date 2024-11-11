@@ -16,7 +16,7 @@ bool verifyChannelmodes(Channel* tarChannel, Client* actualClient, istringstream
 	return 0;
 }
 
-void Irc::joinCmd(std::istringstream &ss, Client* actualClient)
+void Irc::joinCmd(istringstream &ss, Client* actualClient)
 {
 	string channelName;
 	string msg;

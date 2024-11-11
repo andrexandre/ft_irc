@@ -10,7 +10,7 @@ class Channel
 		string _channelTopic;
 		string _channelPassword;
 		string _channelModes;
-		std::map<Client*, bool> _channelUsers;
+		map<Client*, bool> _channelUsers;
 
 		size_t _maxUsersNumber; // l: Set/remove limit of user on channel
 		vector<string> _inviteUsers; // i: Set/remove Invite-only channel

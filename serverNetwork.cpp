@@ -21,8 +21,8 @@ void Irc::acceptClient(int serverFd)
 	if ((newSock = accept(serverFd, (struct sockaddr *)&address, &addrlen)) < 0)
 		throw std::runtime_error("Failed to accept connection");
 
-	// setNonBloking(&newSock);
-	epfds->addFd(newSock, EPOLLIN | EPOLLERR | EPOLLRDHUP | EPOLLHUP);
+	setNonBloking(&newSock);
+	epfds->addFd(newSock, EPOLLIN | EPOLLERR | EPOLLHUP);
 	_clients.insert(std::make_pair(newSock, (new Client(newSock))));//create new client
 	cout << MAGENTA "Opening connection, fd: " << newSock << END << endl;
 }
@@ -42,6 +42,7 @@ void Irc::initNetWork(void)
 		throw std::runtime_error("Failed to create socket");
 	
 	int enable = 1;
+	setNonBloking(&_serverSock);
 	if (setsockopt(_serverSock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
 		throw std::runtime_error("Failed to set setsockopt to SO_REUSEADDR");
 	

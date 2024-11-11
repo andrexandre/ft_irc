@@ -55,7 +55,7 @@ size_t Channel::getNumberOfUsersOnChannel(void) const {
 
 void Channel::removeClient(Client* ptr)
 {
-	std::map<Client*, bool>::iterator it;
+	map<Client*, bool>::iterator it;
 	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
 	{
 		if (it->first == ptr)
@@ -66,7 +66,7 @@ void Channel::removeClient(Client* ptr)
 
 bool Channel::isPartOfChannel(string nick) const
 {
-	std::map<Client*, bool>::const_iterator it;
+	map<Client*, bool>::const_iterator it;
 	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
 	{
 		if (it->first->getNick() == nick)
@@ -78,7 +78,7 @@ bool Channel::isPartOfChannel(string nick) const
 
 bool Channel::isOperator(string nick) const
 {
-	std::map<Client*, bool>::const_iterator it;
+	map<Client*, bool>::const_iterator it;
 	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
 	{
 		if (it->first->getNick() == nick)
@@ -91,7 +91,7 @@ bool Channel::isOperator(string nick) const
 
 void Channel::sendPrivMsg(int fd, string msg) const 
 {
-	std::map<Client*, bool>::const_iterator it;
+	map<Client*, bool>::const_iterator it;
 	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
 	{
 		if (it->first->getSock() != fd)
@@ -104,7 +104,7 @@ void Channel::sendPrivMsg(int fd, string msg) const
 
 void Channel::sendAll(string msg) const 
 {
-	std::map<Client*, bool>::const_iterator it;
+	map<Client*, bool>::const_iterator it;
 	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
 	{
 		if (send(it->first->getSock(), msg.c_str(), msg.size(), 0) == -1)
