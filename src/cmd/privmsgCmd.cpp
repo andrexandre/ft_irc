@@ -28,7 +28,6 @@ void Irc::privmsgCmd(istringstream &ss, Client* actualClient)
 	ss >> targetName;
 	bool isChannel = (targetName[0] == '#') ? 1 : 0;
 
-
 	if (!isChannel)
 	{
 		conntent = retrieveContent(ss);
@@ -44,28 +43,17 @@ void Irc::privmsgCmd(istringstream &ss, Client* actualClient)
 	}
 	else
 	{
-
-		conntent = retrieveContent(ss);
-		Channel* tarChannel = findChannel(targetName);
-		if (!tarChannel)
+		Channel* targetChannel = findChannel(targetName);
+		if (!targetChannel)
 			return serverErrorMsg(actualClient->getSock(), ERR_NOSUCHCHANNEL(actualClient->getNick(), targetName));
 
-		//send message to channel to all people in channel
+		if (!targetChannel->isPartOfChannel(actualClient->getNick()))
+			return serverErrorMsg(actualClient->getSock(), ERR_NOTONCHANNEL(actualClient->getNick(), targetName));
+		
+		conntent = retrieveContent(ss);
 		cout << RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetName, conntent) << endl;
-		return tarChannel->sendPrivMsg(actualClient->getSock(), RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetName, conntent));
+		return targetChannel->sendPrivMsg(actualClient->getSock(), RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetName, conntent));
 	}
-
 }
 
-
-
-
-// ERR_NOSUCHNICK (401)
-// ERR_NOSUCHSERVER (402)
 // ERR_CANNOTSENDTOCHAN (404)
-// ERR_TOOMANYTARGETS (407)
-// ERR_NORECIPIENT (411)
-// ERR_NOTEXTTOSEND (412)
-// ERR_NOTOPLEVEL (413)
-// ERR_WILDTOPLEVEL (414)
-// RPL_AWAY (301)
