@@ -40,6 +40,10 @@ string Channel::getChannelTopic(void) const {
 	return (_channelTopic);
 }
 
+string Channel::getChannelModes(void) const {
+	return (_channelModes);
+}
+
 string Channel::getChannelPassword(void) const {
 	return (_channelPassword);
 }

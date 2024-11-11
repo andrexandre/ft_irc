@@ -8,6 +8,8 @@
 
 #define ERR_SAMPLE_NO_NAME(code, errName, nick) (string(":localhost ") + (code) + ' ' + (nick) + " :" + (errName) + "\r\n")
 
+#define ERR_SAMPLE_3(code, errName, nick, name, channelName) (string(":localhost ") + (code) + ' ' + (nick) + ' ' + (name) + ' ' + (channelName) + " :" + (errName) + "\r\n")
+
 // TOPIC
 #define RPL_TOPIC(nick, channelName, channelTopic) (":localhost 332 " + (nick) + ' ' + (channelName) + ' ' + (channelTopic) + "\r\n")
 
@@ -17,7 +19,7 @@
 //>> :localhost 324 alex #channel +tn 
 #define RPL_MODE(nick, user, channelName, flags) (RPL(nick, user, "MODE", channelName, " ", flags))
 
-#define RPL_CHANNELMODEIS(nick, channelName, modeFlags) (":localhost 324 " + (nick) + ' ' + (channelName) + " :" + (modeFlags) + "\r\n")
+#define RPL_CHANNELMODEIS(nick, channelName, modeFlags) (":localhost 324 " + (nick) + ' ' + (channelName) + " " + (modeFlags) + "\r\n")
 
 //ver se nao e prececiso conlocar no canal a mensagem
 #define ERR_UNKNOWNMODE(nick, mode) (ERR_SAMPLE("472", "is unknown mode char to me", nick, mode))
@@ -41,6 +43,8 @@
 #define RPL_JOIN(nick, user, channelName, msg) (RPL(nick, user, "JOIN", channelName, " * :", msg))
 
 #define ERR_NOSUCHCHANNEL(nick, channelName) (ERR_SAMPLE("403", "No such channel", nick, channelName))
+
+#define ERR_USERNOTINCHANNEL(nick, targetNick, channelName) (ERR_SAMPLE_3("441", "They aren't on that channel", nick, targetNick, channelName))
 
 #define ERR_USERONCHANNEL(nick, channelName) (ERR_SAMPLE("443", "is already on channel", nick, channelName))
 

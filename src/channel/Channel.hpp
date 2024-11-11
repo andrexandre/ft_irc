@@ -18,6 +18,7 @@ class Channel
 	public:
 		string getChannelName(void) const;
 		string getChannelTopic(void) const;
+		string getChannelModes(void) const;
 		string getChannelPassword(void) const;
 		size_t getMaxUsersNumber(void) const;
 		size_t getNumberOfUsersOnChannel(void) const;
@@ -45,6 +46,8 @@ class Channel
 		bool isUserInvited(string nick) const;
 		bool apllyLimitRestrictionFlag(istringstream& ss, string& modeFlag, Client* client);
 		bool apllyPasswordFlag(istringstream& ss, string& modeFlag, Client* client);
+		bool apllyOperatorPrivilegeFlag(istringstream& ss, string& modeFlag, Client* client);
+		void giveOrTakeOperatorPrivilege(string targetNick, bool privilege = false);
 	public:
 		Channel(string name);
 		~Channel(void);

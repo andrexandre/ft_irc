@@ -1,8 +1,6 @@
 
 #include "../../Irc.hpp"
 
-
-
 bool verifyChannelmodes(Channel* tarChannel, Client* actualClient, istringstream& ss)
 {
 	string pass;
@@ -30,10 +28,8 @@ void Irc::joinCmd(std::istringstream &ss, Client* actualClient)
 	Channel* tarChannel;
 	if ((tarChannel = findChannel(channelName)))
 	{
-		// i k l mode flags to check
 		if (!verifyChannelmodes(tarChannel, actualClient, ss))
 		{
-			//ver se o user ja foi convidado para o channel
 			tarChannel->setChannelUsers(false, actualClient);
 			tarChannel->sendAll(RPL_JOIN(actualClient->getNick(), actualClient->getUser(), channelName, string("realname")));
 		}
@@ -42,8 +38,9 @@ void Irc::joinCmd(std::istringstream &ss, Client* actualClient)
 
 	tarChannel = createChannel(channelName);
 	tarChannel->setChannelUsers(true, actualClient);
-	//apagar depois
+
 	msg += ':' + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost JOIN " + channelName + " * :realname\r\n";
 	cout << msg << endl;
+	
 	tarChannel->sendAll(RPL_JOIN(actualClient->getNick(), actualClient->getUser(), channelName, string("realname")));
 }
