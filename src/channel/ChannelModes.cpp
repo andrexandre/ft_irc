@@ -24,7 +24,7 @@ void Channel::removeChannelModesFlag(char flag) {
 void Channel::setInviteUsers(string nick) 
 {
 	// Para não colocar o nome duas vezes na lista
-	if (!_inviteUsers.size() || std::find(_inviteUsers.begin(), _inviteUsers.end(), nick) != _inviteUsers.end())
+	if (_inviteUsers.size() == 0 || std::find(_inviteUsers.begin(), _inviteUsers.end(), nick) == _inviteUsers.end())
 		_inviteUsers.push_back(nick);
 }
 

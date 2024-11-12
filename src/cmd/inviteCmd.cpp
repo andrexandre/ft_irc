@@ -9,7 +9,7 @@ void Irc::inviteCmd(std::istringstream &ss, Client* actualClient)
 	Client* targetClient;
 	Channel* targetChannel;
 	
-	if (ssLength(ss) != 3)
+	if (ssLength(ss) != 2)
 		return serverErrorMsg(actualClient->getSock(), ERR_NEEDMOREPARAMS(actualClient->getNick(), "INVITE"));
 
 	if ((ss >> targetNick) && !(targetClient = findClient(targetNick)))
@@ -25,7 +25,7 @@ void Irc::inviteCmd(std::istringstream &ss, Client* actualClient)
 		return serverErrorMsg(actualClient->getSock(), ERR_CHANOPRIVSNEEDED(actualClient->getNick(), channelName));
 	
 	if (targetChannel->isPartOfChannel(targetClient->getNick()))
-		return serverErrorMsg(actualClient->getSock(), ERR_USERONCHANNEL(actualClient->getNick(), (targetClient->getNick() + " " + channelName)));
+		return serverErrorMsg(actualClient->getSock(), ERR_USERONCHANNEL(actualClient->getNick(), targetClient->getNick(), channelName));
 
 	targetChannel->setInviteUsers(targetNick);
 	// Mensagem a avisar que ele convidou  alguem para o canal

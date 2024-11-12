@@ -7,7 +7,7 @@ void Irc::leaveAllChannels(Client* ptr)
 	{
 		if ((*it)->isPartOfChannel(ptr->getNick()))
 		{
-			(*it)->sendAll(RPL_PART(ptr->getNick(), ptr->getUser(), (*it)->getChannelName(), "Leaving"));
+			(*it)->sendPrivMsg(ptr->getSock(), RPL_PART(ptr->getNick(), ptr->getUser(), (*it)->getChannelName(), "Leaving"));
 			(*it)->removeClient(ptr);
 			
 			if ((*it)->getNumberOfUsersOnChannel() == 0)

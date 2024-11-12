@@ -10,9 +10,9 @@ void Irc::placeholder(istringstream &ss, Client* actualClient)
 		return; // capabilites are presumed to be the same as the server
 	cout << "Unimplemented Command: " << cmdName << endl;
 	if (actualClient->getNick().empty())
-		serverErrorMsg(actualClient->getSock(), ERR_SAMPLE_NO_NAME("0", "Command not implemented", cmdName));
+		serverErrorMsg(actualClient->getSock(), ERR_SAMPLE("0", "Command not implemented", cmdName));
 	else
-		serverErrorMsg(actualClient->getSock(), ERR_SAMPLE("0", "Command not implemented", actualClient->getNick(), cmdName));
+		serverErrorMsg(actualClient->getSock(), ERR_SAMPLE_2("0", "Command not implemented", actualClient->getNick(), cmdName));
 }
 
 void Irc::nickCmd(istringstream &ss, Client* actualClient)

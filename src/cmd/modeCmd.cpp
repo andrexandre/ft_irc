@@ -74,6 +74,5 @@ void Irc::modeCmd(istringstream &ss, Client* actualClient)
 	}
 	else
 		sendMsg(actualClient->getSock(), RPL_CHANNELMODEIS(actualClient->getNick(), channelName, targetChannel->getChannelModes()));
-	//>> :loCALHOST 324 alex #ww +tn 
 
 }

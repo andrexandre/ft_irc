@@ -22,9 +22,9 @@ static string retrieveContent(istringstream &ss)
 //ver se e preciso enviar msg para ele proprio
 void Irc::privmsgCmd(istringstream &ss, Client* actualClient)
 {
-	string targetName;
 	string msg;
 	string conntent;
+	string targetName;
 	ss >> targetName;
 	bool isChannel = (targetName[0] == '#') ? 1 : 0;
 
@@ -32,7 +32,7 @@ void Irc::privmsgCmd(istringstream &ss, Client* actualClient)
 	{
 		conntent = retrieveContent(ss);
 		Client* targetClient = findClient(targetName);
-
+		// ERR_CANNOTSENDTOCHAN (404)
 		if (targetClient)
 		{	
 			cout << RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetClient->getNick(), conntent) << endl;
@@ -56,4 +56,4 @@ void Irc::privmsgCmd(istringstream &ss, Client* actualClient)
 	}
 }
 
-// ERR_CANNOTSENDTOCHAN (404)
+

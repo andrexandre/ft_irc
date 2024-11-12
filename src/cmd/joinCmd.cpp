@@ -39,8 +39,7 @@ void Irc::joinCmd(istringstream &ss, Client* actualClient)
 	tarChannel = createChannel(channelName);
 	tarChannel->setChannelUsers(true, actualClient);
 
-	msg += ':' + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost JOIN " + channelName + " * :realname\r\n";
-	cout << msg << endl;
+	cout << RPL_JOIN(actualClient->getNick(), actualClient->getUser(), channelName, string("realname")) << endl;
 	
 	tarChannel->sendAll(RPL_JOIN(actualClient->getNick(), actualClient->getUser(), channelName, string("realname")));
 }

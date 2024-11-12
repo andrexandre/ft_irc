@@ -19,8 +19,8 @@ void Irc::kickCmd(istringstream &ss, Client* actualClient)
 	if (!targetClient)
 		return (serverErrorMsg(actualClient->getSock(), ERR_NOSUCHNICK(actualClient->getNick(), nickName)));
 	if (!channel->isPartOfChannel(targetClient->getNick()))
-		return (serverErrorMsg(actualClient->getSock(), ERR_USERNOTINCHANNEL(actualClient->getNick(), channelName)));
-	string tmp = channelName + " " + targetClient->getNick(); // temporario
-	channel->sendAll(RPL(actualClient->getNick(), actualClient->getUser(), "KICK", tmp, " :", actualClient->getNick()));
+		return (serverErrorMsg(actualClient->getSock(), ERR_USERNOTINCHANNEL(actualClient->getNick(), targetClient->getNick(), channelName)));
+	
+	channel->sendAll(RPL(actualClient->getNick(), actualClient->getUser(), "KICK", (channelName + " " + targetClient->getNick()), " :", actualClient->getNick()));
 	channel->removeClient(targetClient);
 }
