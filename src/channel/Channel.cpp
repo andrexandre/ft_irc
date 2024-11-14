@@ -1,6 +1,6 @@
 #include "Channel.hpp"
 
-Channel::Channel(string name) : _channelName(name), _channelModes("+"), _maxUsersNumber(0) {}
+Channel::Channel(string name) : _channelName(name), _channelModes("+t"), _maxUsersNumber(0) {}
 
 
 Channel::~Channel(void) {}

@@ -119,14 +119,14 @@ void Channel::giveOrTakeOperatorPrivilege(string targetNick, bool privilege)
 
 bool Channel::apllyOperatorPrivilegeFlag(istringstream& ss, string& modeFlag, Client* client)
 {
-	// << MODE #aa +o klkl
-	// >> :luna.AfterNET.Org 401 alex klkl :No such nick
 	string targetNick;
 	bool operation = (modeFlag[0] == '-');
 
 	if (!(ss >> targetNick))
 		return 1;
 	
+	// << MODE #aa +o klkl
+	// >> :luna.AfterNET.Org 401 alex klkl :No such nick
 	//ver se o nick existe no servidor
 
 	if (!isPartOfChannel(targetNick))

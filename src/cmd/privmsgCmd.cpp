@@ -1,7 +1,7 @@
 #include "../../Irc.hpp"
 
 
-static string retrieveContent(istringstream &ss)
+static string retrieveMsg(istringstream &ss)
 {
 	string content;
 	ss >> content;
@@ -30,7 +30,7 @@ void Irc::privmsgCmd(istringstream &ss, Client* actualClient)
 
 	if (!isChannel)
 	{
-		conntent = retrieveContent(ss);
+		conntent = retrieveMsg(ss);
 		Client* targetClient = findClient(targetName);
 		// ERR_CANNOTSENDTOCHAN (404)
 		if (targetClient)
@@ -50,7 +50,7 @@ void Irc::privmsgCmd(istringstream &ss, Client* actualClient)
 		if (!targetChannel->isPartOfChannel(actualClient->getNick()))
 			return serverErrorMsg(actualClient->getSock(), ERR_NOTONCHANNEL(actualClient->getNick(), targetName));
 		
-		conntent = retrieveContent(ss);
+		conntent = retrieveMsg(ss);
 		cout << RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetName, conntent) << endl;
 		return targetChannel->sendPrivMsg(actualClient->getSock(), RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetName, conntent));
 	}
