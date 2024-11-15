@@ -2,7 +2,6 @@
 
 Channel::Channel(string name) : _channelName(name), _channelModes("+t"), _maxUsersNumber(0) {}
 
-
 Channel::~Channel(void) {}
 
 
@@ -27,13 +26,21 @@ void Channel::setMaxUsersNumber(size_t nb) {
 	_maxUsersNumber = nb;
 }
 
+void Channel::setInviteUsers(string nick) 
+{
+	// Para não colocar o nome duas vezes na lista
+	if (_inviteUsers.size() == 0 || std::find(_inviteUsers.begin(), _inviteUsers.end(), nick) == _inviteUsers.end())
+		_inviteUsers.push_back(nick);
+}
+
+void Channel::setChannelModes(char flag) {
+	_channelModes.push_back(flag);
+}
+
+
 
 string Channel::getChannelName(void) const {
 	return (_channelName);
-}
-
-size_t Channel::getMaxUsersNumber(void) const {
-	return (_maxUsersNumber);
 }
 
 string Channel::getChannelTopic(void) const {
@@ -42,6 +49,10 @@ string Channel::getChannelTopic(void) const {
 
 string Channel::getChannelModes(void) const {
 	return (_channelModes);
+}
+
+size_t Channel::getMaxUsersNumber(void) const {
+	return (_maxUsersNumber);
 }
 
 string Channel::getChannelPassword(void) const {
@@ -64,6 +75,11 @@ void Channel::removeClient(Client* ptr)
 	_channelUsers.erase(it);
 }
 
+void Channel::removeChannelModesFlag(char flag) {
+	_channelModes.erase(_channelModes.find(flag), 1);
+}
+
+
 bool Channel::isPartOfChannel(string nick) const
 {
 	map<Client*, bool>::const_iterator it;
@@ -76,6 +92,14 @@ bool Channel::isPartOfChannel(string nick) const
 	return (false);
 }
 
+bool Channel::isFlagSet(char flag) const {
+	return((_channelModes.find(flag) != string::npos) ? 1 : 0);
+}
+
+bool Channel::isChannelFull(void) const {
+	return((getNumberOfUsersOnChannel() >= getMaxUsersNumber()) ? 1 : 0);
+}
+
 bool Channel::isOperator(string nick) const
 {
 	map<Client*, bool>::const_iterator it;
@@ -86,6 +110,10 @@ bool Channel::isOperator(string nick) const
 	}
 
 	return (false);
+}
+
+bool Channel::isUserInvited(string nick) const {
+	return ((std::find(_inviteUsers.begin(), _inviteUsers.end(), nick) != _inviteUsers.end()) ? 1 : 0);
 }
 
 

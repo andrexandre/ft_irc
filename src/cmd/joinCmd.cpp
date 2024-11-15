@@ -1,7 +1,7 @@
 
 #include "../../Irc.hpp"
 
-bool verifyChannelmodes(Channel* tarChannel, Client* actualClient, istringstream& ss)
+static bool verifyChannelmodes(Channel* tarChannel, Client* actualClient, istringstream& ss)
 {
 	string pass;
 	ss >> pass;
@@ -18,12 +18,14 @@ bool verifyChannelmodes(Channel* tarChannel, Client* actualClient, istringstream
 
 void Irc::joinCmd(istringstream &ss, Client* actualClient)
 {
-	string channelName;
 	string msg;
-	ss >> channelName;
+	string channelName;
+
+	if (!(ss >> channelName))
+		return serverErrorMsg(actualClient->getSock(), ERR_NEEDMOREPARAMS(actualClient->getNick(), "JOIN"));
 
 	if (channelName[0] != '#')
-		return (serverErrorMsg(actualClient->getSock(), ERR_NOSUCHCHANNEL(actualClient->getNick(), channelName)));
+		return serverErrorMsg(actualClient->getSock(), ERR_NOSUCHCHANNEL(actualClient->getNick(), channelName));
 
 	Channel* tarChannel;
 	if ((tarChannel = findChannel(channelName)))
@@ -35,11 +37,10 @@ void Irc::joinCmd(istringstream &ss, Client* actualClient)
 		}
 		return;
 	}
-
 	tarChannel = createChannel(channelName);
 	tarChannel->setChannelUsers(true, actualClient);
 
-	cout << RPL_JOIN(actualClient->getNick(), actualClient->getUser(), channelName, string("realname")) << endl;
+	cout << RPL_JOIN(actualClient->getNick(), actualClient->getUser(), channelName, string("realname")) << endl; // apagar depois
 	
 	tarChannel->sendAll(RPL_JOIN(actualClient->getNick(), actualClient->getUser(), channelName, string("realname")));
 }
