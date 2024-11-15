@@ -1,7 +1,5 @@
 #include "../../Irc.hpp"
 
-// Talvez vamos ter de fazer os sample do triplo 1 2 3 que vao 
-// significar o numero de argumentos antes a da mensagem especifica
 void Irc::inviteCmd(std::istringstream &ss, Client* actualClient)
 {
 	string targetNick;
@@ -28,7 +26,7 @@ void Irc::inviteCmd(std::istringstream &ss, Client* actualClient)
 		return serverErrorMsg(actualClient->getSock(), ERR_USERONCHANNEL(actualClient->getNick(), targetClient->getNick(), channelName));
 
 	targetChannel->setInviteUsers(targetNick);
-	// Mensagem a avisar que ele convidou  alguem para o canal
+	// Mensagem a avisar que ele convidou alguem para o canal
 	sendMsg(actualClient->getSock(), RPL_INVITING(actualClient->getNick(), targetNick, channelName));
 	// Mensagem para a pessoa que foi convidada a dizer quem convidou e para que canal
 	sendMsg(targetClient->getSock(), RPL(actualClient->getNick(), actualClient->getNick(), "INVITE", targetNick, " ", channelName));

@@ -1,20 +1,5 @@
 #include "../../Irc.hpp"
 
-void Irc::placeholder(istringstream &ss, Client* actualClient)
-{
-	string cmdName;
-	istringstream sss(ss.str());
-
-	sss >> cmdName;
-	if (cmdName == "CAP")
-		return; // capabilites are presumed to be the same as the server
-	cout << "Unimplemented Command: " << cmdName << endl;
-	if (actualClient->getNick().empty())
-		serverErrorMsg(actualClient->getSock(), ERR_SAMPLE("0", "Command not implemented", cmdName));
-	else
-		serverErrorMsg(actualClient->getSock(), ERR_SAMPLE_2("0", "Command not implemented", actualClient->getNick(), cmdName));
-}
-
 void Irc::nickCmd(istringstream &ss, Client* actualClient)
 {
 	string str;

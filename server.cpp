@@ -9,12 +9,28 @@ void handler(int signal)
 	cout << CYAN "\nTerminating server" END << endl;
 }
 
+void Irc::receiveRequest(int targetFd)
+{
+	char buffer[30000];
+	bzero(buffer, sizeof(buffer));
+	istringstream ss;
+	Client *client = findClient(targetFd);
+
+	if (recv(targetFd, &buffer, sizeof(buffer), 0) <= 0)
+		return quitCmd(ss, client);
+	client->_buffer += string(buffer);
+	if (client->_buffer.find('\n') == string::npos)
+		return;
+	requests.insert(std::make_pair(targetFd, client->_buffer));
+	epfds->modFd(targetFd, EPOLLOUT);
+	client->_buffer.clear();
+}
+
 void Irc::sendResponse(int targetFd)
 {
 	Client* actualClient = findClient(targetFd);
 	map<int, string>::iterator it = requests.find(targetFd);
 	
-	// Mini-parser
 	istringstream RequestSs(it->second);
 	string tmpLine;
 	string cmdName;
@@ -24,7 +40,8 @@ void Irc::sendResponse(int targetFd)
 	{
 		istringstream lineSs(tmpLine);
 		lineSs >> cmdName;
-		// Executor
+		if (cmdName == "CAP")
+			continue;
 		if (!actualClient->isAuthenticated() && cmdName != "PASS" && cmdName != "NICK" &&
 			cmdName != "USER" && cmdName != "CAP" && cmdName != "QUIT")
 		{
@@ -79,21 +96,16 @@ int Irc::run_server(char **av)
 				else
 					eventString = "INVALID";
 				cout << eventString << END << endl;
-				if (isNewClient(evs[i].data.fd) && evs[i].events & EPOLLIN)//new client to the server
+				if (isNewClient(evs[i].data.fd) && evs[i].events & EPOLLIN) // new client to the server
 					acceptClient(evs[i].data.fd);
-				else if (evs[i].events & EPOLLIN)//new request from client
-					parsing(evs[i].data.fd);
-				else if (evs[i].events & EPOLLOUT)//send response to client
+				else if (evs[i].events & EPOLLIN) // receive request from client
+					receiveRequest(evs[i].data.fd);
+				else if (evs[i].events & EPOLLOUT) // send response to client
 					sendResponse(evs[i].data.fd);
 				else
 					break;
 			}
 			j++;
-			if (j == 1000)
-			{
-				cout << RED "Infinite loop detected, terminating server" END << endl;
-				break;
-			}
 		}
 		cout << RED "Reached uncommon place" END << endl;
 	}
