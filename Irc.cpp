@@ -43,5 +43,5 @@ void Irc::setPort(string arg)
 	if (*end || num <= 0  || num >= 65535)
 		throw std::runtime_error("Invalid port!");;
 
-	_port = num;	
+	_port = num;
 }

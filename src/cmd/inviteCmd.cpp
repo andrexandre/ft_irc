@@ -1,7 +1,7 @@
 #include "../../Irc.hpp"
 
-// Talvez vamos ter de fazer os sample do tripo 1 2 3 que vao 
-// significar o numero de argumentos antesa da mensagem especifica
+// Talvez vamos ter de fazer os sample do triplo 1 2 3 que vao 
+// significar o numero de argumentos antes a da mensagem especifica
 void Irc::inviteCmd(std::istringstream &ss, Client* actualClient)
 {
 	string targetNick;
@@ -9,7 +9,9 @@ void Irc::inviteCmd(std::istringstream &ss, Client* actualClient)
 	Client* targetClient;
 	Channel* targetChannel;
 	
-	// Verificar se o  comando esta com todos os parametros ERR_NEEDMOREPARAMS 
+	if (ssLength(ss) != 2)
+		return serverErrorMsg(actualClient->getSock(), ERR_NEEDMOREPARAMS(actualClient->getNick(), "INVITE"));
+
 	if ((ss >> targetNick) && !(targetClient = findClient(targetNick)))
 		return serverErrorMsg(actualClient->getSock(), ERR_NOSUCHNICK(actualClient->getNick(), targetNick));
 	
@@ -22,9 +24,8 @@ void Irc::inviteCmd(std::istringstream &ss, Client* actualClient)
 	if (!targetChannel->isOperator(actualClient->getNick()))
 		return serverErrorMsg(actualClient->getSock(), ERR_CHANOPRIVSNEEDED(actualClient->getNick(), channelName));
 	
-	string tmp = targetClient->getNick() + " " + channelName; // temporario
 	if (targetChannel->isPartOfChannel(targetClient->getNick()))
-		return serverErrorMsg(actualClient->getSock(), ERR_USERONCHANNEL(actualClient->getNick(), tmp));
+		return serverErrorMsg(actualClient->getSock(), ERR_USERONCHANNEL(actualClient->getNick(), targetClient->getNick(), channelName));
 
 	targetChannel->setInviteUsers(targetNick);
 	// Mensagem a avisar que ele convidou  alguem para o canal

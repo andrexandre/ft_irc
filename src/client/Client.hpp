@@ -8,11 +8,13 @@ class Client
 		int _connectionSock;
 		int _isAuthenticated;
 
+		// change <var> to _<var>
 		string nick;
 		string user;
-		string passWord; 
+		string passWord;
 	
 	public:
+		string _buffer;
 		Client(int connectionSock);
 		~Client(void);
 	

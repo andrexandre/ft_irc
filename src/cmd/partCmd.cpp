@@ -1,37 +1,39 @@
 #include "../../Irc.hpp"
-//>> :andre!andre21@9C5B1D.95C97E.C247D8.AE513.IP PART #blaus :Leaving
-//>> :andre!andre21@9C5B1D.95C97E.C247D8.AE513.IP PART #blaus :not happy
-static void retrieveContent(string content, string& reason)
+
+static void retrieveReason(string content, string& reason)
+
 {
 	size_t start = content.find(reason);
 	string tmp = content.substr(start + 1);
 	reason = tmp;
 }
-	
-void Irc::partCmd(std::istringstream &ss, Client* actualClient)
+
+void Irc::partCmd(istringstream &ss, Client* actualClient)
 {
 	string msg;
 	string channelName;
 	string reasonToPart;
 
-	ss >> channelName;
-	Channel* tarChannel = findChannel(channelName);
-	if (tarChannel && tarChannel->isPartOfChannel(actualClient->getNick()))
-	{
-		if (ss >> reasonToPart)
-			retrieveContent(ss.str(), reasonToPart);
-		
-		cout << endl << RPL_PART(actualClient->getNick(), actualClient->getUser(), channelName, reasonToPart) << endl;
-		tarChannel->sendAll(RPL_PART(actualClient->getNick(), actualClient->getUser(), channelName, reasonToPart));
-		tarChannel->removeClient(actualClient);
-	}
-	else
-	{
-		if (!tarChannel)
-			serverErrorMsg(actualClient->getSock(), ERR_NOSUCHCHANNEL(actualClient->getNick(), channelName));
-		else
-			serverErrorMsg(actualClient->getSock(), ERR_NOTONCHANNEL(actualClient->getNick(), channelName));
-	}
-}
+	if (!(ss >> channelName) || !(ss >> reasonToPart))
+		return serverErrorMsg(actualClient->getSock(), ERR_NEEDMOREPARAMS(actualClient->getNick(), "PART"));
+	Channel* tarChannel;
+	if (!(tarChannel = findChannel(channelName)))
+		return serverErrorMsg(actualClient->getSock(), ERR_NOSUCHCHANNEL(actualClient->getNick(), channelName));
+	
+	if (!tarChannel->isPartOfChannel(actualClient->getNick()))
+		return serverErrorMsg(actualClient->getSock(), ERR_NOTONCHANNEL(actualClient->getNick(), channelName));
 
-// ERR_NEEDMOREPARAMS (461) 
+	
+	retrieveReason(ss.str(), reasonToPart);
+
+	cout << endl << RPL_PART(actualClient->getNick(), actualClient->getUser(), channelName, reasonToPart) << endl;
+
+	tarChannel->sendAll(RPL_PART(actualClient->getNick(), actualClient->getUser(), channelName, reasonToPart));
+	tarChannel->removeClient(actualClient);
+	if (tarChannel->getNumberOfUsersOnChannel() == 0)
+	{
+		_serverChannels.erase(std::find(_serverChannels.begin(), _serverChannels.end(), tarChannel));
+		delete tarChannel;
+	}
+	
+}
