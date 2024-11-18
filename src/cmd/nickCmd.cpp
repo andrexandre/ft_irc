@@ -6,7 +6,7 @@ void Irc::nickCmd(istringstream &ss, Client* actualClient)
 	ss >> str;
 
 	if (findClient(str))
-		serverErrorMsg(actualClient->getSock(), ERR_NICKNAMEINUSE(actualClient->getNick(), str));
+		serverErrorMsg(actualClient->getSock(), ERR_NICKNAMEINUSE(str));
 	else
 	{
 		if (str.empty())

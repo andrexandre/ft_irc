@@ -1,6 +1,8 @@
 #pragma once
 
-#define NOTICE_MSG(nick, message) (string(":localhost NOTICE ") + (nick) + " :" + (message) + "\r\n")
+// :[prefix] command [params] :[trailing]
+
+#define NOTICE_MSG(message) (string(":localhost NOTICE :") + (message) + "\r\n")
 
 #define ERR_SAMPLE(code, errName, nick) (string(":localhost ") + (code) + ' ' + (nick) + " :" + (errName) + "\r\n")
 
@@ -40,7 +42,7 @@
 
 #define ERR_ERRONEUSNICKNAME(nick, targetNick) (ERR_SAMPLE_2("432", "Erroneous nickname", nick, targetNick))
 
-#define ERR_NICKNAMEINUSE(nick, targetNick) (ERR_SAMPLE_2("433", "Nickname is already in use", nick, targetNick))
+#define ERR_NICKNAMEINUSE(targetNick) (ERR_SAMPLE("433", "Nickname is already in use", targetNick))
 
 #define ERR_USERNOTINCHANNEL(nick, targetNick, channelName) (ERR_SAMPLE_3("441", "They aren't on that channel", nick, targetNick, channelName))
 

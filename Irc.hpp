@@ -57,6 +57,7 @@ extern bool running;
 int ssLength(istringstream &ss);
 void sendMsg(int fd, string msg);
 void serverErrorMsg(int fd, string errMsg);
+void logger(int type, int data);
 
 
 class Irc
