@@ -23,6 +23,7 @@ Irc::~Irc(void)
 		delete *it;
 	if (epfds)
 		delete epfds;
+	cout << CYAN "Server terminated" END << endl;
 }
 
 void Irc::setServerPassword(string arg) {

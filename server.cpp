@@ -6,7 +6,7 @@ void handler(int signal)
 {
 	(void)signal;
 	running = false;
-	cout << CYAN "\nTerminating server" END << endl;
+	cout << endl;
 }
 
 void Irc::receiveRequest(int targetFd)

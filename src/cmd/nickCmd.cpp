@@ -10,9 +10,9 @@ void Irc::nickCmd(istringstream &ss, Client* actualClient)
 	else
 	{
 		if (str.empty())
-			return serverErrorMsg(actualClient->getSock(), ERR_NONICKNAMEGIVEN(actualClient->getNick()));
+			return serverErrorMsg(actualClient->getSock(), ERR_NONICKNAMEGIVEN("*"));
 		if (str.find_first_of(" ,*?!@.#&:$") != string::npos)
-			return serverErrorMsg(actualClient->getSock(), ERR_ERRONEUSNICKNAME(actualClient->getNick(), str));
+			return serverErrorMsg(actualClient->getSock(), ERR_ERRONEUSNICKNAME("*", str));
 		
 		string oldNick = actualClient->getNick();
 		actualClient->setNick(str);
