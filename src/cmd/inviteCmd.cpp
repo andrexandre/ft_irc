@@ -7,7 +7,7 @@ void Irc::inviteCmd(std::istringstream &ss, Client* client)
 	Client* targetClient;
 	Channel* targetChannel;
 	
-	if (ssLength(ss) != 2)
+	if (ssLength(ss) < 2)
 		return sendMsg(client->getSock(), ERR_NEEDMOREPARAMS(client->getNick(), "INVITE"));
 
 	if ((ss >> targetNick) && !(targetClient = findClient(targetNick)))

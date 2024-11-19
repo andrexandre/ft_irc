@@ -7,7 +7,7 @@ bool validateModeFlag(string modeFlag, Channel* targetChannel)
 	return false;
 }
 
-void applyMode(std::istringstream &ss, Channel* targetChannel, Client* client, string modeFlag)
+void Irc::applyMode(std::istringstream &ss, Channel* targetChannel, Client* client, string modeFlag)
 {
 	char flag = modeFlag[1];
 
@@ -17,28 +17,28 @@ void applyMode(std::istringstream &ss, Channel* targetChannel, Client* client, s
 			if (validateModeFlag(modeFlag, targetChannel))
 				return;
 			else
-				targetChannel->apllyInviteOnlyFlag((modeFlag[0] == '+'));
+				apllyInviteOnlyFlag((modeFlag[0] == '+'), targetChannel);
 			break;
 		
 		case 't': // Set/remove restriction to change the channel topic
 			if (validateModeFlag(modeFlag, targetChannel))
 				return;
 			else
-				targetChannel->apllyTopicRestrictionFlag((modeFlag[0] == '+'));
+				apllyTopicRestrictionFlag((modeFlag[0] == '+'), targetChannel);
 			break;
 		
 		case 'l': // Set/remove the user limit to channel
-			if (targetChannel->apllyLimitRestrictionFlag(ss, modeFlag, client))
+			if (apllyLimitRestrictionFlag(ss, modeFlag, client, targetChannel))
 				return;			
 			break;
 		
 		case 'k': // Set/remove passWord for channel
-			if (targetChannel->apllyPasswordFlag(ss, modeFlag, client))
+			if (apllyPasswordFlag(ss, modeFlag, client, targetChannel))
 				return;
 			break;
 		
 		case 'o': // Set/remove the operator privilege
-			if (targetChannel->apllyOperatorPrivilegeFlag(ss, modeFlag, client))
+			if (apllyOperatorPrivilegeFlag(ss, modeFlag, client, targetChannel))
 				return;
 			break;
 		

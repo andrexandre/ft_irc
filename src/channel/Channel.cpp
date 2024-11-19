@@ -140,3 +140,14 @@ void Channel::sendAll(string msg) const
 	}
 }
 
+
+void Channel::giveOrTakeOperatorPrivilege(string targetNick, bool privilege)
+{
+	std::map<Client*, bool>::iterator it;
+	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
+	{
+		if (it->first->getNick() == targetNick)
+			break;
+	}
+	it->second = privilege;
+}

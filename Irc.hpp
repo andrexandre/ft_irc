@@ -56,7 +56,6 @@ extern bool running;
 
 int ssLength(istringstream &ss);
 void sendMsg(int fd, string msg);
-void sendMsg(int fd, string errMsg);
 void logger(int type, int data);
 
 class Irc
@@ -79,6 +78,14 @@ class Irc
 		bool isNewClient(int targetFd);
 		void acceptClient(int serverFd);
 		void sendResponse(int targetFd);
+		
+		// Modes
+		void apllyInviteOnlyFlag(bool optr, Channel* targetChannel);
+		void apllyTopicRestrictionFlag(bool optr, Channel* targetChannel);
+		void applyMode(std::istringstream &ss, Channel* targetChannel, Client* client, string modeFlag);
+		bool apllyPasswordFlag(istringstream& ss, string& modeFlag, Client* client, Channel* targetChannel);
+		bool apllyLimitRestrictionFlag(istringstream& ss, string& modeFlag, Client* client, Channel* targetChannel);
+		bool apllyOperatorPrivilegeFlag(istringstream& ss, string& modeFlag, Client* client, Channel* targetChannel);
 
 	private:
 		Client* findClient(int target);
