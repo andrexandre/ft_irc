@@ -18,7 +18,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <cstdio>
-#include <sys/epoll.h>  // Para epoll
+#include <sys/epoll.h>
 #include <fcntl.h>
 
 #define END			"\033[0m"
@@ -39,7 +39,9 @@ using std::cerr;
 using std::endl;
 using std::vector;
 using std::map;
+using std::stringstream;
 using std::istringstream;
+using std::stringstream;
 
 class Client;
 class Channel;
@@ -52,6 +54,10 @@ class EpollManager;
 
 extern bool running;
 
+int ssLength(istringstream &ss);
+void sendMsg(int fd, string msg);
+void logger(int type, int data);
+
 class Irc
 {
 	private:
@@ -63,44 +69,52 @@ class Irc
 		map<int, Client*> _clients; // fd e o respetivo cliente
 		// requests é o conjunto de todas as request que tem de ser feitas
 		map<int, string> requests; // fd e a respetiva string que contem o comando a ser feito
-		std::vector<Channel*> _serverChannels; // Contem todos os canais do server
+		vector<Channel*> _serverChannels; // Contem todos os canais do server
 
 	private:
 		void initNetWork(void);
-		void parsing(int targetFd);
+		void receiveRequest(int targetFd);
 		void setNonBloking(int *ptr);
 		bool isNewClient(int targetFd);
 		void acceptClient(int serverFd);
 		void sendResponse(int targetFd);
-		void readRequest(int targetFd); // Temmporario
+		
+		// Modes
+		void apllyInviteOnlyFlag(bool optr, Channel* targetChannel);
+		void apllyTopicRestrictionFlag(bool optr, Channel* targetChannel);
+		void applyMode(std::istringstream &ss, Channel* targetChannel, Client* client, string modeFlag);
+		bool apllyPasswordFlag(istringstream& ss, string& modeFlag, Client* client, Channel* targetChannel);
+		bool apllyLimitRestrictionFlag(istringstream& ss, string& modeFlag, Client* client, Channel* targetChannel);
+		bool apllyOperatorPrivilegeFlag(istringstream& ss, string& modeFlag, Client* client, Channel* targetChannel);
 
 	private:
 		Client* findClient(int target);
 		Client* findClient(string name);
 		void deleteClient(map<int, Client*>::iterator& it);
+		void leaveAllChannels(Client* ptr);
 
 		Channel* findChannel(string name);
 		Channel* createChannel(string name);
-		// void deleteChannel(Channel* ptr);
-
-		void serverErrorMsg(int fd, string errMsg);
 
 	public:
 		Irc(void);
 		~Irc(void);
 		int run_server(char **av);
-		void setPort(string arg);
-		void setServerPassword(string arg);
+		void setPortAndPassword(char **av);
 
 	private:
-		typedef void (Irc::*CommandPtr)(std::istringstream& line,  Client* actualClient);
-		map<string, CommandPtr> cmds; // Nome to comando e o pienter para a respetiva funcao
+		typedef void (Irc::*CommandPtr)(istringstream& line, Client* client);
+		map<string, CommandPtr> cmds; // Nome to comando e o pointer para a respetiva funcao
 
-		void privmsgCmd(std::istringstream &ss, Client* actualClient);
-		void joinCmd(std::istringstream &ss, Client* actualClient);
-		void partCmd(std::istringstream &ss, Client* actualClient);
-		void topicCmd(std::istringstream &ss, Client* actualClient);
-		void modeCmd(std::istringstream &ss, Client* actualClient);
-		void passCmd(std::istringstream &ss, Client* actualClient);
-		void nickCmd(std::istringstream &ss, Client* actualClient);
+		void privmsgCmd(istringstream &ss, Client* client);
+		void joinCmd(istringstream &ss, Client* client);
+		void partCmd(istringstream &ss, Client* client);
+		void topicCmd(istringstream &ss, Client* client);
+		void modeCmd(istringstream &ss, Client* client);
+		void passCmd(istringstream &ss, Client* client);
+		void nickCmd(istringstream &ss, Client* client);
+		void userCmd(istringstream &ss, Client* client);
+		void inviteCmd(istringstream &ss, Client* client);
+		void quitCmd(istringstream &ss, Client* client);
+		void kickCmd(istringstream &ss, Client* client);
 };

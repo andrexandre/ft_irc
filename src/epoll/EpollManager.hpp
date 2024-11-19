@@ -6,7 +6,7 @@ class EpollManager
 {
 	private:
 		int epSock;
-		std::vector<int> listFds;
+		vector<int> listFds;
 
 	public:
 		EpollManager(void);
@@ -20,3 +20,4 @@ class EpollManager
 	public:
 		int getEpSock(void) const;
 };
+// strace -e epoll_ctl,epoll_wait ./ircserv 8080 123

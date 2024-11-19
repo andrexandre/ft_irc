@@ -1,17 +1,12 @@
 #include "../../Irc.hpp"
 
-void Irc::passCmd(std::istringstream &ss, Client* actualClient)
+void Irc::passCmd(istringstream &ss, Client* client)
 {
 	string str;
-	ss >> str;
-	actualClient->setPassWord(str);
+	
+	if (!(ss >> str))
+		return sendMsg(client->getSock(), ERR_NEEDMOREPARAMS(client->getNick(), "PASS"));
+	if (client->isAuthenticated())
+		return sendMsg(client->getSock(), ERR_ALREADYREGISTRED(client->getNick()));
+	client->setPassWord(str);
 }
-/*
-// This is what should be on the authenticateClient() function
-	if (actualClient->getPassWord().empty())
-		cout << YELLOW "Password is empty!" END << endl;
-	else if (actualClient->getPassWord() == _passWord)
-		cout << YELLOW "Correct Password!" END << endl;
-	else
-		cout << YELLOW "Incorrect Password!" END << endl;
-*/

@@ -1,8 +1,7 @@
 #include "../../Irc.hpp"
 
-// :alex21!alex@9C5B1D.95C97E.C247D8.AE513.IP PRIVMSG loiky :bem?
 
-static string retrieveContent(std::istringstream &ss)
+static string retrieveMsg(istringstream &ss)
 {
 	string content;
 	ss >> content;
@@ -10,7 +9,7 @@ static string retrieveContent(std::istringstream &ss)
 
 	if (colon)
 	{
-		content.erase(0,1);
+		content.erase(content.begin());
 		string tmp;
 		std::getline(ss, tmp);
 		content += tmp;
@@ -20,65 +19,37 @@ static string retrieveContent(std::istringstream &ss)
 	return (content);
 }
 
-//ver se e preciso enviar msg para ele proprio
-void Irc::privmsgCmd(std::istringstream &ss, Client* actualClient)
+void Irc::privmsgCmd(istringstream &ss, Client* client)
 {
-	string targetName;
 	string msg;
 	string conntent;
+	string targetName;
 	ss >> targetName;
 	bool isChannel = (targetName[0] == '#') ? 1 : 0;
 
-
 	if (!isChannel)
 	{
-		// ss >> conntent;
-		conntent = retrieveContent(ss);
-		Client* targetClient = findClient(targetName);
+		Client* targetClient;
+		if (!(targetClient = findClient(targetName)))
+			return sendMsg(client->getSock(), ERR_NOSUCHNICK(client->getNick(), targetName));
 
-		if (targetClient)
-		{
-			msg += ":" + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost PRIVMSG " + targetClient->getNick() + " :" + conntent + "\r\n";
-			cout << msg << endl;
-			send(targetClient->getSock(), msg.c_str(), msg.size(), 0);
-		}
-		else
-		{
-			msg += ERR_NOSUCHNICK(actualClient->getNick(), targetName);
-			cout << msg << endl;
-			//apagar os dois acima depois 
-			return serverErrorMsg(actualClient->getSock(), ERR_NOSUCHNICK(actualClient->getNick(), targetName));
-		}
+		conntent = retrieveMsg(ss);
+		cout << RPL_PRIVMSG(client->getNick(), client->getUser(), targetClient->getNick(), conntent) << endl; //apagar depois
+		sendMsg(targetClient->getSock(), RPL_PRIVMSG(client->getNick(), client->getUser(), targetClient->getNick(), conntent));
 	}
 	else
 	{
-		// string tmp = ss.str();
-		// conntent = tmp.substr((tmp.find(targetName) + targetName.size() + 1));
+		Channel* targetChannel;
+		if (!(targetChannel = findChannel(targetName)))
+			return sendMsg(client->getSock(), ERR_NOSUCHCHANNEL(client->getNick(), targetName));
 
-		conntent = retrieveContent(ss);
-		Channel* tarChannel = findChannel(targetName);
-		if (!tarChannel)
-		{
-			//mandar mesangem de erro
-			return;
-		}
-		//send message to channel to all people in channel
-		msg += ":" + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost PRIVMSG " + tarChannel->getChannelName() + " :" + conntent + "\r\n";
-		cout << msg << endl;
-		return tarChannel->sendPrivMsg(actualClient->getSock(), msg);
+		if (!targetChannel->isPartOfChannel(client->getNick()))
+			return sendMsg(client->getSock(), ERR_NOTONCHANNEL(client->getNick(), targetName));
+		
+		conntent = retrieveMsg(ss);
+		cout << RPL_PRIVMSG(client->getNick(), client->getUser(), targetName, conntent) << endl; //apagar depois
+		return targetChannel->sendPrivMsg(client->getSock(), RPL_PRIVMSG(client->getNick(), client->getUser(), targetName, conntent));
 	}
-
 }
 
 
-
-
-// ERR_NOSUCHNICK (401)
-// ERR_NOSUCHSERVER (402)
-// ERR_CANNOTSENDTOCHAN (404)
-// ERR_TOOMANYTARGETS (407)
-// ERR_NORECIPIENT (411)
-// ERR_NOTEXTTOSEND (412)
-// ERR_NOTOPLEVEL (413)
-// ERR_WILDTOPLEVEL (414)
-// RPL_AWAY (301)

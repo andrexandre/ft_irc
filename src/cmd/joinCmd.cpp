@@ -1,48 +1,46 @@
 
 #include "../../Irc.hpp"
 
-void Irc::joinCmd(std::istringstream &ss, Client* actualClient)
+static bool verifyChannelmodes(Channel* tarChannel, Client* client, istringstream& ss)
 {
-	string channelName;
+	string pass;
+	ss >> pass;
+
+	if (tarChannel->isFlagSet('i') && !tarChannel->isUserInvited(client->getNick()))
+		return (sendMsg(client->getSock(), ERR_INVITEONLYCHAN(client->getNick(), tarChannel->getChannelName())), 1);
+	else if (tarChannel->isFlagSet('l') && tarChannel->isChannelFull())
+		return (sendMsg(client->getSock(), ERR_CHANNELISFULL(client->getNick(), tarChannel->getChannelName())), 1);
+	else if (tarChannel->isFlagSet('k') && (pass != tarChannel->getChannelPassword()))
+		return (sendMsg(client->getSock(), ERR_BADCHANNELKEY(client->getNick(), tarChannel->getChannelName())), 1);
+
+	return 0;
+}
+
+void Irc::joinCmd(istringstream &ss, Client* client)
+{
 	string msg;
-	ss >> channelName;
+	string channelName;
+
+	if (!(ss >> channelName))
+		return sendMsg(client->getSock(), ERR_NEEDMOREPARAMS(client->getNick(), "JOIN"));
 
 	if (channelName[0] != '#')
-		return (serverErrorMsg(actualClient->getSock(), ERR_NOSUCHCHANNEL(actualClient->getNick(), channelName)));
+		return sendMsg(client->getSock(), ERR_NOSUCHCHANNEL(client->getNick(), channelName));
 
 	Channel* tarChannel;
 	if ((tarChannel = findChannel(channelName)))
 	{
-		//ver se o user ja foi bannido do channel
-		//ver se o user ja foi convidado para o channel
-
-		msg += ':' + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost JOIN " + channelName + " * :realname\r\n";
-		tarChannel->setChannelUsers(false, actualClient);
-		tarChannel->sendAll(msg);
+		if (!verifyChannelmodes(tarChannel, client, ss))
+		{
+			tarChannel->setChannelUsers(false, client);
+			tarChannel->sendAll(RPL_JOIN(client->getNick(), client->getUser(), channelName, string("realname")));
+		}
 		return;
 	}
-
-	//Caso o canal nao exista ele cria o seu canal
 	tarChannel = createChannel(channelName);
-	tarChannel->setChannelUsers(true, actualClient);
-	msg += ':' + actualClient->getNick() + '!' + actualClient->getUser() + "@localhost JOIN " + channelName + " * :realname\r\n";
-	cout << msg << endl;
-	tarChannel->sendAll(msg);
+	tarChannel->setChannelUsers(true, client);
+
+	cout << RPL_JOIN(client->getNick(), client->getUser(), channelName, string("realname")) << endl; // apagar depois
+	
+	tarChannel->sendAll(RPL_JOIN(client->getNick(), client->getUser(), channelName, string("realname")));
 }
-
-
-// ERR_NEEDMOREPARAMS (461)
-// ERR_NOSUCHCHANNEL (403)
-// ERR_TOOMANYCHANNELS (405)
-// ERR_BADCHANNELKEY (475)
-// ERR_BANNEDFROMCHAN (474)
-// ERR_CHANNELISFULL (471)
-// ERR_INVITEONLYCHAN (473)
-// ERR_BADCHANMASK (476)
-// RPL_TOPIC (332)
-// RPL_TOPICWHOTIME (333)
-// RPL_NAMREPLY (353)
-// RPL_ENDOFNAMES (366)
-
-
-

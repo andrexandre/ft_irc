@@ -8,7 +8,7 @@ void Irc::setNonBloking(int *ptr)
 {
 	int fd = fcntl(*ptr, F_SETFL, O_NONBLOCK);
 	if (fd == -1)
-		throw std::runtime_error("Error: Failed to set the soket to nonBlocking");
+		throw std::runtime_error("Failed to set the soket to nonBlocking");
 }
 
 void Irc::acceptClient(int serverFd)
@@ -19,12 +19,12 @@ void Irc::acceptClient(int serverFd)
 	bzero(&address, addrlen);
 
 	if ((newSock = accept(serverFd, (struct sockaddr *)&address, &addrlen)) < 0)
-		throw std::runtime_error("Error: Failed to accept connection");
+		throw std::runtime_error("Failed to accept connection");
 
-	// setNonBloking(&newSock);
-	epfds->addFd(newSock, EPOLLIN | EPOLLERR | EPOLLRDHUP | EPOLLHUP);
-	_clients.insert(std::make_pair(newSock, (new Client(newSock))));//create new client
-	cout << "NEW CLIENT ADDED TO THE SERVER" << "(fd: " << newSock << ")" << endl;
+	setNonBloking(&newSock);
+	epfds->addFd(newSock, EPOLLIN | EPOLLERR | EPOLLHUP);
+	_clients.insert(std::make_pair(newSock, (new Client(newSock))));
+	cout << MAGENTA "Opening connection, fd: " << newSock << END << endl;
 }
 
 void Irc::initNetWork(void)
@@ -39,18 +39,19 @@ void Irc::initNetWork(void)
 
 	_serverSock = socket(AF_INET, SOCK_STREAM, 0);
 	if (_serverSock == -1)
-		throw std::runtime_error("Error: Failed to create socket");
+		throw std::runtime_error("Failed to create socket");
 	
-	int enable = 1;
-	if (setsockopt(_serverSock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
-		throw std::runtime_error("Error: Failed to set setsockopt to SO_REUSEADDR");
-	
-	if (bind(_serverSock, (struct sockaddr *)&address, addrlen) < 0)
-		throw std::runtime_error("Error: Failed to bind socket to a port");
-
-	if (listen(_serverSock, BACKLOG) < 0)
-		throw std::runtime_error("Error: Failed to listen to socket");
-
 	epfds = new EpollManager();
 	epfds->addFd(_serverSock, EPOLLIN | EPOLLET);
+
+	int enable = 1;
+	setNonBloking(&_serverSock);
+	if (setsockopt(_serverSock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
+		throw std::runtime_error("Failed to set setsockopt to SO_REUSEADDR");
+	
+	if (bind(_serverSock, (struct sockaddr *)&address, addrlen) < 0)
+		throw std::runtime_error("Failed to bind socket to a port");
+
+	if (listen(_serverSock, BACKLOG) < 0)
+		throw std::runtime_error("Failed to listen to socket");
 }

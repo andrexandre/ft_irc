@@ -5,133 +5,100 @@ bool running = true;
 void handler(int signal)
 {
 	(void)signal;
-	
-	running = false;	
-	cout << RED << running << END << endl;
-	// exit(1);
+	running = false;
+	cout << endl;
+}
+
+void Irc::receiveRequest(int targetFd)
+{
+	char buffer[30000];
+	bzero(buffer, sizeof(buffer));
+	istringstream ss;
+	Client *client = findClient(targetFd);
+
+	if (recv(targetFd, &buffer, sizeof(buffer), 0) <= 0)
+		return quitCmd(ss, client);
+	client->_buffer += string(buffer);
+	if (client->_buffer.find('\n') == string::npos)
+		return;
+	requests.insert(std::make_pair(targetFd, client->_buffer));
+	epfds->modFd(targetFd, EPOLLOUT);
+	client->_buffer.clear();
 }
 
 void Irc::sendResponse(int targetFd)
 {
-	Client* actualClient = findClient(targetFd);
+	Client* client = findClient(targetFd);
 	map<int, string>::iterator it = requests.find(targetFd);
 	
-	istringstream ss(it->second);
-	string tmp;
+	istringstream RequestSs(it->second);
+	string tmpLine;
 	string cmdName;
-	string content;
 
-	while (std::getline(ss, tmp))
+	cout << "Received from client fd: " << targetFd << endl;
+	cout << WHITE << RequestSs.str() << END << endl;
+	while (std::getline(RequestSs, tmpLine))
 	{
-		istringstream line(tmp);
-		line >> cmdName;
-		cout << cmdName << endl;
-		if (cmdName == "NICK")
+		istringstream lineSs(tmpLine);
+		lineSs >> cmdName;
+		if (cmdName == "CAP")
+			continue;
+		if (!client->isAuthenticated() && cmdName != "PASS" && cmdName != "NICK" &&
+			cmdName != "USER" && cmdName != "CAP" && cmdName != "QUIT")
 		{
-			line >> content;
-			actualClient->setNick(content);
-		}
-		else if (cmdName == "USER")
-		{
-			line >> content;
-			actualClient->setUser(content);
+			sendMsg(client->getSock(), ERR_NOTREGISTERED(client->getNick()));
+			continue;
 		}
 		if (this->cmds.find(cmdName) != this->cmds.end())
-			(this->*(this->cmds[cmdName]))(line, actualClient);
-		else {/*erro ou pode ser feito no parser*/}
+			(this->*(this->cmds[cmdName]))(lineSs, client);
+		else
+			sendMsg(client->getSock(), ERR_UNKNOWNCOMMAND(client->getNick(), cmdName));
 	}
 	
 	requests.erase(it);
 	epfds->modFd(targetFd, EPOLLIN);
 }
 
-void Irc::readRequest(int targetFd)
-{
-	char buffer[30001];
-	bzero(buffer, sizeof(buffer));
-	if (read(targetFd, &buffer, 30000) < 0)
-		throw std::runtime_error("Error: in readind the fd");
-	
-	cout << buffer << endl;
-
-	std::istringstream fullContent((string(buffer)));
-	string tmp;
-	Client* actualClient = findClient(targetFd);
-	// Order of commands must be checked !!!
-	while (std::getline(fullContent, tmp))
-	{
-		std::istringstream line(tmp);
-		string cmd;
-		string content; // temp
-		line >> cmd;
-		// std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::toupper);
-		if (cmd == "NICK")
-		{
-			line >> content;
-			actualClient->setNick(content);
-		}
-		else if (cmd == "USER")
-		{
-			line >> content;
-			actualClient->setUser(content);
-		}
-		else if (cmd == "PASS")
-			passCmd(line, actualClient);
-		else if (cmd == "privmsg" || cmd == "PRIVMSG")
-			privmsgCmd(line, actualClient);
-		else if (cmd == "join" || cmd == "JOIN")
-			joinCmd(line, actualClient);
-		else if (cmd == "PART" || cmd == "part")
-			partCmd(line, actualClient);
-		else if (cmd == "TOPIC" || cmd == "topic")
-			topicCmd(line, actualClient);
-		else if (cmd == "MODE" || cmd == "mode")
-			modeCmd(line, actualClient);
-	}
-	
-	// epfds->modFd(targetFd, EPOLLOUT); //depois
-}
-
 int Irc::run_server(char **av)
 {
-	struct epoll_event evs[MAX_EVENTS]; //pesquisar coisas
+	struct epoll_event evs[MAX_EVENTS];
 	try
 	{
-		setPort(av[1]);
-		setServerPassword(av[2]);
+		signal(SIGINT, handler);
+		setPortAndPassword(av);
 		initNetWork();
 
 		int event_count = 0;
-		int j = 0;	
+		int j = 0;
 		while (running)
 		{
-			cout << "\nPolling for input " << j << "..." << endl;	
+			logger(1, j);
 			event_count = epoll_wait(epfds->getEpSock(), evs, MAX_EVENTS, -1);
 			if (event_count == -1)
-				throw std::runtime_error("Error: in epoll_wait");
+				throw std::runtime_error("epoll_wait");
 
-			cout << "EVENTS READY: " << event_count << '\n' << endl;
+			logger(2, event_count);
 			for (int i = 0; i < event_count; i++)
 			{
-				cout << RED << "Socket that was ready(" << evs[i].data.fd  << ") and the event: " << static_cast<int>(evs[i].events) << END << endl;
-				if (isNewClient(evs[i].data.fd) && evs[i].events & EPOLLIN)//new client to the server
+				logger(3, evs[i].data.fd);
+				logger(4, evs[i].events);
+				if (isNewClient(evs[i].data.fd) && evs[i].events & EPOLLIN) // new client to the server
 					acceptClient(evs[i].data.fd);
-				else if (evs[i].events & EPOLLIN)//new request from client
-					parsing(evs[i].data.fd);
-				else if (evs[i].events & EPOLLOUT)//send response to client
+				else if (evs[i].events & EPOLLIN) // receive request from client
+					receiveRequest(evs[i].data.fd);
+				else if (evs[i].events & EPOLLOUT) // send response to client
 					sendResponse(evs[i].data.fd);
-				else if (evs[i].events & EPOLLRDHUP || evs[i].events & EPOLLERR || evs[i].events & EPOLLHUP)
-					throw std::runtime_error("Server stoped with EPOLLERR || EPOLLRDHUP || EPOLLHUP");
 				else
 					break;
 			}
 			j++;
 		}
-		cout << RED "Reached uncommon place" END << endl;
+		logger(5, 0);
 	}
 	catch(const std::exception& e)
 	{
-		cerr << e.what() << " 💀" << '\n';
+		if (running)
+			cerr << "Error: " << e.what() << " 💀" << '\n';
 	}
 	return 0;
 }
