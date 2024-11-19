@@ -22,13 +22,13 @@ void Irc::userCmd(istringstream &ss, Client* actualClient)
 	if (length != 4)
 		return serverErrorMsg(actualClient->getSock(), ERR_NEEDMOREPARAMS(actualClient->getNick(), "USER"));
 	if (actualClient->getNick().empty())
-		return serverErrorMsg(actualClient->getSock(), NOTICE_MSG(actualClient->getNick(), "Empty nick, please set a nick first"));
+		return serverErrorMsg(actualClient->getSock(), NOTICE_MSG("Empty nick, please set a nick first"));
 	if (actualClient->isAuthenticated())
 		return serverErrorMsg(actualClient->getSock(), ERR_ALREADYREGISTRED(actualClient->getNick()));
 	ss >> user;
 	ss >> str;
 	if (!(str == "0" && ss >> str && str == "*" && ss >> str && str == ":realname"))
-		serverErrorMsg(actualClient->getSock(), NOTICE_MSG(actualClient->getNick(), "Unwanted input, username still changed"));
+		serverErrorMsg(actualClient->getSock(), NOTICE_MSG("Unwanted input, username still changed"));
 	if (actualClient->getPassWord() != _serverPassWord)
 	{
 		serverErrorMsg(actualClient->getSock(), ERR_PASSWDMISMATCH(actualClient->getNick()));
@@ -36,4 +36,5 @@ void Irc::userCmd(istringstream &ss, Client* actualClient)
 	}
 	actualClient->setUser(user);
 	actualClient->authenticate();
+	sendMsg(actualClient->getSock(), NOTICE_MSG("\x03" "02Welcome to the server!"));
 }

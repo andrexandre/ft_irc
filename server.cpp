@@ -6,7 +6,24 @@ void handler(int signal)
 {
 	(void)signal;
 	running = false;
-	cout << CYAN "\nTerminating server" END << endl;
+	cout << endl;
+}
+
+void Irc::receiveRequest(int targetFd)
+{
+	char buffer[30000];
+	bzero(buffer, sizeof(buffer));
+	istringstream ss;
+	Client *client = findClient(targetFd);
+
+	if (recv(targetFd, &buffer, sizeof(buffer), 0) <= 0)
+		return quitCmd(ss, client);
+	client->_buffer += string(buffer);
+	if (client->_buffer.find('\n') == string::npos)
+		return;
+	requests.insert(std::make_pair(targetFd, client->_buffer));
+	epfds->modFd(targetFd, EPOLLOUT);
+	client->_buffer.clear();
 }
 
 void Irc::sendResponse(int targetFd)
@@ -14,17 +31,17 @@ void Irc::sendResponse(int targetFd)
 	Client* actualClient = findClient(targetFd);
 	map<int, string>::iterator it = requests.find(targetFd);
 	
-	// Mini-parser
 	istringstream RequestSs(it->second);
 	string tmpLine;
 	string cmdName;
 
-	cout << RequestSs.str() << endl;
+	cout << "Received from client fd: " << targetFd << endl << RequestSs.str() << endl;
 	while (std::getline(RequestSs, tmpLine))
 	{
 		istringstream lineSs(tmpLine);
 		lineSs >> cmdName;
-		// Executor
+		if (cmdName == "CAP")
+			continue;
 		if (!actualClient->isAuthenticated() && cmdName != "PASS" && cmdName != "NICK" &&
 			cmdName != "USER" && cmdName != "CAP" && cmdName != "QUIT")
 		{
@@ -41,11 +58,6 @@ void Irc::sendResponse(int targetFd)
 	epfds->modFd(targetFd, EPOLLIN);
 }
 
-// void logger(int mode) // TO-DO
-// {
-// 	// if (mode)
-// }
-
 int Irc::run_server(char **av)
 {
 	struct epoll_event evs[MAX_EVENTS];
@@ -60,47 +72,34 @@ int Irc::run_server(char **av)
 		int j = 0;
 		while (running)
 		{
-			cout << BLUE "\n" << j << " Inputs received, Waiting for event..." END << endl;
+			logger(1, j);
 			event_count = epoll_wait(epfds->getEpSock(), evs, MAX_EVENTS, -1);
 			if (event_count == -1)
 				throw std::runtime_error("epoll_wait");
 
-			cout << "Fds received: " << event_count << endl;
+			logger(2, event_count);
 			for (int i = 0; i < event_count; i++)
 			{
-				cout << GREEN "Received socket n: " << evs[i].data.fd  << " with event ";
-				string eventString;
-				if (evs[i].events & EPOLLIN)
-					eventString = "EPOLLIN";
-				else if (evs[i].events & EPOLLOUT)
-					eventString = "EPOLLOUT";
-				else if (evs[i].events & EPOLLERR || evs[i].events & EPOLLRDHUP || evs[i].events & EPOLLHUP)
-					eventString = "EPOLLERR || EPOLLRDHUP || EPOLLHUP";
-				else
-					eventString = "INVALID";
-				cout << eventString << END << endl;
-				if (isNewClient(evs[i].data.fd) && evs[i].events & EPOLLIN)//new client to the server
+				logger(3, evs[i].data.fd);
+				logger(4, evs[i].events);
+				if (isNewClient(evs[i].data.fd) && evs[i].events & EPOLLIN) // new client to the server
 					acceptClient(evs[i].data.fd);
-				else if (evs[i].events & EPOLLIN)//new request from client
-					parsing(evs[i].data.fd);
-				else if (evs[i].events & EPOLLOUT)//send response to client
+				else if (evs[i].events & EPOLLIN) // receive request from client
+					receiveRequest(evs[i].data.fd);
+				else if (evs[i].events & EPOLLOUT) // send response to client
 					sendResponse(evs[i].data.fd);
 				else
 					break;
 			}
 			j++;
-			if (j == 1000)
-			{
-				cout << RED "Infinite loop detected, terminating server" END << endl;
-				break;
-			}
 		}
-		cout << RED "Reached uncommon place" END << endl;
+		logger(5, 0);
 	}
 	catch(const std::exception& e)
 	{
 		if (running)
 			cerr << "Error: " << e.what() << " 💀" << '\n';
+		close(_serverSock);
 	}
 	return 0;
 }

@@ -18,7 +18,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <cstdio>
-#include <sys/epoll.h>  // Para epoll
+#include <sys/epoll.h>
 #include <fcntl.h>
 
 #define END			"\033[0m"
@@ -57,6 +57,7 @@ extern bool running;
 int ssLength(istringstream &ss);
 void sendMsg(int fd, string msg);
 void serverErrorMsg(int fd, string errMsg);
+void logger(int type, int data);
 
 
 class Irc
@@ -74,7 +75,7 @@ class Irc
 
 	private:
 		void initNetWork(void);
-		void parsing(int targetFd);
+		void receiveRequest(int targetFd);
 		void setNonBloking(int *ptr);
 		bool isNewClient(int targetFd);
 		void acceptClient(int serverFd);
@@ -88,7 +89,6 @@ class Irc
 
 		Channel* findChannel(string name);
 		Channel* createChannel(string name);
-		// void deleteChannel(Channel* ptr);
 
 	public:
 		Irc(void);
@@ -109,8 +109,6 @@ class Irc
 		void passCmd(istringstream &ss, Client* actualClient);
 		void nickCmd(istringstream &ss, Client* actualClient);
 		void userCmd(istringstream &ss, Client* actualClient);
-		void placeholder(istringstream &ss, Client* actualClient);
-		// placeholder is in nickCmd.cpp
 		void inviteCmd(istringstream &ss, Client* actualClient);
 		void quitCmd(istringstream &ss, Client* actualClient);
 		void kickCmd(istringstream &ss, Client* actualClient);

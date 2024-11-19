@@ -1,7 +1,7 @@
 #include "../../Irc.hpp"
 
 
-static string retrieveContent(istringstream &ss)
+static string retrieveMsg(istringstream &ss)
 {
 	string content;
 	ss >> content;
@@ -19,7 +19,6 @@ static string retrieveContent(istringstream &ss)
 	return (content);
 }
 
-//ver se e preciso enviar msg para ele proprio
 void Irc::privmsgCmd(istringstream &ss, Client* actualClient)
 {
 	string msg;
@@ -30,28 +29,25 @@ void Irc::privmsgCmd(istringstream &ss, Client* actualClient)
 
 	if (!isChannel)
 	{
-		conntent = retrieveContent(ss);
-		Client* targetClient = findClient(targetName);
-		// ERR_CANNOTSENDTOCHAN (404)
-		if (targetClient)
-		{	
-			cout << RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetClient->getNick(), conntent) << endl;
-			sendMsg(targetClient->getSock(), RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetClient->getNick(), conntent));
-		}
-		else
+		Client* targetClient;
+		if (!(targetClient = findClient(targetName)))
 			return serverErrorMsg(actualClient->getSock(), ERR_NOSUCHNICK(actualClient->getNick(), targetName));
+
+		conntent = retrieveMsg(ss);
+		cout << RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetClient->getNick(), conntent) << endl; //apagar depois
+		sendMsg(targetClient->getSock(), RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetClient->getNick(), conntent));
 	}
 	else
 	{
-		Channel* targetChannel = findChannel(targetName);
-		if (!targetChannel)
+		Channel* targetChannel;
+		if (!(targetChannel = findChannel(targetName)))
 			return serverErrorMsg(actualClient->getSock(), ERR_NOSUCHCHANNEL(actualClient->getNick(), targetName));
 
 		if (!targetChannel->isPartOfChannel(actualClient->getNick()))
 			return serverErrorMsg(actualClient->getSock(), ERR_NOTONCHANNEL(actualClient->getNick(), targetName));
 		
-		conntent = retrieveContent(ss);
-		cout << RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetName, conntent) << endl;
+		conntent = retrieveMsg(ss);
+		cout << RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetName, conntent) << endl; //apagar depois
 		return targetChannel->sendPrivMsg(actualClient->getSock(), RPL_PRIVMSG(actualClient->getNick(), actualClient->getUser(), targetName, conntent));
 	}
 }

@@ -12,13 +12,7 @@ Irc::Irc(void)
 	cmds["MODE"] = &Irc::modeCmd;
 	cmds["INVITE"] = &Irc::inviteCmd;
 	cmds["QUIT"] = &Irc::quitCmd;
-	// cmds["NOTICE"] = &Irc::noticeCmd;
-	// cmds["WHO"] = &Irc::whoCmd;
 	cmds["KICK"] = &Irc::kickCmd;
-
-	cmds["NOTICE"] = &Irc::placeholder;
-	cmds["WHO"] = &Irc::placeholder;
-	cmds["CAP"] = &Irc::placeholder;
 }
 
 Irc::~Irc(void) 
@@ -29,6 +23,7 @@ Irc::~Irc(void)
 		delete *it;
 	if (epfds)
 		delete epfds;
+	cout << CYAN "Server terminated" END << endl;
 }
 
 void Irc::setServerPassword(string arg) {
