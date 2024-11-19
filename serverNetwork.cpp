@@ -41,6 +41,9 @@ void Irc::initNetWork(void)
 	if (_serverSock == -1)
 		throw std::runtime_error("Failed to create socket");
 	
+	epfds = new EpollManager();
+	epfds->addFd(_serverSock, EPOLLIN | EPOLLET);
+
 	int enable = 1;
 	setNonBloking(&_serverSock);
 	if (setsockopt(_serverSock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
@@ -51,7 +54,4 @@ void Irc::initNetWork(void)
 
 	if (listen(_serverSock, BACKLOG) < 0)
 		throw std::runtime_error("Failed to listen to socket");
-
-	epfds = new EpollManager();
-	epfds->addFd(_serverSock, EPOLLIN | EPOLLET);
 }

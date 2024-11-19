@@ -20,12 +20,12 @@ void Irc::leaveAllChannels(Client* ptr)
 	}
 }
 
-void Irc::quitCmd(istringstream &ss, Client* actualClient)
+void Irc::quitCmd(istringstream &ss, Client* client)
 {
 	(void)ss;
-	map<int, Client *>::iterator it = _clients.find(actualClient->getSock());
+	map<int, Client *>::iterator it = _clients.find(client->getSock());
 	cout << YELLOW << "Closing connection, fd: " << it->first << END << endl;
-	leaveAllChannels(actualClient);
+	leaveAllChannels(client);
 	delete it->second;
 	epfds->deleteFd(it->first);
 	_clients.erase(it->first);

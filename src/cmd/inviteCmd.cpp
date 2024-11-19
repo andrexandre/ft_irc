@@ -1,6 +1,6 @@
 #include "../../Irc.hpp"
 
-void Irc::inviteCmd(std::istringstream &ss, Client* actualClient)
+void Irc::inviteCmd(std::istringstream &ss, Client* client)
 {
 	string targetNick;
 	string channelName;
@@ -8,26 +8,26 @@ void Irc::inviteCmd(std::istringstream &ss, Client* actualClient)
 	Channel* targetChannel;
 	
 	if (ssLength(ss) != 2)
-		return serverErrorMsg(actualClient->getSock(), ERR_NEEDMOREPARAMS(actualClient->getNick(), "INVITE"));
+		return sendMsg(client->getSock(), ERR_NEEDMOREPARAMS(client->getNick(), "INVITE"));
 
 	if ((ss >> targetNick) && !(targetClient = findClient(targetNick)))
-		return serverErrorMsg(actualClient->getSock(), ERR_NOSUCHNICK(actualClient->getNick(), targetNick));
+		return sendMsg(client->getSock(), ERR_NOSUCHNICK(client->getNick(), targetNick));
 	
 	if ((ss >> channelName) && !(targetChannel = findChannel(channelName)))
-		return serverErrorMsg(actualClient->getSock(), ERR_NOSUCHCHANNEL(actualClient->getNick(), channelName));
+		return sendMsg(client->getSock(), ERR_NOSUCHCHANNEL(client->getNick(), channelName));
 	
-	if (!targetChannel->isPartOfChannel(actualClient->getNick()))
-		return serverErrorMsg(actualClient->getSock(), ERR_NOTONCHANNEL(actualClient->getNick(), channelName));
+	if (!targetChannel->isPartOfChannel(client->getNick()))
+		return sendMsg(client->getSock(), ERR_NOTONCHANNEL(client->getNick(), channelName));
 
-	if (!targetChannel->isOperator(actualClient->getNick()))
-		return serverErrorMsg(actualClient->getSock(), ERR_CHANOPRIVSNEEDED(actualClient->getNick(), channelName));
+	if (!targetChannel->isOperator(client->getNick()))
+		return sendMsg(client->getSock(), ERR_CHANOPRIVSNEEDED(client->getNick(), channelName));
 	
 	if (targetChannel->isPartOfChannel(targetClient->getNick()))
-		return serverErrorMsg(actualClient->getSock(), ERR_USERONCHANNEL(actualClient->getNick(), targetClient->getNick(), channelName));
+		return sendMsg(client->getSock(), ERR_USERONCHANNEL(client->getNick(), targetClient->getNick(), channelName));
 
 	targetChannel->setInviteUsers(targetNick);
 	// Mensagem a avisar que ele convidou alguem para o canal
-	sendMsg(actualClient->getSock(), RPL_INVITING(actualClient->getNick(), targetNick, channelName));
+	sendMsg(client->getSock(), RPL_INVITING(client->getNick(), targetNick, channelName));
 	// Mensagem para a pessoa que foi convidada a dizer quem convidou e para que canal
-	sendMsg(targetClient->getSock(), RPL(actualClient->getNick(), actualClient->getNick(), "INVITE", targetNick, " ", channelName));
+	sendMsg(targetClient->getSock(), RPL(client->getNick(), client->getNick(), "INVITE", targetNick, " ", channelName));
 }

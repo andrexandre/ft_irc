@@ -39,15 +39,8 @@ void Irc::deleteClient(map<int, Client*>::iterator& it)
 	epfds->deleteFd(it->first);
 }
 
-void serverErrorMsg(int fd, string errMsg)
-{
-	if (send(fd, errMsg.c_str(), errMsg.size(), 0) == -1)
-		throw std::runtime_error("Cannot send the response");
-}
-
 void sendMsg(int fd, string msg)
 {
 	if (send(fd, msg.c_str(), msg.size(), 0) == -1)
 		throw std::runtime_error("Cannot send the response");
 }
-

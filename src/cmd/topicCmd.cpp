@@ -1,6 +1,6 @@
 #include "../../Irc.hpp"
 
-void Irc::topicCmd(istringstream &ss, Client* actualClient)
+void Irc::topicCmd(istringstream &ss, Client* client)
 {
 	string msg;
 	string content;
@@ -10,16 +10,16 @@ void Irc::topicCmd(istringstream &ss, Client* actualClient)
 	Channel* tarChannel;
 
 	if (ssLength(ss) != 2)
-		return serverErrorMsg(actualClient->getSock(), ERR_NEEDMOREPARAMS(actualClient->getNick(), "TOPIC"));
+		return sendMsg(client->getSock(), ERR_NEEDMOREPARAMS(client->getNick(), "TOPIC"));
 	if (!(tarChannel = findChannel(channelName)))
-		return serverErrorMsg(actualClient->getSock(), ERR_NOSUCHCHANNEL(actualClient->getNick(), channelName));
-	if (!tarChannel->isPartOfChannel(actualClient->getNick()))
-		return serverErrorMsg(actualClient->getSock(), ERR_NOTONCHANNEL(actualClient->getNick(), channelName));
+		return sendMsg(client->getSock(), ERR_NOSUCHCHANNEL(client->getNick(), channelName));
+	if (!tarChannel->isPartOfChannel(client->getNick()))
+		return sendMsg(client->getSock(), ERR_NOTONCHANNEL(client->getNick(), channelName));
 	
 	if (ss >> content)
 	{
-		if (tarChannel->isFlagSet('t') && !tarChannel->isOperator(actualClient->getNick()))
-			return (serverErrorMsg(actualClient->getSock(), ERR_CHANOPRIVSNEEDED(actualClient->getNick(), channelName)));
+		if (tarChannel->isFlagSet('t') && !tarChannel->isOperator(client->getNick()))
+			return sendMsg(client->getSock(), ERR_CHANOPRIVSNEEDED(client->getNick(), channelName));
 		
 		string tmp;
 		std::getline(ss, tmp);
@@ -27,15 +27,15 @@ void Irc::topicCmd(istringstream &ss, Client* actualClient)
 		
 		tarChannel->setChannelTopic(content.substr(1));
 
-		cout << YELLOW << msg << GREEN << RPL(actualClient->getNick(), actualClient->getUser(), "TOPIC", channelName, " :", tarChannel->getChannelTopic()) << END << endl;
+		cout << YELLOW << msg << GREEN << RPL(client->getNick(), client->getUser(), "TOPIC", channelName, " :", tarChannel->getChannelTopic()) << END << endl;
 		
-		return (tarChannel->sendAll(RPL(actualClient->getNick(), actualClient->getUser(), "TOPIC", channelName, " ", tarChannel->getChannelTopic())));
+		return (tarChannel->sendAll(RPL(client->getNick(), client->getUser(), "TOPIC", channelName, " ", tarChannel->getChannelTopic())));
 	}
 	else
 	{
 		if (tarChannel->getChannelTopic().empty())
-			return serverErrorMsg(actualClient->getSock(), RPL_NOTOPIC(actualClient->getNick(), tarChannel->getChannelName()));
+			return sendMsg(client->getSock(), RPL_NOTOPIC(client->getNick(), tarChannel->getChannelName()));
 		else
-			return serverErrorMsg(actualClient->getSock(), RPL_TOPIC(actualClient->getNick(), tarChannel->getChannelName(), tarChannel->getChannelTopic()));
+			return sendMsg(client->getSock(), RPL_TOPIC(client->getNick(), tarChannel->getChannelName(), tarChannel->getChannelTopic()));
 	}
 }

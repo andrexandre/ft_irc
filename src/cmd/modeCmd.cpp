@@ -7,7 +7,7 @@ bool validateModeFlag(string modeFlag, Channel* targetChannel)
 	return false;
 }
 
-void applyMode(std::istringstream &ss, Channel* targetChannel, Client* actualClient, string modeFlag)
+void applyMode(std::istringstream &ss, Channel* targetChannel, Client* client, string modeFlag)
 {
 	char flag = modeFlag[1];
 
@@ -28,27 +28,27 @@ void applyMode(std::istringstream &ss, Channel* targetChannel, Client* actualCli
 			break;
 		
 		case 'l': // Set/remove the user limit to channel
-			if (targetChannel->apllyLimitRestrictionFlag(ss, modeFlag, actualClient))
+			if (targetChannel->apllyLimitRestrictionFlag(ss, modeFlag, client))
 				return;			
 			break;
 		
 		case 'k': // Set/remove passWord for channel
-			if (targetChannel->apllyPasswordFlag(ss, modeFlag, actualClient))
+			if (targetChannel->apllyPasswordFlag(ss, modeFlag, client))
 				return;
 			break;
 		
 		case 'o': // Set/remove the operator privilege
-			if (targetChannel->apllyOperatorPrivilegeFlag(ss, modeFlag, actualClient))
+			if (targetChannel->apllyOperatorPrivilegeFlag(ss, modeFlag, client))
 				return;
 			break;
 		
 		default:
-			return (serverErrorMsg(actualClient->getSock(), ERR_UNKNOWNMODE(actualClient->getNick(), modeFlag)));
+			return sendMsg(client->getSock(), ERR_UNKNOWNMODE(client->getNick(), modeFlag));
 	}
-	targetChannel->sendAll(RPL_MODE(actualClient->getNick(), actualClient->getUser(), targetChannel->getChannelName(), modeFlag));
+	targetChannel->sendAll(RPL_MODE(client->getNick(), client->getUser(), targetChannel->getChannelName(), modeFlag));
 }
 
-void Irc::modeCmd(istringstream &ss, Client* actualClient)
+void Irc::modeCmd(istringstream &ss, Client* client)
 {
 	string channelName;
 	string modeFlag;
@@ -57,22 +57,22 @@ void Irc::modeCmd(istringstream &ss, Client* actualClient)
 
 	Channel* targetChannel;
 	if (!(targetChannel = findChannel(channelName)))
-		return (serverErrorMsg(actualClient->getSock(), ERR_NOSUCHCHANNEL(actualClient->getNick(), channelName)));
+		return sendMsg(client->getSock(), ERR_NOSUCHCHANNEL(client->getNick(), channelName));
 
-	if (!targetChannel->isPartOfChannel(actualClient->getNick()))
-		return (serverErrorMsg(actualClient->getSock(), ERR_NOTONCHANNEL(actualClient->getNick(), channelName)));
+	if (!targetChannel->isPartOfChannel(client->getNick()))
+		return sendMsg(client->getSock(), ERR_NOTONCHANNEL(client->getNick(), channelName));
 	
 	if (ss >> modeFlag)
 	{
-		if (!targetChannel->isOperator(actualClient->getNick()))
-			return (serverErrorMsg(actualClient->getSock(), ERR_CHANOPRIVSNEEDED(actualClient->getNick(), channelName)));
+		if (!targetChannel->isOperator(client->getNick()))
+			return sendMsg(client->getSock(), ERR_CHANOPRIVSNEEDED(client->getNick(), channelName));
 	
 		if ((modeFlag[0] != '+' && modeFlag[0] != '-') || modeFlag.size() != 2)
-			return (serverErrorMsg(actualClient->getSock(), ERR_UNKNOWNMODE(actualClient->getNick(), modeFlag)));
+			return sendMsg(client->getSock(), ERR_UNKNOWNMODE(client->getNick(), modeFlag));
 		
-		applyMode(ss, targetChannel, actualClient, modeFlag);
+		applyMode(ss, targetChannel, client, modeFlag);
 	}
 	else
-		sendMsg(actualClient->getSock(), RPL_CHANNELMODEIS(actualClient->getNick(), channelName, targetChannel->getChannelModes()));
+		sendMsg(client->getSock(), RPL_CHANNELMODEIS(client->getNick(), channelName, targetChannel->getChannelModes()));
 
 }

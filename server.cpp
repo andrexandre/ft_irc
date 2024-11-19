@@ -28,30 +28,31 @@ void Irc::receiveRequest(int targetFd)
 
 void Irc::sendResponse(int targetFd)
 {
-	Client* actualClient = findClient(targetFd);
+	Client* client = findClient(targetFd);
 	map<int, string>::iterator it = requests.find(targetFd);
 	
 	istringstream RequestSs(it->second);
 	string tmpLine;
 	string cmdName;
 
-	cout << "Received from client fd: " << targetFd << endl << RequestSs.str() << endl;
+	cout << "Received from client fd: " << targetFd << endl;
+	cout << WHITE << RequestSs.str() << END << endl;
 	while (std::getline(RequestSs, tmpLine))
 	{
 		istringstream lineSs(tmpLine);
 		lineSs >> cmdName;
 		if (cmdName == "CAP")
 			continue;
-		if (!actualClient->isAuthenticated() && cmdName != "PASS" && cmdName != "NICK" &&
+		if (!client->isAuthenticated() && cmdName != "PASS" && cmdName != "NICK" &&
 			cmdName != "USER" && cmdName != "CAP" && cmdName != "QUIT")
 		{
-			serverErrorMsg(actualClient->getSock(), ERR_NOTREGISTERED(actualClient->getNick()));
+			sendMsg(client->getSock(), ERR_NOTREGISTERED(client->getNick()));
 			continue;
 		}
 		if (this->cmds.find(cmdName) != this->cmds.end())
-			(this->*(this->cmds[cmdName]))(lineSs, actualClient);
+			(this->*(this->cmds[cmdName]))(lineSs, client);
 		else
-			serverErrorMsg(actualClient->getSock(), ERR_UNKNOWNCOMMAND(actualClient->getNick(), cmdName));
+			sendMsg(client->getSock(), ERR_UNKNOWNCOMMAND(client->getNick(), cmdName));
 	}
 	
 	requests.erase(it);
@@ -64,8 +65,7 @@ int Irc::run_server(char **av)
 	try
 	{
 		signal(SIGINT, handler);
-		setPort(av[1]);
-		setServerPassword(av[2]);
+		setPortAndPassword(av);
 		initNetWork();
 
 		int event_count = 0;
@@ -99,7 +99,6 @@ int Irc::run_server(char **av)
 	{
 		if (running)
 			cerr << "Error: " << e.what() << " 💀" << '\n';
-		close(_serverSock);
 	}
 	return 0;
 }

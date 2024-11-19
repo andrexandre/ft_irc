@@ -13,6 +13,7 @@ Irc::Irc(void)
 	cmds["INVITE"] = &Irc::inviteCmd;
 	cmds["QUIT"] = &Irc::quitCmd;
 	cmds["KICK"] = &Irc::kickCmd;
+	cout << CYAN "Server started (Ctrl+C to quit)" END << endl;
 }
 
 Irc::~Irc(void) 
@@ -26,17 +27,14 @@ Irc::~Irc(void)
 	cout << CYAN "Server terminated" END << endl;
 }
 
-void Irc::setServerPassword(string arg) {
-	_serverPassWord = arg;
-}
-
-void Irc::setPort(string arg)
+void Irc::setPortAndPassword(char **av)
 {
 	char *end;
-	int num = strtol(arg.c_str(), &end, 10);
+	int num = strtol(av[1], &end, 10);
 
 	if (*end || num <= 0  || num >= 65535)
-		throw std::runtime_error("Invalid port!");;
+		throw std::runtime_error("Invalid port!");
 
 	_port = num;
+	_serverPassWord = av[2];
 }

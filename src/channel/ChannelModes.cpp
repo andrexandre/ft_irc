@@ -28,7 +28,7 @@ bool Channel::apllyLimitRestrictionFlag(istringstream& ss, string& modeFlag, Cli
 	stringstream converter;
 
 	if (!(ss >> number))
-		return (serverErrorMsg(client->getSock(), ERR_NEEDMOREPARAMS(client->getNick(), string("MODE +l"))), 1);
+		return (sendMsg(client->getSock(), ERR_NEEDMOREPARAMS(client->getNick(), string("MODE +l"))), 1);
 
 	errno = 0;
 	nb = strtol(number.c_str(), &end, 10);
@@ -51,7 +51,7 @@ bool Channel::apllyPasswordFlag(istringstream& ss, string& modeFlag, Client* cli
 	bool operation = (modeFlag[0] == '-');
 
 	if (!(ss >> pass))
-		return (serverErrorMsg(client->getSock(), ERR_NEEDMOREPARAMS(client->getNick(), string("MODE +k"))), 1);
+		return (sendMsg(client->getSock(), ERR_NEEDMOREPARAMS(client->getNick(), string("MODE +k"))), 1);
 	
 	if (operation)
 	{
@@ -59,7 +59,7 @@ bool Channel::apllyPasswordFlag(istringstream& ss, string& modeFlag, Client* cli
 			return 1;
 		
 		if (pass != _channelPassword)
-			return (serverErrorMsg(client->getSock(), ERR_KEYSET(client->getNick())), 1);
+			return (sendMsg(client->getSock(), ERR_KEYSET(client->getNick())), 1);
 		
 		removeChannelModesFlag('k');
 		setChannelPassword("");
@@ -67,7 +67,7 @@ bool Channel::apllyPasswordFlag(istringstream& ss, string& modeFlag, Client* cli
 	else
 	{
 		if (!_channelPassword.empty())
-			return (serverErrorMsg(client->getSock(), ERR_KEYSET(client->getNick())), 1);
+			return (sendMsg(client->getSock(), ERR_KEYSET(client->getNick())), 1);
 		
 		setChannelPassword(pass);
 		setChannelModes('k');
@@ -101,7 +101,7 @@ bool Channel::apllyOperatorPrivilegeFlag(istringstream& ss, string& modeFlag, Cl
 	//ver se o nick existe no servidor
 
 	if (!isPartOfChannel(targetNick))
-		return (serverErrorMsg(client->getSock(), ERR_USERNOTINCHANNEL(client->getNick(), targetNick, _channelName)), 1);
+		return (sendMsg(client->getSock(), ERR_USERNOTINCHANNEL(client->getNick(), targetNick, _channelName)), 1);
 	
 	if (operation)
 	{

@@ -56,9 +56,8 @@ extern bool running;
 
 int ssLength(istringstream &ss);
 void sendMsg(int fd, string msg);
-void serverErrorMsg(int fd, string errMsg);
+void sendMsg(int fd, string errMsg);
 void logger(int type, int data);
-
 
 class Irc
 {
@@ -94,22 +93,21 @@ class Irc
 		Irc(void);
 		~Irc(void);
 		int run_server(char **av);
-		void setPort(string arg);
-		void setServerPassword(string arg);
+		void setPortAndPassword(char **av);
 
 	private:
-		typedef void (Irc::*CommandPtr)(istringstream& line,  Client* actualClient);
+		typedef void (Irc::*CommandPtr)(istringstream& line,  Client* client);
 		map<string, CommandPtr> cmds; // Nome to comando e o pointer para a respetiva funcao
 
-		void privmsgCmd(istringstream &ss, Client* actualClient);
-		void joinCmd(istringstream &ss, Client* actualClient);
-		void partCmd(istringstream &ss, Client* actualClient);
-		void topicCmd(istringstream &ss, Client* actualClient);
-		void modeCmd(istringstream &ss, Client* actualClient);
-		void passCmd(istringstream &ss, Client* actualClient);
-		void nickCmd(istringstream &ss, Client* actualClient);
-		void userCmd(istringstream &ss, Client* actualClient);
-		void inviteCmd(istringstream &ss, Client* actualClient);
-		void quitCmd(istringstream &ss, Client* actualClient);
-		void kickCmd(istringstream &ss, Client* actualClient);
+		void privmsgCmd(istringstream &ss, Client* client);
+		void joinCmd(istringstream &ss, Client* client);
+		void partCmd(istringstream &ss, Client* client);
+		void topicCmd(istringstream &ss, Client* client);
+		void modeCmd(istringstream &ss, Client* client);
+		void passCmd(istringstream &ss, Client* client);
+		void nickCmd(istringstream &ss, Client* client);
+		void userCmd(istringstream &ss, Client* client);
+		void inviteCmd(istringstream &ss, Client* client);
+		void quitCmd(istringstream &ss, Client* client);
+		void kickCmd(istringstream &ss, Client* client);
 };

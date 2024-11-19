@@ -1,12 +1,12 @@
 #include "../../Irc.hpp"
 
-void Irc::passCmd(istringstream &ss, Client* actualClient)
+void Irc::passCmd(istringstream &ss, Client* client)
 {
 	string str;
 	
 	if (!(ss >> str))
-		return serverErrorMsg(actualClient->getSock(), ERR_NEEDMOREPARAMS(actualClient->getNick(), "PASS"));
-	if (actualClient->isAuthenticated())
-		return serverErrorMsg(actualClient->getSock(), ERR_ALREADYREGISTRED(actualClient->getNick()));
-	actualClient->setPassWord(str);
+		return sendMsg(client->getSock(), ERR_NEEDMOREPARAMS(client->getNick(), "PASS"));
+	if (client->isAuthenticated())
+		return sendMsg(client->getSock(), ERR_ALREADYREGISTRED(client->getNick()));
+	client->setPassWord(str);
 }
