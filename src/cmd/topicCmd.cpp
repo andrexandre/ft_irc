@@ -6,11 +6,11 @@ void Irc::topicCmd(istringstream &ss, Client* client)
 	string content;
 	string channelName;
 
+	if (ssLength(ss) < 2)
+		return sendMsg(client->getSock(), ERR_NEEDMOREPARAMS(client->getNick(), "TOPIC"));
+
 	ss >> channelName;
 	Channel* tarChannel;
-
-	if (ssLength(ss) != 2)
-		return sendMsg(client->getSock(), ERR_NEEDMOREPARAMS(client->getNick(), "TOPIC"));
 	if (!(tarChannel = findChannel(channelName)))
 		return sendMsg(client->getSock(), ERR_NOSUCHCHANNEL(client->getNick(), channelName));
 	if (!tarChannel->isPartOfChannel(client->getNick()))

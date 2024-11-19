@@ -96,7 +96,7 @@ class Irc
 		void setPortAndPassword(char **av);
 
 	private:
-		typedef void (Irc::*CommandPtr)(istringstream& line,  Client* client);
+		typedef void (Irc::*CommandPtr)(istringstream& line, Client* client);
 		map<string, CommandPtr> cmds; // Nome to comando e o pointer para a respetiva funcao
 
 		void privmsgCmd(istringstream &ss, Client* client);

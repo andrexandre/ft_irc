@@ -44,3 +44,16 @@ void sendMsg(int fd, string msg)
 	if (send(fd, msg.c_str(), msg.size(), 0) == -1)
 		throw std::runtime_error("Cannot send the response");
 }
+
+int ssLength(istringstream &ss)
+{
+	istringstream::pos_type position = ss.tellg();
+	string temp;
+	int count = 0;
+
+	while (ss >> temp)
+		count++;
+	ss.clear();
+	ss.seekg(position, std::ios::beg);
+	return count;
+}

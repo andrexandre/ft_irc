@@ -32,7 +32,7 @@ void Irc::setPortAndPassword(char **av)
 	char *end;
 	int num = strtol(av[1], &end, 10);
 
-	if (*end || num <= 0  || num >= 65535)
+	if (*end || num <= 0 || num >= 65535)
 		throw std::runtime_error("Invalid port!");
 
 	_port = num;

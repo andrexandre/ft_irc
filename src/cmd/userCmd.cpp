@@ -1,18 +1,5 @@
 #include "../../Irc.hpp"
 
-int ssLength(istringstream &ss)
-{
-    istringstream::pos_type position = ss.tellg();
-	string temp;
-	int count = 0;
-
-	while (ss >> temp)
-		count++;
-	ss.clear();
-	ss.seekg(position, std::ios::beg);
-	return count;
-}
-
 void Irc::userCmd(istringstream &ss, Client* client)
 {
 	int length = ssLength(ss);

@@ -28,7 +28,7 @@
 
 #define RPL_TOPIC(nick, channelName, channelTopic) (":localhost 332 " + (nick) + ' ' + (channelName) + ' ' + (channelTopic) + "\r\n")
 
-#define RPL_INVITING(nick, targetNick, channelName) (":localhost 341 " + (nick) + ' ' + (targetNick) + ' ' + (channelName)  + "\r\n")
+#define RPL_INVITING(nick, targetNick, channelName) (":localhost 341 " + (nick) + ' ' + (targetNick) + ' ' + (channelName) + "\r\n")
 
 #define ERR_NOSUCHNICK(nick, targetNick) (ERR_SAMPLE_2("401", "No such nick", nick, targetNick))
 

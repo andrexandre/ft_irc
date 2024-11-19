@@ -33,7 +33,7 @@ bool Channel::apllyLimitRestrictionFlag(istringstream& ss, string& modeFlag, Cli
 	errno = 0;
 	nb = strtol(number.c_str(), &end, 10);
 	size_t tmp = nb;
-	if (nb <= 0  || errno == ERANGE || tmp == getMaxUsersNumber())
+	if (nb <= 0 || errno == ERANGE || tmp == getMaxUsersNumber())
 		return 1;
 	
 	setMaxUsersNumber(nb);
