@@ -41,13 +41,8 @@ class Channel
 		bool isUserInvited(string nick) const;
 		bool isPartOfChannel(string nick) const;
 
-		void apllyInviteOnlyFlag(bool optr);
-		void apllyTopicRestrictionFlag(bool optr);
-		bool apllyPasswordFlag(istringstream& ss, string& modeFlag, Client* client);
 		void giveOrTakeOperatorPrivilege(string targetNick, bool privilege = false);
-		bool apllyLimitRestrictionFlag(istringstream& ss, string& modeFlag, Client* client);
-		bool apllyOperatorPrivilegeFlag(istringstream& ss, string& modeFlag, Client* client);
-		
+
 	public:
 		Channel(string name);
 		~Channel(void);

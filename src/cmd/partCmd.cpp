@@ -1,7 +1,6 @@
 #include "../../Irc.hpp"
 
 static void retrieveReason(string content, string& reason)
-
 {
 	size_t start = content.find(reason);
 	string tmp = content.substr(start + 1);
