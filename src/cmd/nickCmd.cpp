@@ -18,7 +18,6 @@ void Irc::nickCmd(istringstream &ss, Client* client)
 		
 		string oldNick = client->getNick();
 		client->setNick(str);
-		str = RPL(oldNick, client->getUser(), "NICK", "", ":", client->getNick());
-		send(client->getSock(), str.c_str(), str.size(), 0);
+		sendMsg(client->getSock(), RPL(oldNick, client->getUser(), "NICK", "", ":", client->getNick()));
 	}
 }

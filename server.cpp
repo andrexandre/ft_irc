@@ -44,7 +44,7 @@ void Irc::sendResponse(int targetFd)
 		if (cmdName == "CAP")
 			continue;
 		if (!client->isAuthenticated() && cmdName != "PASS" && cmdName != "NICK" &&
-			cmdName != "USER" && cmdName != "CAP" && cmdName != "QUIT")
+			cmdName != "USER" && cmdName != "QUIT")
 		{
 			sendMsg(client->getSock(), ERR_NOTREGISTERED(client->getNick()));
 			continue;
