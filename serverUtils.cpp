@@ -41,6 +41,8 @@ void Irc::deleteClient(map<int, Client*>::iterator& it)
 
 void sendMsg(int fd, string msg)
 {
+	cout << "Send to client fd: " << fd << endl;
+	cout << WHITE << msg << END << endl;
 	if (send(fd, msg.c_str(), msg.size(), 0) == -1)
 		throw std::runtime_error("Cannot send the response");
 }
