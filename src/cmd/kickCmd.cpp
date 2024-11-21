@@ -21,6 +21,7 @@ void Irc::kickCmd(istringstream &ss, Client* client)
 	if (!channel->isPartOfChannel(targetClient->getNick()))
 		return sendMsg(client->getSock(), ERR_USERNOTINCHANNEL(client->getNick(), targetClient->getNick(), channelName));
 	
+	cout << "Send to client fd: " << client->getSock() << endl;
 	channel->sendAll(RPL(client->getNick(), client->getUser(), "KICK", (channelName + " " + targetClient->getNick()), " :", client->getNick()));
 	channel->removeClient(targetClient);
 }

@@ -71,15 +71,17 @@ class Irc
 		map<int, string> requests; // fd e a respetiva string que contem o comando a ser feito
 		vector<Channel*> _serverChannels; // Contem todos os canais do server
 
-	private:
-		void initNetWork(void);
-		void receiveRequest(int targetFd);
+		// ServerNetwork
+		void initNetwork(void);
 		void setNonBloking(int *ptr);
 		bool isNewClient(int targetFd);
 		void acceptClient(int serverFd);
+
+		// Server
 		void sendResponse(int targetFd);
+		void receiveRequest(int targetFd);
 		
-		// Modes
+		// ServerChannelModes
 		void apllyInviteOnlyFlag(bool optr, Channel* targetChannel);
 		void apllyTopicRestrictionFlag(bool optr, Channel* targetChannel);
 		void applyMode(std::istringstream &ss, Channel* targetChannel, Client* client, string modeFlag);
@@ -87,14 +89,14 @@ class Irc
 		bool apllyLimitRestrictionFlag(istringstream& ss, string& modeFlag, Client* client, Channel* targetChannel);
 		bool apllyOperatorPrivilegeFlag(istringstream& ss, string& modeFlag, Client* client, Channel* targetChannel);
 
-	private:
+		// ServerUtils
 		Client* findClient(int target);
 		Client* findClient(string name);
-		void deleteClient(map<int, Client*>::iterator& it);
-		void leaveAllChannels(Client* ptr);
-
 		Channel* findChannel(string name);
 		Channel* createChannel(string name);
+		void leaveAllChannels(Client* ptr);
+		void deleteClient(map<int, Client*>::iterator& it);
+
 
 	public:
 		Irc(void);
@@ -104,7 +106,7 @@ class Irc
 
 	private:
 		typedef void (Irc::*CommandPtr)(istringstream& line, Client* client);
-		map<string, CommandPtr> cmds; // Nome to comando e o pointer para a respetiva funcao
+		map<string, CommandPtr> cmds; // Nome do comando e o pointer para a respetiva funcao
 
 		void privmsgCmd(istringstream &ss, Client* client);
 		void joinCmd(istringstream &ss, Client* client);

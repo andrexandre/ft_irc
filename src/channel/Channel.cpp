@@ -133,6 +133,7 @@ void Channel::sendPrivMsg(int fd, string msg) const
 void Channel::sendAll(string msg) const 
 {
 	map<Client*, bool>::const_iterator it;
+	cout << WHITE << msg << END << endl;
 	for (it = _channelUsers.begin(); it != _channelUsers.end(); it++)
 	{
 		if (send(it->first->getSock(), msg.c_str(), msg.size(), 0) == -1)

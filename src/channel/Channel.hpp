@@ -2,7 +2,6 @@
 
 #include "../../Irc.hpp"
 
-
 class Channel
 {
 	private:

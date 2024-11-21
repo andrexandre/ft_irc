@@ -34,7 +34,8 @@ void Irc::privmsgCmd(istringstream &ss, Client* client)
 			return sendMsg(client->getSock(), ERR_NOSUCHNICK(client->getNick(), targetName));
 
 		conntent = retrieveMsg(ss);
-		cout << RPL_PRIVMSG(client->getNick(), client->getUser(), targetClient->getNick(), conntent) << endl; //apagar depois
+		cout << "Send to client fd: " << client->getSock() << endl;
+		cout << WHITE << RPL_PRIVMSG(client->getNick(), client->getUser(), targetClient->getNick(), conntent) << END << endl;
 		sendMsg(targetClient->getSock(), RPL_PRIVMSG(client->getNick(), client->getUser(), targetClient->getNick(), conntent));
 	}
 	else
@@ -47,7 +48,8 @@ void Irc::privmsgCmd(istringstream &ss, Client* client)
 			return sendMsg(client->getSock(), ERR_NOTONCHANNEL(client->getNick(), targetName));
 		
 		conntent = retrieveMsg(ss);
-		cout << RPL_PRIVMSG(client->getNick(), client->getUser(), targetName, conntent) << endl; //apagar depois
+		cout << "Send to client fd: " << client->getSock() << endl;
+		cout << WHITE << RPL_PRIVMSG(client->getNick(), client->getUser(), targetName, conntent) << END << endl;
 		return targetChannel->sendPrivMsg(client->getSock(), RPL_PRIVMSG(client->getNick(), client->getUser(), targetName, conntent));
 	}
 }

@@ -20,4 +20,3 @@ class EpollManager
 	public:
 		int getEpSock(void) const;
 };
-// strace -e epoll_ctl,epoll_wait ./ircserv 8080 123

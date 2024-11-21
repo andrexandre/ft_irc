@@ -27,8 +27,7 @@ void Irc::topicCmd(istringstream &ss, Client* client)
 		
 		tarChannel->setChannelTopic(content.substr(1));
 
-		cout << YELLOW << msg << GREEN << RPL(client->getNick(), client->getUser(), "TOPIC", channelName, " :", tarChannel->getChannelTopic()) << END << endl;
-		
+		cout << "Send to client fd: " << client->getSock() << endl;		
 		return (tarChannel->sendAll(RPL(client->getNick(), client->getUser(), "TOPIC", channelName, " ", tarChannel->getChannelTopic())));
 	}
 	else

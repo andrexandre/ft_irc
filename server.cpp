@@ -66,7 +66,7 @@ int Irc::run_server(char **av)
 	{
 		signal(SIGINT, handler);
 		setPortAndPassword(av);
-		initNetWork();
+		initNetwork();
 
 		int event_count = 0;
 		int j = 0;

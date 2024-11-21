@@ -25,8 +25,7 @@ void Irc::partCmd(istringstream &ss, Client* client)
 
 	retrieveReason(ss.str(), reasonToPart);
 
-	cout << endl << RPL_PART(client->getNick(), client->getUser(), channelName, reasonToPart) << endl; // apagar depois
-
+	cout << "Send to client fd: " << client->getSock() << endl;
 	tarChannel->sendAll(RPL_PART(client->getNick(), client->getUser(), channelName, reasonToPart));
 	tarChannel->removeClient(client);
 	if (tarChannel->getNumberOfUsersOnChannel() == 0)

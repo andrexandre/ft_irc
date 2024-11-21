@@ -2,7 +2,6 @@
 
 void Irc::apllyInviteOnlyFlag(bool optr, Channel* targetChannel)
 {
-	//ver se tenho que colocar os que ja estao no canal no users logo de inicio
 	if (optr)
 		targetChannel->setChannelModes('i');
 	else

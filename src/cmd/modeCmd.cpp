@@ -45,6 +45,8 @@ void Irc::applyMode(std::istringstream &ss, Channel* targetChannel, Client* clie
 		default:
 			return sendMsg(client->getSock(), ERR_UNKNOWNMODE(client->getNick(), modeFlag));
 	}
+
+	cout << "Send to client fd: " << client->getSock() << endl;
 	targetChannel->sendAll(RPL_MODE(client->getNick(), client->getUser(), targetChannel->getChannelName(), modeFlag));
 }
 

@@ -27,7 +27,7 @@ void Irc::acceptClient(int serverFd)
 	cout << MAGENTA "Opening connection, fd: " << newSock << END << endl;
 }
 
-void Irc::initNetWork(void)
+void Irc::initNetwork(void)
 {
 	struct sockaddr_in address;
 	int addrlen = sizeof(address);

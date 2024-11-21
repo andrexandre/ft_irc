@@ -32,7 +32,8 @@ void Irc::joinCmd(istringstream &ss, Client* client)
 	{
 		if (!verifyChannelmodes(tarChannel, client, ss))
 		{
-			tarChannel->setChannelUsers(false, client);
+			tarChannel->setChannelUsers(false, client);	
+			cout << "Send to client fd: " << client->getSock() << endl;
 			tarChannel->sendAll(RPL_JOIN(client->getNick(), client->getUser(), channelName, string("realname")));
 		}
 		return;
@@ -40,7 +41,6 @@ void Irc::joinCmd(istringstream &ss, Client* client)
 	tarChannel = createChannel(channelName);
 	tarChannel->setChannelUsers(true, client);
 
-	cout << RPL_JOIN(client->getNick(), client->getUser(), channelName, string("realname")) << endl; // apagar depois
-	
+	cout << "Send to client fd: " << client->getSock() << endl;	
 	tarChannel->sendAll(RPL_JOIN(client->getNick(), client->getUser(), channelName, string("realname")));
 }
