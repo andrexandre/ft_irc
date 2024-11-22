@@ -30,6 +30,8 @@ void Irc::joinCmd(istringstream &ss, Client* client)
 	Channel* tarChannel;
 	if ((tarChannel = findChannel(channelName)))
 	{
+		if (tarChannel->isPartOfChannel(client->getNick()))
+			return;
 		if (!verifyChannelmodes(tarChannel, client, ss))
 		{
 			tarChannel->setChannelUsers(false, client);	

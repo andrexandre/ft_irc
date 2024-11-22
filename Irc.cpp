@@ -36,5 +36,9 @@ void Irc::setPortAndPassword(char **av)
 		throw std::runtime_error("Invalid port!");
 
 	_port = num;
+
 	_serverPassWord = av[2];
+	for (size_t i = 0; i < _serverPassWord.size(); i++)
+		if (std::iswspace(_serverPassWord[i]))
+			throw std::runtime_error("Invalid password!");
 }
