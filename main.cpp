@@ -44,7 +44,7 @@ int main(int ac, char **av)
 	if (ac != 3 || !av[1][0] || !av[2][0])
 		return (cerr << "./ircserv <port> <password>" << endl), 1;
 	static Irc irc;
-	logger(0, 0);
+	// logger(0, 0);
 	irc.run_server(av);
 	return (0);
 }
