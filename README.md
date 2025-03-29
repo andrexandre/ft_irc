@@ -61,3 +61,6 @@ When you join a channel and your the only one there, you are automatically the c
   - `+o <nickname>` - Give operator status
   - `-o <nickname>` - Remove operator status
   - `+l <limit>` - Set user limit for channel
+
+> [!NOTE]
+> This project is part of the 42 School curriculum
